@@ -49,7 +49,7 @@ class ApiHelper {
     try {
       final response = await _dio.get(path, queryParameters: queryParameters);
       return response;
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }
@@ -58,7 +58,7 @@ class ApiHelper {
     try {
       final response = await _dio.post(path, data: data, queryParameters: queryParameters);
       return response;
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }
@@ -67,7 +67,7 @@ class ApiHelper {
     try {
       final response = await _dio.put(path, data: data, queryParameters: queryParameters);
       return response;
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }
@@ -76,7 +76,7 @@ class ApiHelper {
     try {
       final response = await _dio.delete(path, data: data, queryParameters: queryParameters);
       return response;
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }

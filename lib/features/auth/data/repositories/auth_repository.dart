@@ -1,5 +1,5 @@
-import '../../../../core/network/api_helper.dart';
-import '../../../../core/network/api_endpoints.dart';
+import 'package:kidsero_driver/core/network/api_helper.dart';
+import 'package:kidsero_driver/core/network/api_endpoints.dart';
 import '../models/auth_response_model.dart';
 
 class AuthRepository {

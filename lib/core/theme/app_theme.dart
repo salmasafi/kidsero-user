@@ -3,33 +3,41 @@ import 'app_colors.dart';
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
-    colorScheme: const ColorScheme(
+    useMaterial3: true,
+    fontFamily: 'Inter', // Assuming Inter is added or default is acceptable
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       surface: AppColors.surface,
-      background: AppColors.background,
       error: AppColors.error,
       onPrimary: AppColors.onPrimary,
       onSecondary: AppColors.onSecondary,
       onSurface: AppColors.onSurface,
-      onBackground: AppColors.onBackground,
       onError: AppColors.onError,
       brightness: Brightness.light,
     ),
+    scaffoldBackgroundColor: AppColors.background,
     appBarTheme: const AppBarTheme(
-      color: AppColors.primary,
-      iconTheme: IconThemeData(color: AppColors.onPrimary),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      iconTheme: IconThemeData(color: AppColors.textPrimary),
       titleTextStyle: TextStyle(
-        color: AppColors.onPrimary,
+        color: AppColors.textPrimary,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
     ),
-    buttonTheme: const ButtonThemeData(
-      buttonColor: AppColors.primary,
-      textTheme: ButtonTextTheme.primary,
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     ),
   );
 }

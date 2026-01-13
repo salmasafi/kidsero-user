@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
-import '../../../../core/network/api_helper.dart';
-import '../../../../core/network/cache_helper.dart';
-import '../../../../core/utils/app_strings.dart';
-import '../../../../core/utils/l10n_utils.dart';
-import '../../../../core/network/error_handler.dart';
+import 'package:kidsero_driver/core/network/api_helper.dart';
+import 'package:kidsero_driver/core/network/cache_helper.dart';
+import 'package:kidsero_driver/core/utils/app_strings.dart';
+import 'package:kidsero_driver/core/utils/l10n_utils.dart';
+import 'package:kidsero_driver/core/network/error_handler.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;

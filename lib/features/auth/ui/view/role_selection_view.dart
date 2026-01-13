@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../core/theme/app_sizes.dart';
-import '../../../core/widgets/custom_button.dart';
-import '../../../core/utils/enums.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_driver/core/theme/app_text_styles.dart';
+import 'package:kidsero_driver/core/theme/app_sizes.dart';
+import 'package:kidsero_driver/core/widgets/custom_button.dart';
+import 'package:kidsero_driver/core/utils/enums.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/routing/routes.dart';
+import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class RoleSelectionView extends StatelessWidget {
   const RoleSelectionView({super.key});

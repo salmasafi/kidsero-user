@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../core/theme/app_sizes.dart';
-import '../../../core/widgets/custom_button.dart';
-import '../../../core/widgets/custom_text_field.dart';
-import '../../../core/utils/enums.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_driver/core/theme/app_text_styles.dart';
+import 'package:kidsero_driver/core/theme/app_sizes.dart';
+import 'package:kidsero_driver/core/widgets/custom_button.dart';
+import 'package:kidsero_driver/core/widgets/custom_text_field.dart';
+import 'package:kidsero_driver/core/utils/enums.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
 import '../../data/repositories/auth_repository.dart';
-import '../../../core/network/api_helper.dart';
-import '../../../core/utils/l10n_utils.dart';
-import '../../../core/widgets/custom_loading.dart';
-import '../../../core/widgets/custom_snackbar.dart';
+import 'package:kidsero_driver/core/network/api_helper.dart';
+import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/routing/routes.dart';
+import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class LoginView extends StatefulWidget {
   final UserRole role;

@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../core/theme/app_sizes.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_driver/core/theme/app_text_styles.dart';
+import 'package:kidsero_driver/core/theme/app_sizes.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
-import 'edit_profile_view.dart';
-import 'change_password_view.dart';
-import '../../../core/network/api_helper.dart';
+import 'package:kidsero_driver/core/network/api_helper.dart';
 import '../../data/repositories/profile_repository.dart';
-import '../../../core/utils/l10n_utils.dart';
-import '../../../core/widgets/custom_loading.dart';
-import '../../../core/widgets/custom_error_widget.dart';
+import 'package:kidsero_driver/core/widgets/custom_loading.dart';
+import 'package:kidsero_driver/core/widgets/custom_error_widget.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/routing/routes.dart';
+import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});

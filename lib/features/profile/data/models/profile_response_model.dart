@@ -1,4 +1,4 @@
-import '../../auth/data/models/user_model.dart';
+import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
 
 class ProfileResponseModel {
   final bool success;

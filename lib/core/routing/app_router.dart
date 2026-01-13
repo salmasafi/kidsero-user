@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/auth/ui/view/role_selection_view.dart';
-import '../../features/auth/ui/view/login_view.dart';
-import '../../features/home/ui/view/home_view.dart';
-import '../../features/profile/ui/view/profile_view.dart';
-import '../../features/profile/ui/view/edit_profile_view.dart';
-import '../../features/profile/ui/view/change_password_view.dart';
+import 'package:kidsero_driver/features/auth/ui/view/role_selection_view.dart';
+import 'package:kidsero_driver/features/auth/ui/view/login_view.dart';
+import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
+import 'package:kidsero_driver/features/profile/ui/view/edit_profile_view.dart';
+import 'package:kidsero_driver/features/profile/ui/view/change_password_view.dart';
 import '../utils/enums.dart';
-import '../../features/auth/data/models/user_model.dart';
+import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
 import '../../main.dart';
 import 'routes.dart';
 
@@ -34,18 +33,9 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: Routes.home,
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          child: const HomeView(),
-          state: state,
-        ),
-      ),
-      GoRoute(
         path: Routes.profile,
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          child: const ProfileView(),
-          state: state,
-        ),
+        pageBuilder: (context, state) =>
+            _buildPageWithTransition(child: const ProfileView(), state: state),
       ),
       GoRoute(
         path: Routes.editProfile,
