@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit/home_cubit.dart';
-import '../../cubit/home_state.dart';
-import '../widgets/home_card.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_sizes.dart';
+import '../../../core/routing/routes.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeCubit()..loadHomeData(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Kidsero Driver")),
-        body: Center(
-          child: BlocBuilder<HomeCubit, HomeState>(
-            builder: (context, state) {
-              if (state is HomeLoading) {
-                return const CircularProgressIndicator();
-              } else if (state is HomeLoaded) {
-                return HomeCard(title: state.data.title, description: state.data.description);
-              } else if (state is HomeError) {
-                return Text(state.message, style: const TextStyle(color: Colors.red));
-              }
-              return const SizedBox.shrink();
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => context.push(Routes.profile),
           ),
-        ),
+        ],
+      ),
+      body: Center(
+        child: Text(
+          'Welcome Home!',
+          style: AppTextStyles.heading(context),
+        ).animate().fade(duration: 800.ms).scale(delay: 200.ms),
       ),
     );
   }

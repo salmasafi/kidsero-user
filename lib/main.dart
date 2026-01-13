@@ -9,6 +9,16 @@ import 'features/home/ui/view/home_view.dart';
 
 import 'core/network/cache_helper.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'core/network/api_helper.dart';
+import 'features/auth/ui/view/role_selection_view.dart';
+import 'core/utils/app_strings.dart';
+import 'core/routing/app_router.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 // Background message handler must be a top-level function
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -34,9 +44,12 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  late final ApiHelper _apiHelper;
+
   @override
   void initState() {
     super.initState();
+    _apiHelper = ApiHelper();
     _setupFCM();
   }
 
@@ -72,10 +85,26 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Kidsero Driver',
-      theme: AppTheme.lightTheme,
-      home: const HomeView(),
+    return RepositoryProvider.value(
+      value: _apiHelper,
+      child: MaterialApp.router(
+        routerConfig: AppRouter.router,
+        title: AppStrings.appName,
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('ar'),
+          Locale('fr'),
+          Locale('de'),
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'api_endpoints.dart';
+import 'cache_helper.dart';
+import '../utils/app_strings.dart';
 
 class ApiHelper {
   final Dio _dio;
@@ -11,7 +13,7 @@ class ApiHelper {
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         )) {
-    _token = CacheHelper.getData(key: 'token');
+    _token = CacheHelper.getData(key: AppStrings.token);
     _dio.interceptors.add(LogInterceptor(
       request: true,
       requestHeader: true,
@@ -24,8 +26,12 @@ class ApiHelper {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         if (_token != null) {
-          options.headers['Authorization'] = 'Bearer $_token';
+          options.headers[AppStrings.authorization] = '${AppStrings.bearer} $_token';
         }
+        // Add Accept-Language header
+        final lang = CacheHelper.getData(key: AppStrings.language) ?? 'en';
+        options.headers['Accept-Language'] = lang;
+        
         return handler.next(options);
       },
     ));

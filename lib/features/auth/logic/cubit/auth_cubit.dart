@@ -2,6 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
 import '../../../../core/network/api_helper.dart';
+import '../../../../core/network/cache_helper.dart';
+import '../../../../core/utils/app_strings.dart';
+import '../../../../core/utils/l10n_utils.dart';
+import '../../../../core/network/error_handler.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
@@ -14,14 +18,14 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final response = await _authRepository.parentLogin(phone, password);
       if (response.success && response.token != null) {
-        await CacheHelper.saveData(key: 'token', value: response.token!);
+        await CacheHelper.saveData(key: AppStrings.token, value: response.token!);
         _apiHelper.setToken(response.token!);
         emit(AuthSuccess(response));
       } else {
-        emit(AuthError(response.message ?? 'Login failed'));
+        emit(AuthError(response.message ?? L10nUtils.translateWithGlobalContext('loginFailed')));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(ErrorHandler.handle(e)));
     }
   }
 
@@ -30,19 +34,19 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final response = await _authRepository.driverLogin(phone, password);
       if (response.success && response.token != null) {
-        await CacheHelper.saveData(key: 'token', value: response.token!);
+        await CacheHelper.saveData(key: AppStrings.token, value: response.token!);
         _apiHelper.setToken(response.token!);
         emit(AuthSuccess(response));
       } else {
-        emit(AuthError(response.message ?? 'Login failed'));
+        emit(AuthError(response.message ?? L10nUtils.translateWithGlobalContext('loginFailed')));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(ErrorHandler.handle(e)));
     }
   }
 
   Future<void> logout() async {
-    await CacheHelper.removeData(key: 'token');
+    await CacheHelper.removeData(key: AppStrings.token);
     _apiHelper.clearToken();
     emit(AuthInitial());
   }

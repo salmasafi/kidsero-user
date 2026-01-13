@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../../core/models/user_model.dart';
+import '../../../auth/data/models/user_model.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();

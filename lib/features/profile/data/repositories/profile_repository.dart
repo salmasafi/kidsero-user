@@ -1,7 +1,7 @@
 import '../../../../core/network/api_helper.dart';
 import '../../../../core/network/api_endpoints.dart';
-import '../../../../core/models/profile_response_model.dart';
-import '../../../../core/models/common_response_model.dart';
+import '../models/profile_response_model.dart';
+import '../../../common/data/models/common_response_model.dart';
 
 class ProfileRepository {
   final ApiHelper _apiHelper;

@@ -1,6 +1,6 @@
 import '../../../../core/network/api_helper.dart';
 import '../../../../core/network/api_endpoints.dart';
-import '../../../../core/models/auth_response_model.dart';
+import '../models/auth_response_model.dart';
 
 class AuthRepository {
   final ApiHelper _apiHelper;
