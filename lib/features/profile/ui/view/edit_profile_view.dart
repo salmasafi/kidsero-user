@@ -10,8 +10,8 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
-import 'package:kidsero_driver/core/network/api_helper.dart';
-import '../../data/repositories/profile_repository.dart';
+import 'package:kidsero_driver/core/network/parent_api_helper.dart';
+import 'package:kidsero_driver/core/network/driver_api_helper.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -65,7 +65,10 @@ class _EditProfileViewState extends State<EditProfileView> {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return BlocProvider(
       create: (context) =>
-          ProfileCubit(ProfileRepository(context.read<ApiHelper>())),
+          ProfileCubit(
+            ParentApiHelper(),
+            DriverApiHelper(),
+          ),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocConsumer<ProfileCubit, ProfileState>(

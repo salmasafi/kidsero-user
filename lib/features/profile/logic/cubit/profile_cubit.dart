@@ -3,11 +3,17 @@ import '../../data/repositories/profile_repository.dart';
 import 'profile_state.dart';
 import 'package:kidsero_driver/core/utils/l10n_utils.dart';
 import 'package:kidsero_driver/core/network/error_handler.dart';
+import 'package:kidsero_driver/core/network/parent_api_helper.dart';
+import 'package:kidsero_driver/core/network/driver_api_helper.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _profileRepository;
 
-  ProfileCubit(this._profileRepository) : super(ProfileInitial());
+  ProfileCubit(
+    ParentApiHelper parentApiHelper,
+    DriverApiHelper driverApiHelper,
+  ) : _profileRepository = ProfileRepository(parentApiHelper, driverApiHelper),
+       super(ProfileInitial());
 
   Future<void> getProfile() async {
     emit(ProfileLoading());

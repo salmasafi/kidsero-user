@@ -21,33 +21,41 @@ class LanguageToggle extends StatelessWidget {
       }
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _LanguageOption(
-          label: 'EN',
-          isActive: currentLocale == 'en',
-          onTap: () => handleChange('en'),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          )
+        ],
+      ),
+      child: DropdownButton<String>(
+        value: currentLocale,
+        underline: const SizedBox(),
+        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF8B5CF6), size: 20),
+        items: const [
+          DropdownMenuItem(value: 'en', child: Text('EN')),
+          DropdownMenuItem(value: 'ar', child: Text('AR')),
+          DropdownMenuItem(value: 'de', child: Text('DE')),
+          DropdownMenuItem(value: 'fr', child: Text('FR')),
+        ],
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            handleChange(newValue);
+          }
+        },
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF8B5CF6),
+          fontFamily: 'Cairo',
         ),
-        const SizedBox(width: 8),
-        _LanguageOption(
-          label: 'AR',
-          isActive: currentLocale == 'ar',
-          onTap: () => handleChange('ar'),
-        ),
-        const SizedBox(width: 8),
-        _LanguageOption(
-          label: 'DE',
-          isActive: currentLocale == 'de',
-          onTap: () => handleChange('de'),
-        ),
-        const SizedBox(width: 8),
-        _LanguageOption(
-          label: 'FR',
-          isActive: currentLocale == 'fr',
-          onTap: () => handleChange('fr'),
-        ),
-      ],
+      ),
     );
   }
 }

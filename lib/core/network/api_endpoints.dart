@@ -5,6 +5,10 @@ class ApiEndpoints {
   static const String parentLogin = '/api/users/auth/parent/login';
   static const String driverLogin = '/api/users/auth/login';
 
+  // Driver Rides
+  static const String driverRidesToday = '/api/users/driver/rides/today';
+  static String driverStartRide(String occurrenceId) => '/api/users/driver/rides/occurrence/$occurrenceId/start';
+
   // Profile
   static const String profileMe = '/api/users/profile/me';
   static const String changePassword = '/api/users/profile/change-password';

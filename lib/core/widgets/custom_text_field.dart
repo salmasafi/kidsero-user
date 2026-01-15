@@ -9,6 +9,10 @@ class CustomTextField extends StatelessWidget {
   final bool isPassword;
   final TextEditingController controller;
   final TextInputType keyboardType;
+  final String? hintText;
+  final String? Function(String?)? validator;
+  final bool showError;
+  final String? errorMessage;
 
   const CustomTextField({
     super.key,
@@ -17,6 +21,10 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
+    this.hintText,
+    this.validator,
+    this.showError = false,
+    this.errorMessage,
   });
 
   @override
@@ -26,44 +34,71 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontFamily: AppTextStyles.getFontFamily(context),
-            fontSize: AppSizes.smallSize(context),
+          style: const TextStyle(
+            fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.textSecondary,
+            color: Color(0xFF1F2937),
+            fontFamily: 'Cairo',
           ),
         ),
+        const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.inputBackground.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.transparent),
+            color: const Color(0xFFF3F4F6),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: showError ? const Color(0xFFEF4444) : const Color(0xFFE5E7EB),
+              width: showError ? 2 : 1,
+            ),
           ),
           child: TextField(
             controller: controller,
             obscureText: isPassword,
             keyboardType: keyboardType,
-            style: TextStyle(
-              fontFamily: AppTextStyles.getFontFamily(context),
-              fontSize: AppSizes.bodySize(context),
-              color: AppColors.textPrimary,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xFF1F2937),
+              fontFamily: 'Cairo',
             ),
             decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 20),
-              border: InputBorder.none,
-              hintText: label,
-              hintStyle: TextStyle(
-                fontFamily: AppTextStyles.getFontFamily(context),
-                color: AppColors.textTertiary,
-                fontSize: AppSizes.bodySize(context),
+              prefixIcon: Icon(icon, color: const Color(0xFF6B7280), size: 20),
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: const Icon(
+                        Icons.visibility_off,
+                        color: Color(0xFF6B7280),
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        // Toggle password visibility logic should be handled by parent
+                      },
+                    )
+                  : null,
+              hintText: hintText ?? label,
+              hintStyle: const TextStyle(
+                color: Color(0xFF9CA3AF),
+                fontFamily: 'Cairo',
               ),
-              contentPadding: EdgeInsets.symmetric(
-                vertical: (AppSizes.inputHeight(context) - 24) / 2,
-                horizontal: AppSizes.padding(context) * 0.5,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 16,
               ),
             ),
           ),
         ),
+        if (showError && errorMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              errorMessage!,
+              style: const TextStyle(
+                color: Color(0xFFEF4444),
+                fontSize: 12,
+                fontFamily: 'Cairo',
+              ),
+            ),
+          ),
       ],
     );
   }

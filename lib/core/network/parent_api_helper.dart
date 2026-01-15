@@ -1,19 +1,20 @@
 import 'package:dio/dio.dart';
 import 'api_endpoints.dart';
-import 'cache_helper.dart';
 import '../utils/app_strings.dart';
+import '../utils/app_preferences.dart';
+import 'cache_helper.dart';
 
-class ApiHelper {
+class ParentApiHelper {
   final Dio _dio;
   String? _token;
 
-  ApiHelper({String? baseUrl})
+  ParentApiHelper({String? baseUrl})
       : _dio = Dio(BaseOptions(
           baseUrl: baseUrl ?? ApiEndpoints.baseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         )) {
-    _token = CacheHelper.getData(key: AppStrings.token);
+    _initializeToken();
     _dio.interceptors.add(LogInterceptor(
       request: true,
       requestHeader: true,
@@ -37,12 +38,22 @@ class ApiHelper {
     ));
   }
 
-  void setToken(String token) {
-    _token = token;
+  Future<void> _initializeToken() async {
+    _token = await AppPreferences.getParentToken();
   }
 
-  void clearToken() {
+  Future<void> setToken(String token) async {
+    _token = token;
+    await AppPreferences.setParentToken(token);
+  }
+
+  Future<void> clearToken() async {
     _token = null;
+    await AppPreferences.clearTokens();
+  }
+
+  Future<void> refreshToken() async {
+    _token = await AppPreferences.getParentToken();
   }
 
   Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {

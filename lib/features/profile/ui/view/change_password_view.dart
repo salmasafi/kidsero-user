@@ -6,8 +6,8 @@ import 'package:kidsero_driver/core/widgets/custom_button.dart';
 import 'package:kidsero_driver/core/widgets/custom_text_field.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
-import 'package:kidsero_driver/core/network/api_helper.dart';
-import '../../data/repositories/profile_repository.dart';
+import 'package:kidsero_driver/core/network/parent_api_helper.dart';
+import 'package:kidsero_driver/core/network/driver_api_helper.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -31,7 +31,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     final l10n = AppLocalizations.of(context)!;
     return BlocProvider(
       create: (context) => ProfileCubit(
-        ProfileRepository(context.read<ApiHelper>()),
+        ParentApiHelper(),
+        DriverApiHelper(),
       ),
       child: Scaffold(
         backgroundColor: AppColors.background,

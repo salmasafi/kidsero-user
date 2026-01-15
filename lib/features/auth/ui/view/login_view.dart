@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/theme/app_text_styles.dart';
-import 'package:kidsero_driver/core/theme/app_sizes.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/core/widgets/custom_text_field.dart';
 import 'package:kidsero_driver/core/utils/enums.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
-import '../../data/repositories/auth_repository.dart';
-import 'package:kidsero_driver/core/network/api_helper.dart';
+import '../../data/repositories/parent_auth_repository.dart';
+import '../../data/repositories/driver_auth_repository.dart';
+import 'package:kidsero_driver/core/network/parent_api_helper.dart';
+import 'package:kidsero_driver/core/network/driver_api_helper.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:kidsero_driver/core/widgets/language_toggle.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_driver/core/logic/locale_cubit.dart';
 
 class LoginView extends StatefulWidget {
   final UserRole role;
@@ -30,6 +27,64 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  String? _phoneError;
+  String? _passwordError;
+
+  void _showLanguageDialog(BuildContext context) {
+    final localeCubit = context.read<LocaleCubit>();
+    final currentLocale = Localizations.localeOf(context).languageCode;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Language'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _LanguageOption(
+                label: 'English',
+                code: 'en',
+                isSelected: currentLocale == 'en',
+                onTap: () {
+                  localeCubit.changeLocale('en');
+                  Navigator.pop(context);
+                },
+              ),
+              _LanguageOption(
+                label: 'العربية',
+                code: 'ar',
+                isSelected: currentLocale == 'ar',
+                onTap: () {
+                  localeCubit.changeLocale('ar');
+                  Navigator.pop(context);
+                },
+              ),
+              _LanguageOption(
+                label: 'Deutsch',
+                code: 'de',
+                isSelected: currentLocale == 'de',
+                onTap: () {
+                  localeCubit.changeLocale('de');
+                  Navigator.pop(context);
+                },
+              ),
+              _LanguageOption(
+                label: 'Français',
+                code: 'fr',
+                isSelected: currentLocale == 'fr',
+                onTap: () {
+                  localeCubit.changeLocale('fr');
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,35 +96,31 @@ class _LoginViewState extends State<LoginView> {
 
     return BlocProvider(
       create: (context) => AuthCubit(
-        AuthRepository(context.read<ApiHelper>()),
-        context.read<ApiHelper>(),
+        ParentAuthRepository(ParentApiHelper()),
+        DriverAuthRepository(DriverApiHelper()),
       ),
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF8F9FA),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                  )
-                ],
-              ),
-              child: const Icon(Icons.arrow_back, color: AppColors.textPrimary, size: 20),
-            ),
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF1F2937), size: 24),
             onPressed: () => context.pop(),
           ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: LanguageToggle(),
+          actions: [
+            Container(
+              margin: const EdgeInsets.only(right: 16),
+              child: IconButton(
+                icon: Icon(
+                  Icons.translate,
+                  color: primaryColor,
+                  size: 20,
+                ),
+                onPressed: () {
+                  _showLanguageDialog(context);
+                },
+              ),
             ),
           ],
         ),
@@ -84,121 +135,370 @@ class _LoginViewState extends State<LoginView> {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.padding(context)),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    SizedBox(height: AppSizes.spacing(context)),
+                    const SizedBox(height: 40),
+                    
                     // User Icon
                     Container(
-                      height: 120,
-                      width: 120,
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.7),
-                        shape: BoxShape.circle,
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withOpacity(0.2),
+                            color: primaryColor.withOpacity(0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           )
                         ],
                       ),
-                      child: const Icon(Icons.person, color: Colors.white, size: 60),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 50,
+                      ),
                     ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 1.5),
+                    const SizedBox(height: 24),
                     
                     Text(
-                      roleName,
-                      style: AppTextStyles.heading(context).copyWith(fontSize: 28),
+                      isParent ? 'Parent Login' : 'Driver Login',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1F2937),
+                        fontFamily: 'Cairo',
+                      ),
                     ).animate().fade(delay: 200.ms).slideY(begin: 0.2, end: 0),
+                    
+                    const SizedBox(height: 8),
                     
                     Text(
                       l10n.trackSafely,
-                      style: AppTextStyles.subHeading(context),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF6B7280),
+                        fontFamily: 'Cairo',
+                      ),
                     ).animate().fade(delay: 300.ms).slideY(begin: 0.2, end: 0),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 3),
+                    const SizedBox(height: 48),
 
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomTextField(
-                        label: l10n.phoneNumber,
-                        icon: Icons.phone_outlined,
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                      ),
+                    // Phone Number Field
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Phone Number',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1F2937),
+                            fontFamily: 'Cairo',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3F4F6),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                          ),
+                          child: TextField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF1F2937),
+                              fontFamily: 'Cairo',
+                            ),
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.phone_outlined,
+                                color: Color(0xFF6B7280),
+                                size: 20,
+                              ),
+                              hintText: '01xxxxxxxxx',
+                              hintStyle: TextStyle(
+                                color: Color(0xFF9CA3AF),
+                                fontFamily: 'Cairo',
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (_phoneError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              _phoneError!,
+                              style: const TextStyle(
+                                color: Color(0xFFEF4444),
+                                fontSize: 12,
+                                fontFamily: 'Cairo',
+                              ),
+                            ),
+                          ),
+                      ],
                     ).animate().fade(delay: 400.ms).slideX(begin: 0.1, end: 0),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 1.5),
+                    const SizedBox(height: 24),
                     
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomTextField(
-                        label: l10n.password,
-                        icon: Icons.lock_outline,
-                        controller: _passwordController,
-                        isPassword: true,
-                      ),
+                    // Password Field
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Password',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1F2937),
+                            fontFamily: 'Cairo',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3F4F6),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                          ),
+                          child: TextField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF1F2937),
+                              fontFamily: 'Cairo',
+                            ),
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Color(0xFF6B7280),
+                                size: 20,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                  color: const Color(0xFF6B7280),
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
+                              hintText: 'Enter your password',
+                              hintStyle: const TextStyle(
+                                color: Color(0xFF9CA3AF),
+                                fontFamily: 'Cairo',
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (_passwordError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              _passwordError!,
+                              style: const TextStyle(
+                                color: Color(0xFFEF4444),
+                                fontSize: 12,
+                                fontFamily: 'Cairo',
+                              ),
+                            ),
+                          ),
+                      ],
                     ).animate().fade(delay: 500.ms).slideX(begin: 0.1, end: 0),
+                    
+                    const SizedBox(height: 16),
                     
                     Align(
                       alignment: isArabic ? Alignment.centerLeft : Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
-                        child: Text(
-                          l10n.forgotPassword,
-                          style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13),
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Color(0xFFFA8231),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            fontFamily: 'Cairo',
+                          ),
                         ),
                       ),
                     ).animate().fade(delay: 600.ms),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 2),
+                    const SizedBox(height: 32),
                     
-                    CustomButton(
-                      text: l10n.login,
-                      gradient: isParent ? AppColors.parentGradient : AppColors.driverGradient,
-                      isLoading: state is AuthLoading,
-                      onPressed: () {
-                        if (isParent) {
-                          context.read<AuthCubit>().parentLogin(
-                                _phoneController.text,
-                                _passwordController.text,
-                              );
-                        } else {
-                          context.read<AuthCubit>().driverLogin(
-                                _phoneController.text,
-                                _passwordController.text,
-                              );
-                        }
-                      },
+                    Container(
+                      width: double.infinity,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryColor.withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: state is AuthLoading ? null : () {
+                          setState(() {
+                            _phoneError = _phoneController.text.isEmpty ? 'Phone number is required' : null;
+                            _passwordError = _passwordController.text.isEmpty ? 'Password is required' : null;
+                          });
+                          
+                          if (_phoneController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+                            if (isParent) {
+                              context.read<AuthCubit>().parentLogin(
+                                    _phoneController.text,
+                                    _passwordController.text,
+                                  );
+                            } else {
+                              context.read<AuthCubit>().driverLogin(
+                                    _phoneController.text,
+                                    _passwordController.text,
+                                  );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: state is AuthLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontFamily: 'Cairo',
+                                ),
+                              ),
+                      ),
                     ).animate().fade(delay: 700.ms).scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 1.5),
+                    const SizedBox(height: 24),
                     
                     RichText(
-                      text: TextSpan(
-                        style: AppTextStyles.body(context).copyWith(fontSize: 13),
+                      text: const TextSpan(
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'Cairo',
+                          color: Color(0xFF6B7280),
+                        ),
                         children: [
-                          TextSpan(text: '${l10n.dontHaveAccount} ', style: const TextStyle(color: Colors.grey)),
+                          TextSpan(text: "Don't have an account? "),
                           TextSpan(
-                            text: l10n.contactAdmin,
-                            style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                            text: 'Contact Admin',
+                            style: TextStyle(
+                              color: Color(0xFFFA8231),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ).animate().fade(delay: 800.ms),
                     
-                    SizedBox(height: AppSizes.spacing(context) * 2),
+                    const SizedBox(height: 32),
                     
-                    const Text('🚌', style: TextStyle(fontSize: 40)).animate().fade(delay: 900.ms).slideY(begin: 0.5, end: 0),
+                    const Text(
+                      '🚌',
+                      style: TextStyle(fontSize: 40),
+                    ).animate().fade(delay: 900.ms).slideY(begin: 0.5, end: 0),
+                    
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  final String label;
+  final String code;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LanguageOption({
+    required this.label,
+    required this.code,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF8B5CF6) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF8B5CF6) : Colors.grey.shade300,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.white : Colors.black87,
+                fontFamily: 'Cairo',
+              ),
+            ),
+            const Spacer(),
+            if (isSelected)
+              const Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 20,
+              ),
+          ],
         ),
       ),
     );

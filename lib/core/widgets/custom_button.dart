@@ -5,31 +5,50 @@ import '../theme/app_sizes.dart';
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final Gradient gradient;
+  final Gradient? gradient;
+  final Color? color;
   final bool isLoading;
+  final double? height;
+  final double? width;
+  final double? borderRadius;
+  final TextStyle? textStyle;
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
-    required this.gradient,
+    this.gradient,
+    this.color,
     this.isLoading = false,
+    this.height,
+    this.width,
+    this.borderRadius,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final buttonHeight = height ?? 56;
+    final buttonRadius = borderRadius ?? 16;
+    final buttonColor = color ?? const Color(0xFF8B5CF6);
+    final buttonGradient = gradient ?? LinearGradient(
+      colors: [buttonColor, buttonColor.withOpacity(0.8)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
     return Container(
-      width: double.infinity,
-      height: AppSizes.buttonHeight(context),
+      width: width ?? double.infinity,
+      height: buttonHeight,
       decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+        gradient: buttonGradient,
+        borderRadius: BorderRadius.circular(buttonRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
+            color: buttonColor.withOpacity(0.3),
+            blurRadius: 12,
             offset: const Offset(0, 4),
-          ),
+          )
         ],
       ),
       child: ElevatedButton(
@@ -38,12 +57,28 @@ class CustomButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+            borderRadius: BorderRadius.circular(buttonRadius),
           ),
         ),
         child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(text, style: AppTextStyles.button(context)),
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                text,
+                style: textStyle ??
+                    const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Cairo',
+                    ),
+              ),
       ),
     );
   }
