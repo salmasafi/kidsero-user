@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "35799932748",
+    "project_id": "kidsero",
+    "storage_bucket": "kidsero.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35799932748:android:a379c2ca478fb4b91bb9e9",
+        "android_client_info": {
+          "package_name": "com.kidsero.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCF-n_rv_Mq7V62C-2-okvtVH6FJ41XVtg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

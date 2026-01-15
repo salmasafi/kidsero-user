@@ -15,7 +15,11 @@ class AppSizes {
   static double bodySize(BuildContext context) => width(context) * 0.04;
   static double smallSize(BuildContext context) => width(context) * 0.035;
   
+  static double radiusExtraLarge = 40.0;
   static double radiusLarge = 24.0;
   static double radiusMedium = 16.0;
   static double radiusSmall = 8.0;
+  
+  static double paddingSmall(BuildContext context) => width(context) * 0.03;
+  static double spacingSmall(BuildContext context) => height(context) * 0.01;
 }

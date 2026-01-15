@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_driver/core/widgets/language_toggle.dart';
 
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});
@@ -42,6 +43,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             onPressed: () => context.pop(),
           ),
           title: Text(l10n.changePassword, style: TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.subHeadingSize(context))),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: LanguageToggle(),
+            ),
+          ],
         ),
         body: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {

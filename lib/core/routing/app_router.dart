@@ -33,6 +33,11 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: Routes.home,
+        pageBuilder: (context, state) =>
+            _buildPageWithTransition(child: const ProfileView(), state: state),
+      ),
+      GoRoute(
         path: Routes.profile,
         pageBuilder: (context, state) =>
             _buildPageWithTransition(child: const ProfileView(), state: state),

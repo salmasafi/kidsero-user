@@ -90,4 +90,127 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get somethingWentWrong =>
       'Etwas ist schief gelaufen, bitte versuchen Sie es erneut';
+
+  @override
+  String get safeRides => 'Sichere Fahrten für Ihre Kleinen';
+
+  @override
+  String get imParentDesc =>
+      'Verfolgen Sie den Bus Ihres Kindes, kommunizieren Sie mit Fahrern und verwalten Sie Abholungen';
+
+  @override
+  String get imDriverDesc =>
+      'Verwalten Sie Ihre Route, informieren Sie die Eltern und sorgen Sie für sichere Fahrten';
+
+  @override
+  String joinParents(Object count) {
+    return 'Tritt $count+ Eltern bei';
+  }
+
+  @override
+  String get trustedDrivers => 'Netzwerk vertrauenswürdiger Fahrer';
+
+  @override
+  String get forgotPassword => 'Passwort vergessen?';
+
+  @override
+  String get dontHaveAccount => 'Sie haben noch kein Konto?';
+
+  @override
+  String get contactAdmin => 'Admin kontaktieren';
+
+  @override
+  String get trackSafely => 'Verfolgen Sie Ihr Kind sicher';
+
+  @override
+  String get phoneRequired => 'Telefonnummer ist erforderlich';
+
+  @override
+  String get passwordRequired => 'Passwort ist erforderlich';
+
+  @override
+  String get termsOfService => 'Nutzungsbedingungen';
+
+  @override
+  String get byContinuing => 'Indem Sie fortfahren, stimmen Sie unseren zu';
+
+  @override
+  String get language => 'Sprache';
+
+  @override
+  String childrenCount(Object count) {
+    return '$count Registrierte Kinder';
+  }
+
+  @override
+  String get updateYourInfo => 'Aktualisieren Sie Ihre Informationen';
+
+  @override
+  String get updatePassword => 'Aktualisieren Sie Ihr Passwort';
+
+  @override
+  String get notifications => 'Benachrichtigungen';
+
+  @override
+  String get manageNotifications => 'Benachrichtigungen verwalten';
+
+  @override
+  String get privacySecurity => 'Privatsphäre & Sicherheit';
+
+  @override
+  String get controlYourData => 'Kontrollieren Sie Ihre Daten';
+
+  @override
+  String get helpSupport => 'Hilfe & Support';
+
+  @override
+  String get getHelp => 'Hilfe erhalten';
+
+  @override
+  String get readOnlyFields => 'Diese Felder können nicht geändert werden';
+
+  @override
+  String get phone => 'Telefon';
+
+  @override
+  String get role => 'Rolle';
+
+  @override
+  String get noAddressProvided => 'Keine Adresse angegeben';
+
+  @override
+  String get tapToViewClearly => 'Tippen Sie zur deutlichen Ansicht';
+
+  @override
+  String get avatarUrlOptional => 'Avatar-URL (Optional)';
+
+  @override
+  String get children => 'Kinder';
+
+  @override
+  String get myChildren => 'Meine Kinder';
+
+  @override
+  String get noChildrenFound => 'Keine Kinder gefunden';
+
+  @override
+  String get noChildrenDescription => 'Sie haben noch keine Kinder hinzugefügt';
+
+  @override
+  String get grade => 'Klasse';
+
+  @override
+  String get classroom => 'Klassenzimmer';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get active => 'Aktiv';
+
+  @override
+  String get inactive => 'Inaktiv';
+
+  @override
+  String get failedToLoadChildren => 'Fehler beim Laden der Kinder';
 }

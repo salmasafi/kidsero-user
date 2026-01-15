@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_sizes.dart';
+import '../theme/app_text_styles.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -26,6 +27,7 @@ class CustomTextField extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
+            fontFamily: AppTextStyles.getFontFamily(context),
             fontSize: AppSizes.smallSize(context),
             fontWeight: FontWeight.w600,
             color: AppColors.textSecondary,
@@ -33,20 +35,28 @@ class CustomTextField extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.inputBackground,
-            borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
-            border: Border.all(color: AppColors.border.withOpacity(0.5)),
+            color: AppColors.inputBackground.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.transparent),
           ),
           child: TextField(
             controller: controller,
             obscureText: isPassword,
             keyboardType: keyboardType,
-            style: TextStyle(fontSize: AppSizes.bodySize(context), color: AppColors.textPrimary),
+            style: TextStyle(
+              fontFamily: AppTextStyles.getFontFamily(context),
+              fontSize: AppSizes.bodySize(context),
+              color: AppColors.textPrimary,
+            ),
             decoration: InputDecoration(
               prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 20),
               border: InputBorder.none,
               hintText: label,
-              hintStyle: TextStyle(color: AppColors.textTertiary, fontSize: AppSizes.bodySize(context)),
+              hintStyle: TextStyle(
+                fontFamily: AppTextStyles.getFontFamily(context),
+                color: AppColors.textTertiary,
+                fontSize: AppSizes.bodySize(context),
+              ),
               contentPadding: EdgeInsets.symmetric(
                 vertical: (AppSizes.inputHeight(context) - 24) / 2,
                 horizontal: AppSizes.padding(context) * 0.5,

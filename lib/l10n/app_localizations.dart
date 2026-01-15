@@ -263,6 +263,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong, please try again'**
   String get somethingWentWrong;
+
+  /// No description provided for @safeRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe rides for your little ones'**
+  String get safeRides;
+
+  /// No description provided for @imParentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your child\'s bus, communicate with drivers, and manage pickups'**
+  String get imParentDesc;
+
+  /// No description provided for @imDriverDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your route, update parents, and ensure safe journeys'**
+  String get imDriverDesc;
+
+  /// No description provided for @joinParents.
+  ///
+  /// In en, this message translates to:
+  /// **'Join {count}+ parents'**
+  String joinParents(Object count);
+
+  /// No description provided for @trustedDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted drivers network'**
+  String get trustedDrivers;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgotPassword;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @contactAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Admin'**
+  String get contactAdmin;
+
+  /// No description provided for @trackSafely.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your child safely'**
+  String get trackSafely;
+
+  /// No description provided for @phoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get phoneRequired;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordRequired;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// No description provided for @byContinuing.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our'**
+  String get byContinuing;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @childrenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Registered Children'**
+  String childrenCount(Object count);
+
+  /// No description provided for @updateYourInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your information'**
+  String get updateYourInfo;
+
+  /// No description provided for @updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your password'**
+  String get updatePassword;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @manageNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage notifications'**
+  String get manageNotifications;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @controlYourData.
+  ///
+  /// In en, this message translates to:
+  /// **'Control your data'**
+  String get controlYourData;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @getHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Get help'**
+  String get getHelp;
+
+  /// No description provided for @readOnlyFields.
+  ///
+  /// In en, this message translates to:
+  /// **'These fields cannot be changed'**
+  String get readOnlyFields;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @noAddressProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'No address provided'**
+  String get noAddressProvided;
+
+  /// No description provided for @tapToViewClearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view clearly'**
+  String get tapToViewClearly;
+
+  /// No description provided for @avatarUrlOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatar URL (Optional)'**
+  String get avatarUrlOptional;
+
+  /// No description provided for @children.
+  ///
+  /// In en, this message translates to:
+  /// **'Children'**
+  String get children;
+
+  /// No description provided for @myChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'My Children'**
+  String get myChildren;
+
+  /// No description provided for @noChildrenFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Children Found'**
+  String get noChildrenFound;
+
+  /// No description provided for @noChildrenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t added any children yet'**
+  String get noChildrenDescription;
+
+  /// No description provided for @grade.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade'**
+  String get grade;
+
+  /// No description provided for @classroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom'**
+  String get classroom;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @failedToLoadChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load children'**
+  String get failedToLoadChildren;
 }
 
 class _AppLocalizationsDelegate

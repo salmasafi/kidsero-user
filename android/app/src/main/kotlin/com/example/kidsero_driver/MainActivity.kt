@@ -1,4 +1,4 @@
-package com.example.kidsero_driver
+package com.kidsero.app
 
 import io.flutter.embedding.android.FlutterActivity
 

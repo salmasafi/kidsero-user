@@ -89,4 +89,126 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'حدث خطأ ما، يرجى المحاولة مرة أخرى';
+
+  @override
+  String get safeRides => 'رحلات آمنة لأطفالكم';
+
+  @override
+  String get imParentDesc =>
+      'تتبع حافلة طفلك، تواصل مع السائقين، وأدر عمليات التوصيل';
+
+  @override
+  String get imDriverDesc => 'أدر مسارك، أبلغ أولياء الأمور، واضمن رحلات آمنة';
+
+  @override
+  String joinParents(Object count) {
+    return 'انضم لأكثر من $count ولي أمر';
+  }
+
+  @override
+  String get trustedDrivers => 'شبكة سائقين موثوقين';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get dontHaveAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get contactAdmin => 'تواصل مع المسؤول';
+
+  @override
+  String get trackSafely => 'تتبع طفلك بأمان';
+
+  @override
+  String get phoneRequired => 'رقم الهاتف مطلوب';
+
+  @override
+  String get passwordRequired => 'كلمة المرور مطلوبة';
+
+  @override
+  String get termsOfService => 'شروط الخدمة';
+
+  @override
+  String get byContinuing => 'بالمتابعة، أنت توافق على';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String childrenCount(Object count) {
+    return '$count أطفال مسجلين';
+  }
+
+  @override
+  String get updateYourInfo => 'تحديث معلوماتك';
+
+  @override
+  String get updatePassword => 'تحديث كلمة المرور';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get manageNotifications => 'إدارة الإشعارات';
+
+  @override
+  String get privacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get controlYourData => 'تحكم في بياناتك';
+
+  @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get getHelp => 'احصل على المساعدة';
+
+  @override
+  String get readOnlyFields => 'هذه الحقول لا يمكن تغييرها';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get role => 'الدور';
+
+  @override
+  String get noAddressProvided => 'لا يوجد عنوان';
+
+  @override
+  String get tapToViewClearly => 'انقر للعرض بوضوح';
+
+  @override
+  String get avatarUrlOptional => 'رابط الصورة (اختياري)';
+
+  @override
+  String get children => 'أطفال';
+
+  @override
+  String get myChildren => 'أطفالي';
+
+  @override
+  String get noChildrenFound => 'لم يتم العثور على أطفال';
+
+  @override
+  String get noChildrenDescription => 'لم تقم بإضافة أي أطفال بعد';
+
+  @override
+  String get grade => 'الصف';
+
+  @override
+  String get classroom => 'الفصل';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get inactive => 'غير نشط';
+
+  @override
+  String get failedToLoadChildren => 'فشل في تحميل الأطفال';
 }

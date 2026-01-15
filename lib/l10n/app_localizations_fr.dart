@@ -90,4 +90,128 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get somethingWentWrong =>
       'Quelque chose s\'est mal passé, veuillez réessayer';
+
+  @override
+  String get safeRides => 'Des trajets sûrs pour vos petits';
+
+  @override
+  String get imParentDesc =>
+      'Suivez le bus de votre enfant, communiquez avec les chauffeurs et gérez les ramassages';
+
+  @override
+  String get imDriverDesc =>
+      'Gérez votre itinéraire, informez les parents et assurez des trajets sûrs';
+
+  @override
+  String joinParents(Object count) {
+    return 'Rejoignez $count+ parents';
+  }
+
+  @override
+  String get trustedDrivers => 'Réseau de chauffeurs de confiance';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get dontHaveAccount => 'Vous n\'avez pas de compte ?';
+
+  @override
+  String get contactAdmin => 'Contacter l\'administrateur';
+
+  @override
+  String get trackSafely => 'Suivez votre enfant en toute sécurité';
+
+  @override
+  String get phoneRequired => 'Le numéro de téléphone est requis';
+
+  @override
+  String get passwordRequired => 'Le mot de passe est requis';
+
+  @override
+  String get termsOfService => 'Conditions d\'utilisation';
+
+  @override
+  String get byContinuing => 'En continuant, vous acceptez nos';
+
+  @override
+  String get language => 'Langue';
+
+  @override
+  String childrenCount(Object count) {
+    return '$count Enfants enregistrés';
+  }
+
+  @override
+  String get updateYourInfo => 'Mettez à jour vos informations';
+
+  @override
+  String get updatePassword => 'Mettez à jour votre mot de passe';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get manageNotifications => 'Gérer les notifications';
+
+  @override
+  String get privacySecurity => 'Confidentialité et sécurité';
+
+  @override
+  String get controlYourData => 'Contrôlez vos données';
+
+  @override
+  String get helpSupport => 'Aide et support';
+
+  @override
+  String get getHelp => 'Obtenir de l\'aide';
+
+  @override
+  String get readOnlyFields => 'Ces champs ne peuvent pas être modifiés';
+
+  @override
+  String get phone => 'Téléphone';
+
+  @override
+  String get role => 'Rôle';
+
+  @override
+  String get noAddressProvided => 'Aucune adresse fournie';
+
+  @override
+  String get tapToViewClearly => 'Appuyez pour voir plus clair';
+
+  @override
+  String get avatarUrlOptional => 'URL de l\'avatar (facultatif)';
+
+  @override
+  String get children => 'Enfants';
+
+  @override
+  String get myChildren => 'Mes Enfants';
+
+  @override
+  String get noChildrenFound => 'Aucun enfant trouvé';
+
+  @override
+  String get noChildrenDescription =>
+      'Vous n\'avez pas encore ajouté d\'enfants';
+
+  @override
+  String get grade => 'Niveau';
+
+  @override
+  String get classroom => 'Salle de classe';
+
+  @override
+  String get status => 'Statut';
+
+  @override
+  String get active => 'Actif';
+
+  @override
+  String get inactive => 'Inactif';
+
+  @override
+  String get failedToLoadChildren => 'Échec du chargement des enfants';
 }

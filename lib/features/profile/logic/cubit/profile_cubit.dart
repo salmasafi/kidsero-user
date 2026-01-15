@@ -23,10 +23,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> updateProfile(String name, String avatar) async {
+  Future<void> updateProfile({required String name, String? imagePath}) async {
     emit(ProfileLoading());
     try {
-      final response = await _profileRepository.updateProfile(name, avatar);
+      final response = await _profileRepository.updateProfile(name: name, imagePath: imagePath);
       if (response.success) {
         emit(ProfileUpdateSuccess(response.message ?? L10nUtils.translateWithGlobalContext('profileUpdatedSuccessfully')));
         // Refresh profile after update
@@ -50,6 +50,20 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     } catch (e) {
       emit(ProfileError(ErrorHandler.handle(e)));
+    }
+  }
+
+  Future<void> getChildren() async {
+    emit(ChildrenLoading());
+    try {
+      final response = await _profileRepository.getChildren();
+      if (response.success) {
+        emit(ChildrenLoaded(response.data.children));
+      } else {
+        emit(ChildrenError(L10nUtils.translateWithGlobalContext('failedToLoadChildren')));
+      }
+    } catch (e) {
+      emit(ChildrenError(ErrorHandler.handle(e)));
     }
   }
 }

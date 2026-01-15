@@ -32,9 +32,19 @@ class AppColors {
   static const Color onBackground = Color(0xFF111827);
   static const Color onError = Colors.white;
   
+  // Design Specific
+  static const Color designPurple = Color(0xFFA55EEA);
+  static const Color designOrange = Color(0xFFFA8231);
+  static const Color lightGrey = Color(0xFFF1F2F6);
+  static const Color gold = Color(0xFFF7B731);
+  static const Color lightOrange = Color(0xFFFFF4E8);
+  static const Color designYellow = Color(0xFFFFEAA7);
+  static const Color deepOrange = Color(0xFFF39C12);
+  static const Color orangeAccent = Color(0xFFE67E22);
+
   // Gradients
   static const LinearGradient parentGradient = LinearGradient(
-    colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)],
+    colors: [Color(0xFFA55EEA), Color(0xFF8854D0)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -46,7 +56,7 @@ class AppColors {
   );
 
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+    colors: [Color(0xFFA55EEA), Color(0xFF8854D0)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

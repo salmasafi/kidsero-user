@@ -8,4 +8,10 @@ class ApiEndpoints {
   // Profile
   static const String profileMe = '/api/users/profile/me';
   static const String changePassword = '/api/users/profile/change-password';
+  static const String children = '/api/users/children/';
+
+  static String getImageUrl(String path) {
+    if (path.startsWith('http')) return path;
+    return '$baseUrl$path';
+  }
 }
