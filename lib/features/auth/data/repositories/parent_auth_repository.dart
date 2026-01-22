@@ -11,10 +11,7 @@ class ParentAuthRepository {
     try {
       final response = await _apiHelper.post(
         ApiEndpoints.parentLogin,
-        data: {
-          'phone': phone,
-          'password': password,
-        },
+        data: {'identifier': phone, 'password': password},
       );
       return AuthResponseModel.fromJson(response.data);
     } catch (e) {
