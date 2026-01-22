@@ -18,13 +18,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imParent => 'أنا ولي أمر';
 
   @override
-  String get imDriver => 'أنا سائق';
-
-  @override
   String get parentLogin => 'تسجيل دخول ولي الأمر';
-
-  @override
-  String get driverLogin => 'تسجيل دخول السائق';
 
   @override
   String get enterCredentials =>
@@ -98,15 +92,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'تتبع حافلة طفلك، تواصل مع السائقين، وأدر عمليات التوصيل';
 
   @override
-  String get imDriverDesc => 'أدر مسارك، أبلغ أولياء الأمور، واضمن رحلات آمنة';
-
-  @override
   String joinParents(Object count) {
     return 'انضم لأكثر من $count ولي أمر';
   }
-
-  @override
-  String get trustedDrivers => 'شبكة سائقين موثوقين';
 
   @override
   String get forgotPassword => 'نسيت كلمة المرور؟';

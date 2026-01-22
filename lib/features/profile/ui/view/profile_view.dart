@@ -8,7 +8,7 @@ import '../../../../core/widgets/language_toggle.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
 import 'package:kidsero_driver/core/network/parent_api_helper.dart';
-import 'package:kidsero_driver/core/network/driver_api_helper.dart';
+
 import 'package:kidsero_driver/core/widgets/custom_loading.dart';
 import 'package:kidsero_driver/core/widgets/custom_error_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -25,11 +25,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return BlocProvider(
-      create: (context) =>
-          ProfileCubit(
-            ParentApiHelper(),
-            DriverApiHelper(),
-          )..getProfile(),
+      create: (context) => ProfileCubit(ParentApiHelper())..getProfile(),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocBuilder<ProfileCubit, ProfileState>(
@@ -118,7 +114,10 @@ class ProfileView extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => ImageViewer(
-                                              imageUrl: ApiEndpoints.getImageUrl(user.avatar!),
+                                              imageUrl:
+                                                  ApiEndpoints.getImageUrl(
+                                                    user.avatar!,
+                                                  ),
                                               heroTag: 'profile_avatar',
                                             ),
                                           ),
@@ -148,7 +147,11 @@ class ProfileView extends StatelessWidget {
                                           radius: 60,
                                           backgroundColor: AppColors.lightGrey,
                                           backgroundImage: user.avatar != null
-                                              ? NetworkImage(ApiEndpoints.getImageUrl(user.avatar!))
+                                              ? NetworkImage(
+                                                  ApiEndpoints.getImageUrl(
+                                                    user.avatar!,
+                                                  ),
+                                                )
                                               : null,
                                           child: user.avatar == null
                                               ? const Icon(
@@ -180,9 +183,9 @@ class ProfileView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                user.role == 'parent' 
-                                    ? l10n.imParent 
-                                    : (user.role == 'driver' ? l10n.imDriver : user.role ?? ''),
+                                user.role == 'parent'
+                                    ? l10n.imParent
+                                    : (user.role ?? ''),
                                 style: TextStyle(
                                   color: AppColors.designPurple,
                                   fontWeight: FontWeight.bold,
@@ -440,7 +443,7 @@ class ProfileView extends StatelessWidget {
                                 horizontal: 40,
                               ),
                               child: InkWell(
-                                onTap: () => context.go(Routes.roleSelection),
+                                onTap: () => context.go(Routes.login),
                                 borderRadius: BorderRadius.circular(20),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -570,7 +573,7 @@ class ProfileView extends StatelessWidget {
 
   void _showChildrenBottomSheet(BuildContext context) {
     final profileCubit = context.read<ProfileCubit>();
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -598,7 +601,7 @@ class ProfileView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Header
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -611,20 +614,15 @@ class ProfileView extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close,
-                        color: AppColors.textSecondary,
-                      ),
+                      icon: Icon(Icons.close, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Children List
-              Expanded(
-                child: const ChildrenListView(),
-              ),
+              Expanded(child: const ChildrenListView()),
             ],
           ),
         ),

@@ -7,7 +7,7 @@ import 'package:kidsero_driver/core/widgets/custom_text_field.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
 import 'package:kidsero_driver/core/network/parent_api_helper.dart';
-import 'package:kidsero_driver/core/network/driver_api_helper.dart';
+
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -30,20 +30,26 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return BlocProvider(
-      create: (context) => ProfileCubit(
-        ParentApiHelper(),
-        DriverApiHelper(),
-      ),
+      create: (context) => ProfileCubit(ParentApiHelper()),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.textPrimary,
+            ),
             onPressed: () => context.pop(),
           ),
-          title: Text(l10n.changePassword, style: TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.subHeadingSize(context))),
+          title: Text(
+            l10n.changePassword,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: AppSizes.subHeadingSize(context),
+            ),
+          ),
           actions: const [
             Padding(
               padding: EdgeInsets.only(right: 10),
@@ -64,33 +70,37 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             return SingleChildScrollView(
               padding: EdgeInsets.all(AppSizes.padding(context)),
               child: Column(
-                children: [
-                  CustomTextField(
-                    label: l10n.oldPassword,
-                    icon: Icons.lock_outline,
-                    controller: _oldPasswordController,
-                    isPassword: true,
-                  ),
-                  SizedBox(height: AppSizes.spacing(context) * 1.5),
-                  CustomTextField(
-                    label: l10n.newPassword,
-                    icon: Icons.lock_outline,
-                    controller: _newPasswordController,
-                    isPassword: true,
-                  ),
-                  SizedBox(height: AppSizes.spacing(context) * 3),
-                  CustomButton(
-                    text: l10n.changePassword,
-                    gradient: AppColors.parentGradient,
-                    isLoading: state is ProfileLoading,
-                    onPressed: () {
-                      context.read<ProfileCubit>().changePassword(
-                            _oldPasswordController.text,
-                            _newPasswordController.text,
-                          );
-                    },
-                  ),
-                ].animate(interval: 100.ms).fade(duration: 500.ms).slideY(begin: 0.1, end: 0),
+                children:
+                    [
+                          CustomTextField(
+                            label: l10n.oldPassword,
+                            icon: Icons.lock_outline,
+                            controller: _oldPasswordController,
+                            isPassword: true,
+                          ),
+                          SizedBox(height: AppSizes.spacing(context) * 1.5),
+                          CustomTextField(
+                            label: l10n.newPassword,
+                            icon: Icons.lock_outline,
+                            controller: _newPasswordController,
+                            isPassword: true,
+                          ),
+                          SizedBox(height: AppSizes.spacing(context) * 3),
+                          CustomButton(
+                            text: l10n.changePassword,
+                            gradient: AppColors.parentGradient,
+                            isLoading: state is ProfileLoading,
+                            onPressed: () {
+                              context.read<ProfileCubit>().changePassword(
+                                _oldPasswordController.text,
+                                _newPasswordController.text,
+                              );
+                            },
+                          ),
+                        ]
+                        .animate(interval: 100.ms)
+                        .fade(duration: 500.ms)
+                        .slideY(begin: 0.1, end: 0),
               ),
             );
           },

@@ -18,13 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imParent => 'I\'m a Parent';
 
   @override
-  String get imDriver => 'I\'m a Driver';
-
-  @override
   String get parentLogin => 'Parent Login';
-
-  @override
-  String get driverLogin => 'Driver Login';
 
   @override
   String get enterCredentials =>
@@ -98,16 +92,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Track your child\'s bus, communicate with drivers, and manage pickups';
 
   @override
-  String get imDriverDesc =>
-      'Manage your route, update parents, and ensure safe journeys';
-
-  @override
   String joinParents(Object count) {
     return 'Join $count+ parents';
   }
-
-  @override
-  String get trustedDrivers => 'Trusted drivers network';
 
   @override
   String get forgotPassword => 'Forgot Password?';

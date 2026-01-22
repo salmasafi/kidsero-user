@@ -2,9 +2,9 @@
   "welcome": "Welcome to Kidsero",
   "selectRole": "Please select your role to continue",
   "imParent": "I'm a Parent",
-  "imDriver": "I'm a Driver",
+
   "parentLogin": "Parent Login",
-  "driverLogin": "Driver Login",
+
   "enterCredentials": "Enter your credentials to access your account",
   "phoneNumber": "Phone Number",
   "password": "Password",
@@ -28,9 +28,9 @@
   "somethingWentWrong": "Something went wrong, please try again",
   "safeRides": "Safe rides for your little ones",
   "imParentDesc": "Track your child's bus, communicate with drivers, and manage pickups",
-  "imDriverDesc": "Manage your route, update parents, and ensure safe journeys",
+
   "joinParents": "Join {count}+ parents",
-  "trustedDrivers": "Trusted drivers network",
+
   "forgotPassword": "Forgot Password?",
   "dontHaveAccount": "Don't have an account?",
   "contactAdmin": "Contact Admin",

@@ -11,7 +11,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
 import 'package:kidsero_driver/core/network/parent_api_helper.dart';
-import 'package:kidsero_driver/core/network/driver_api_helper.dart';
+
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -64,11 +64,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return BlocProvider(
-      create: (context) =>
-          ProfileCubit(
-            ParentApiHelper(),
-            DriverApiHelper(),
-          ),
+      create: (context) => ProfileCubit(ParentApiHelper()),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocConsumer<ProfileCubit, ProfileState>(
@@ -156,17 +152,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                                           ),
                                         ),
                                       );
-                                      } else if (_avatarController.text.isNotEmpty) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => ImageViewer(
-                                              imageUrl: ApiEndpoints.getImageUrl(_avatarController.text),
-                                              heroTag: 'edit_profile_avatar',
+                                    } else if (_avatarController
+                                        .text
+                                        .isNotEmpty) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ImageViewer(
+                                            imageUrl: ApiEndpoints.getImageUrl(
+                                              _avatarController.text,
                                             ),
+                                            heroTag: 'edit_profile_avatar',
                                           ),
-                                        );
-                                      }
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: Hero(
                                     tag: 'edit_profile_avatar',
@@ -201,7 +201,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                               .text
                                                               .isNotEmpty
                                                           ? NetworkImage(
-                                                              ApiEndpoints.getImageUrl(_avatarController.text),
+                                                              ApiEndpoints.getImageUrl(
+                                                                _avatarController
+                                                                    .text,
+                                                              ),
                                                             )
                                                           : null)
                                                       as ImageProvider?,
@@ -306,9 +309,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   const SizedBox(height: 12),
                                   _buildReadOnlyField(
                                     l10n.role,
-                                    widget.user.role == 'parent' 
-                                        ? l10n.imParent 
-                                        : (widget.user.role == 'driver' ? l10n.imDriver : widget.user.role ?? ''),
+                                    widget.user.role == 'parent'
+                                        ? l10n.imParent
+                                        : (widget.user.role ?? ''),
                                     context,
                                   ),
                                   const SizedBox(height: 30),

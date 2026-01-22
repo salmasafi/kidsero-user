@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/features/auth/ui/view/role_selection_view.dart';
+
 import 'package:kidsero_driver/features/auth/ui/view/login_view.dart';
 import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
 import 'package:kidsero_driver/features/profile/ui/view/edit_profile_view.dart';
 import 'package:kidsero_driver/features/profile/ui/view/change_password_view.dart';
-import '../utils/enums.dart';
+
 import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
 import '../../main.dart';
 import 'routes.dart';
@@ -13,21 +13,13 @@ import 'routes.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: Routes.roleSelection,
+    initialLocation: Routes.login,
     routes: [
-      GoRoute(
-        path: Routes.roleSelection,
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          child: const RoleSelectionView(),
-          state: state,
-        ),
-      ),
       GoRoute(
         path: Routes.login,
         pageBuilder: (context, state) {
-          final role = state.extra as UserRole;
           return _buildPageWithTransition(
-            child: LoginView(role: role),
+            child: const LoginView(),
             state: state,
           );
         },

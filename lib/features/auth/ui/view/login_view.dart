@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/utils/enums.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
 import '../../data/repositories/parent_auth_repository.dart';
-import '../../data/repositories/driver_auth_repository.dart';
 import 'package:kidsero_driver/core/network/parent_api_helper.dart';
-import 'package:kidsero_driver/core/network/driver_api_helper.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kidsero_driver/core/routing/routes.dart';
@@ -15,9 +13,7 @@ import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:kidsero_driver/core/logic/locale_cubit.dart';
 
 class LoginView extends StatefulWidget {
-  final UserRole role;
-
-  const LoginView({super.key, required this.role});
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -89,34 +85,24 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isParent = widget.role == UserRole.parent;
-    final primaryColor = isParent ? const Color(0xFF8B5CF6) : const Color(0xFF0D9488);
-    final roleName = isParent ? l10n.parentLogin : l10n.driverLogin;
+    // Hardcoded to parent primary color which is now Teal
+    final primaryColor = AppColors.primary;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
-      create: (context) => AuthCubit(
-        ParentAuthRepository(ParentApiHelper()),
-        DriverAuthRepository(DriverApiHelper()),
-      ),
+      create: (context) => AuthCubit(ParentAuthRepository(ParentApiHelper())),
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F9FA),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF1F2937), size: 24),
-            onPressed: () => context.pop(),
-          ),
+          // Removed back button as this is now the initial route
+          automaticallyImplyLeading: false,
           actions: [
             Container(
               margin: const EdgeInsets.only(right: 16),
               child: IconButton(
-                icon: Icon(
-                  Icons.translate,
-                  color: primaryColor,
-                  size: 20,
-                ),
+                icon: Icon(Icons.translate, color: primaryColor, size: 20),
                 onPressed: () {
                   _showLanguageDialog(context);
                 },
@@ -141,7 +127,7 @@ class _LoginViewState extends State<LoginView> {
                 child: Column(
                   children: [
                     const SizedBox(height: 40),
-                    
+
                     // User Icon
                     Container(
                       width: 100,
@@ -154,7 +140,7 @@ class _LoginViewState extends State<LoginView> {
                             color: primaryColor.withOpacity(0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
-                          )
+                          ),
                         ],
                       ),
                       child: const Icon(
@@ -162,12 +148,15 @@ class _LoginViewState extends State<LoginView> {
                         color: Colors.white,
                         size: 50,
                       ),
-                    ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-                    
+                    ).animate().scale(
+                      duration: 600.ms,
+                      curve: Curves.easeOutBack,
+                    ),
+
                     const SizedBox(height: 24),
-                    
+
                     Text(
-                      isParent ? 'Parent Login' : 'Driver Login',
+                      l10n.parentLogin, // Using localized string which should exist
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -175,9 +164,9 @@ class _LoginViewState extends State<LoginView> {
                         fontFamily: 'Cairo',
                       ),
                     ).animate().fade(delay: 200.ms).slideY(begin: 0.2, end: 0),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     Text(
                       l10n.trackSafely,
                       style: const TextStyle(
@@ -187,7 +176,7 @@ class _LoginViewState extends State<LoginView> {
                         fontFamily: 'Cairo',
                       ),
                     ).animate().fade(delay: 300.ms).slideY(begin: 0.2, end: 0),
-                    
+
                     const SizedBox(height: 48),
 
                     // Phone Number Field
@@ -251,9 +240,9 @@ class _LoginViewState extends State<LoginView> {
                           ),
                       ],
                     ).animate().fade(delay: 400.ms).slideX(begin: 0.1, end: 0),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Password Field
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +279,9 @@ class _LoginViewState extends State<LoginView> {
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   color: const Color(0xFF6B7280),
                                   size: 20,
                                 ),
@@ -327,11 +318,13 @@ class _LoginViewState extends State<LoginView> {
                           ),
                       ],
                     ).animate().fade(delay: 500.ms).slideX(begin: 0.1, end: 0),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     Align(
-                      alignment: isArabic ? Alignment.centerLeft : Alignment.centerRight,
+                      alignment: isArabic
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
                         child: const Text(
@@ -345,74 +338,82 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ).animate().fade(delay: 600.ms),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     Container(
-                      width: double.infinity,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryColor.withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          )
-                        ],
-                      ),
-                      child: ElevatedButton(
-                        onPressed: state is AuthLoading ? null : () {
-                          setState(() {
-                            _phoneError = _phoneController.text.isEmpty ? 'Phone number is required' : null;
-                            _passwordError = _passwordController.text.isEmpty ? 'Password is required' : null;
-                          });
-                          
-                          if (_phoneController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-                            if (isParent) {
-                              context.read<AuthCubit>().parentLogin(
-                                    _phoneController.text,
-                                    _passwordController.text,
-                                  );
-                            } else {
-                              context.read<AuthCubit>().driverLogin(
-                                    _phoneController.text,
-                                    _passwordController.text,
-                                  );
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
                             borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: state is AuthLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontFamily: 'Cairo',
-                                ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: primaryColor.withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
                               ),
-                      ),
-                    ).animate().fade(delay: 700.ms).scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
-                    
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: state is AuthLoading
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _phoneError =
+                                          _phoneController.text.isEmpty
+                                          ? 'Phone number is required'
+                                          : null;
+                                      _passwordError =
+                                          _passwordController.text.isEmpty
+                                          ? 'Password is required'
+                                          : null;
+                                    });
+
+                                    if (_phoneController.text.isNotEmpty &&
+                                        _passwordController.text.isNotEmpty) {
+                                      context.read<AuthCubit>().parentLogin(
+                                        _phoneController.text,
+                                        _passwordController.text,
+                                      );
+                                    }
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: state is AuthLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Sign In',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                  ),
+                          ),
+                        )
+                        .animate()
+                        .fade(delay: 700.ms)
+                        .scale(
+                          begin: const Offset(0.9, 0.9),
+                          end: const Offset(1, 1),
+                        ),
+
                     const SizedBox(height: 24),
-                    
+
                     RichText(
                       text: const TextSpan(
                         style: TextStyle(
@@ -432,14 +433,14 @@ class _LoginViewState extends State<LoginView> {
                         ],
                       ),
                     ).animate().fade(delay: 800.ms),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     const Text(
                       '🚌',
                       style: TextStyle(fontSize: 40),
                     ).animate().fade(delay: 900.ms).slideY(begin: 0.5, end: 0),
-                    
+
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -493,11 +494,7 @@ class _LanguageOption extends StatelessWidget {
             ),
             const Spacer(),
             if (isSelected)
-              const Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Icons.check, color: Colors.white, size: 20),
           ],
         ),
       ),

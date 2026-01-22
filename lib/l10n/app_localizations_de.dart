@@ -18,13 +18,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imParent => 'Ich bin ein Elternteil';
 
   @override
-  String get imDriver => 'Ich bin ein Fahrer';
-
-  @override
   String get parentLogin => 'Eltern-Login';
-
-  @override
-  String get driverLogin => 'Fahrer-Login';
 
   @override
   String get enterCredentials =>
@@ -99,16 +93,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Verfolgen Sie den Bus Ihres Kindes, kommunizieren Sie mit Fahrern und verwalten Sie Abholungen';
 
   @override
-  String get imDriverDesc =>
-      'Verwalten Sie Ihre Route, informieren Sie die Eltern und sorgen Sie für sichere Fahrten';
-
-  @override
   String joinParents(Object count) {
     return 'Tritt $count+ Eltern bei';
   }
-
-  @override
-  String get trustedDrivers => 'Netzwerk vertrauenswürdiger Fahrer';
 
   @override
   String get forgotPassword => 'Passwort vergessen?';

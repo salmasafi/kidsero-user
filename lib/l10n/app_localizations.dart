@@ -120,23 +120,11 @@ abstract class AppLocalizations {
   /// **'I\'m a Parent'**
   String get imParent;
 
-  /// No description provided for @imDriver.
-  ///
-  /// In en, this message translates to:
-  /// **'I\'m a Driver'**
-  String get imDriver;
-
   /// No description provided for @parentLogin.
   ///
   /// In en, this message translates to:
   /// **'Parent Login'**
   String get parentLogin;
-
-  /// No description provided for @driverLogin.
-  ///
-  /// In en, this message translates to:
-  /// **'Driver Login'**
-  String get driverLogin;
 
   /// No description provided for @enterCredentials.
   ///
@@ -276,23 +264,11 @@ abstract class AppLocalizations {
   /// **'Track your child\'s bus, communicate with drivers, and manage pickups'**
   String get imParentDesc;
 
-  /// No description provided for @imDriverDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage your route, update parents, and ensure safe journeys'**
-  String get imDriverDesc;
-
   /// No description provided for @joinParents.
   ///
   /// In en, this message translates to:
   /// **'Join {count}+ parents'**
   String joinParents(Object count);
-
-  /// No description provided for @trustedDrivers.
-  ///
-  /// In en, this message translates to:
-  /// **'Trusted drivers network'**
-  String get trustedDrivers;
 
   /// No description provided for @forgotPassword.
   ///
