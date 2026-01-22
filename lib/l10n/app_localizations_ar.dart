@@ -18,20 +18,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imParent => 'أنا ولي أمر';
 
   @override
-  String get parentLogin => 'تسجيل دخول ولي الأمر';
+  String get parentLogin => 'تسجيل الدخول';
 
   @override
   String get enterCredentials =>
       'أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك';
 
   @override
-  String get phoneNumber => 'رقم الهاتف';
+  String get emailOrPhone => 'البريد الإلكتروني / رقم الهاتف';
+
+  @override
+  String get enterEmailOrPhone => 'أدخل البريد الإلكتروني أو رقم الهاتف';
 
   @override
   String get password => 'كلمة المرور';
 
   @override
   String get login => 'تسجيل الدخول';
+
+  @override
+  String get signIn => 'تسجيل الدخول';
 
   @override
   String get loginSuccessful => 'تم تسجيل الدخول بنجاح';

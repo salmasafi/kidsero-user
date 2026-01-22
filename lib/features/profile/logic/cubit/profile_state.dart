@@ -68,3 +68,23 @@ class ChildrenError extends ProfileState {
   @override
   List<Object?> get props => [message];
 }
+
+class AddChildLoading extends ProfileState {}
+
+class AddChildSuccess extends ProfileState {
+  final String message;
+
+  const AddChildSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class AddChildError extends ProfileState {
+  final String message;
+
+  const AddChildError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

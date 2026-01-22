@@ -36,451 +36,396 @@ class ProfileView extends StatelessWidget {
               final user = state.profile;
               return SingleChildScrollView(
                 child: Column(
-                  children:
-                      [
-                            // Header Section
-                            Stack(
-                              clipBehavior: Clip.none,
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  height: 200,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    gradient: AppColors.parentGradient,
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(
-                                        AppSizes.radiusExtraLarge,
-                                      ),
-                                    ),
-                                  ),
-                                  child: SafeArea(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 10,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Text(
-                                              l10n.localeName.toUpperCase(),
-                                              style: TextStyle(
-                                                color: AppColors.designPurple,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: AppSizes.smallSize(
-                                                  context,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            l10n.profile,
-                                            style: AppTextStyles.heading(
-                                              context,
-                                            ).copyWith(color: Colors.white),
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.white,
-                                              size:
-                                                  AppSizes.bodySize(context) *
-                                                  1.5,
-                                            ),
-                                            onPressed: () => context.pop(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // Avatar
-                                Positioned(
-                                  bottom: -50,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (user.avatar != null) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => ImageViewer(
-                                              imageUrl:
-                                                  ApiEndpoints.getImageUrl(
-                                                    user.avatar!,
-                                                  ),
-                                              heroTag: 'profile_avatar',
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Hero(
-                                      tag: 'profile_avatar',
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 4,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.1,
-                                              ),
-                                              blurRadius: AppSizes.radiusSmall,
-                                              spreadRadius: 2,
-                                            ),
-                                          ],
-                                        ),
-                                        child: CircleAvatar(
-                                          radius: 60,
-                                          backgroundColor: AppColors.lightGrey,
-                                          backgroundImage: user.avatar != null
-                                              ? NetworkImage(
-                                                  ApiEndpoints.getImageUrl(
-                                                    user.avatar!,
-                                                  ),
-                                                )
-                                              : null,
-                                          child: user.avatar == null
-                                              ? const Icon(
-                                                  Icons.person,
-                                                  size: 60,
-                                                  color: AppColors.designPurple,
-                                                )
-                                              : null,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 60),
-                            // User Info Header
-                            Text(
-                              user.name,
-                              style: AppTextStyles.heading(context),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.designPurple.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                user.role == 'parent'
-                                    ? l10n.imParent
-                                    : (user.role ?? ''),
-                                style: TextStyle(
-                                  color: AppColors.designPurple,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: AppSizes.smallSize(context),
-                                ),
+                  children: [
+                    // Header Section
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 200,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.parentGradient,
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(
+                                AppSizes.radiusExtraLarge,
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            // Info Row
-                            Padding(
+                          ),
+                          child: SafeArea(
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
+                                vertical: 10,
                               ),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildInfoRow(
-                                    context,
-                                    Icons.phone_outlined,
-                                    user.phone,
-                                    AppColors.gold,
+                                  // Container(
+                                  //   padding: const EdgeInsets.all(8),
+                                  //   decoration: const BoxDecoration(
+                                  //     color: Colors.white,
+                                  //     shape: BoxShape.circle,
+                                  //   ),
+                                  //   child: InkWell(
+                                  //     onTap: () => showLanguageDialog(context),
+                                  //     child: Text(
+                                  //       l10n.localeName.toUpperCase(),
+                                  //       style: TextStyle(
+                                  //         color: AppColors.designPurple,
+                                  //         fontWeight: FontWeight.bold,
+                                  //         fontSize: AppSizes.smallSize(context),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 16),
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.translate,
+                                        color: AppColors.background,
+                                        size: AppSizes.bodySize(context) * 1.5,
+                                      ),
+                                      onPressed: () {
+                                        showLanguageDialog(context);
+                                      },
+                                    ),
                                   ),
-                                  _buildInfoRow(
-                                    context,
-                                    Icons.location_on_outlined,
-                                    user.address ?? l10n.noAddressProvided,
-                                    AppColors.gold,
+                                  Text(
+                                    l10n.profile,
+                                    style: AppTextStyles.heading(
+                                      context,
+                                    ).copyWith(color: Colors.white),
                                   ),
-                                  _buildInfoRow(
-                                    context,
-                                    Icons.group_outlined,
-                                    '${user.children?.length ?? 0} ${l10n.children}',
-                                    AppColors.gold,
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: AppSizes.bodySize(context) * 1.5,
+                                    ),
+                                    onPressed: () => context.pop(),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            // Language Selector
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) => Container(
-                                      padding: const EdgeInsets.all(25),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.surface,
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(
-                                            AppSizes.radiusExtraLarge,
-                                          ),
-                                        ),
+                          ),
+                        ),
+                        // Avatar
+                        Positioned(
+                          bottom: -50,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (user.avatar != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ImageViewer(
+                                      imageUrl: ApiEndpoints.getImageUrl(
+                                        user.avatar!,
                                       ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            l10n.language,
-                                            style: AppTextStyles.heading(
-                                              context,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 25),
-                                          const LanguageToggle(
-                                            popAfterSelect: true,
-                                          ),
-                                          const SizedBox(height: 20),
-                                        ],
-                                      ),
+                                      heroTag: 'profile_avatar',
                                     ),
-                                  );
-                                },
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.lightGrey.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFFFFEAA7,
-                                          ), // Light yellow for EN tag
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          l10n.localeName.toUpperCase(),
-                                          style: TextStyle(
-                                            color: AppColors.orangeAccent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: AppSizes.smallSize(
-                                              context,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            l10n.language,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            l10n.localeName == 'ar'
-                                                ? 'العربية'
-                                                : (l10n.localeName == 'de'
-                                                      ? 'Deutsch'
-                                                      : (l10n.localeName == 'fr'
-                                                            ? 'Français'
-                                                            : 'English')),
-                                            style: TextStyle(
-                                              color: AppColors.textTertiary,
-                                              fontSize: AppSizes.smallSize(
-                                                context,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Icon(
-                                        Icons.language,
-                                        color: AppColors.orangeAccent,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            // Menu Items
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
+                                );
+                              }
+                            },
+                            child: Hero(
+                              tag: 'profile_avatar',
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.surface,
-                                  borderRadius: BorderRadius.circular(
-                                    AppSizes.radiusLarge,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 4,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 20,
-                                      spreadRadius: 0,
-                                      offset: const Offset(0, 10),
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: AppSizes.radiusSmall,
+                                      spreadRadius: 2,
                                     ),
                                   ],
                                 ),
-                                child: Column(
-                                  children: [
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.editProfile,
-                                      l10n.updateYourInfo,
-                                      Icons.edit_outlined,
-                                      () => context
-                                          .push(Routes.editProfile, extra: user)
-                                          .then((_) {
-                                            if (context.mounted) {
-                                              context
-                                                  .read<ProfileCubit>()
-                                                  .getProfile();
-                                            }
-                                          }),
-                                    ),
-                                    const Divider(
-                                      height: 1,
-                                      indent: 20,
-                                      endIndent: 20,
-                                    ),
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.changePassword,
-                                      l10n.updatePassword,
-                                      Icons.lock_outline,
-                                      () => context.push(Routes.changePassword),
-                                    ),
-                                    const Divider(
-                                      height: 1,
-                                      indent: 20,
-                                      endIndent: 20,
-                                    ),
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.notifications,
-                                      l10n.manageNotifications,
-                                      Icons.notifications_none_outlined,
-                                      () {},
-                                    ),
-                                    const Divider(
-                                      height: 1,
-                                      indent: 20,
-                                      endIndent: 20,
-                                    ),
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.privacySecurity,
-                                      l10n.controlYourData,
-                                      Icons.security_outlined,
-                                      () {},
-                                    ),
-                                    const Divider(
-                                      height: 1,
-                                      indent: 20,
-                                      endIndent: 20,
-                                    ),
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.helpSupport,
-                                      l10n.getHelp,
-                                      Icons.help_outline,
-                                      () {},
-                                    ),
-                                    const Divider(
-                                      height: 1,
-                                      indent: 20,
-                                      endIndent: 20,
-                                    ),
-                                    _buildCustomMenuItem(
-                                      context,
-                                      l10n.myChildren,
-                                      '${l10n.children} - ${user.children?.length ?? 0}',
-                                      Icons.child_care_outlined,
-                                      () => _showChildrenBottomSheet(context),
-                                    ),
-                                  ],
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundColor: AppColors.lightGrey,
+                                  backgroundImage: const AssetImage(
+                                    'assets/images/parent_default.png',
+                                  ),
+                                  // user.avatar != null &&
+                                  //         user.avatar!.isNotEmpty
+                                  //     ? NetworkImage(
+                                  //         ApiEndpoints.getImageUrl(
+                                  //           user.avatar!,
+                                  //         ),
+                                  //       )
+                                  //     : const AssetImage(
+                                  //             'assets/images/parent_default.png',
+                                  //           )
+                                  //           as ImageProvider,
+                                  onBackgroundImageError: (exception, stackTrace) {
+                                    // Fallback handled by foreground image or just left as is if backgroundImage fails
+                                  },
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 30),
-                            // Logout Button
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 60),
+                    // User Info Header
+                    Text(user.name, style: AppTextStyles.heading(context)),
+
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 12,
+                    //     vertical: 4,
+                    //   ),
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.designPurple.withOpacity(0.1),
+                    //     borderRadius: BorderRadius.circular(20),
+                    //   ),
+                    //   child: Text(
+                    //     user.role == 'parent'
+                    //         ? l10n.imParent
+                    //         : (user.role ?? ''),
+                    //     style: TextStyle(
+                    //       color: AppColors.designPurple,
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: AppSizes.smallSize(context),
+                    //     ),
+                    //   ),
+                    // ),
+                    const SizedBox(height: 20),
+
+                    // Info Row
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          _buildInfoRow(
+                            context,
+                            Icons.phone_outlined,
+                            user.phone,
+                            AppColors.gold,
+                          ),
+                          _buildInfoRow(
+                            context,
+                            Icons.location_on_outlined,
+                            user.address ?? l10n.noAddressProvided,
+                            AppColors.gold,
+                          ),
+                          // _buildInfoRow(
+                          //   context,
+                          //   Icons.group_outlined,
+                          //   '${user.children?.length ?? 0} ${l10n.children}',
+                          //   AppColors.gold,
+                          // ),
+                        ],
+                      ),
+                    ),
+                    // const SizedBox(height: 20),
+
+                    // // Language Selector
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 20,
+                    //   ),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       showLanguageDialog(context);
+                    //     },
+                    //     borderRadius: BorderRadius.circular(20),
+                    //     child: Container(
+                    //       padding: const EdgeInsets.all(12),
+                    //       decoration: BoxDecoration(
+                    //         color: AppColors.lightGrey.withOpacity(0.5),
+                    //         borderRadius: BorderRadius.circular(20),
+                    //       ),
+                    //       child: Row(
+                    //         mainAxisAlignment:
+                    //             MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Container(
+                    //             padding: const EdgeInsets.symmetric(
+                    //               horizontal: 10,
+                    //               vertical: 4,
+                    //             ),
+                    //             decoration: BoxDecoration(
+                    //               color: const Color(
+                    //                 0xFFFFEAA7,
+                    //               ), // Light yellow for EN tag
+                    //               borderRadius: BorderRadius.circular(
+                    //                 10,
+                    //               ),
+                    //             ),
+                    //             child: Text(
+                    //               l10n.localeName.toUpperCase(),
+                    //               style: TextStyle(
+                    //                 color: AppColors.orangeAccent,
+                    //                 fontWeight: FontWeight.bold,
+                    //                 fontSize: AppSizes.smallSize(
+                    //                   context,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           Column(
+                    //             crossAxisAlignment:
+                    //                 CrossAxisAlignment.end,
+                    //             children: [
+                    //               Text(
+                    //                 l10n.language,
+                    //                 style: const TextStyle(
+                    //                   fontWeight: FontWeight.bold,
+                    //                   fontSize: 14,
+                    //                 ),
+                    //               ),
+                    //               Text(
+                    //                 l10n.localeName == 'ar'
+                    //                     ? 'العربية'
+                    //                     : (l10n.localeName == 'de'
+                    //                           ? 'Deutsch'
+                    //                           : (l10n.localeName == 'fr'
+                    //                                 ? 'Français'
+                    //                                 : 'English')),
+                    //                 style: TextStyle(
+                    //                   color: AppColors.textTertiary,
+                    //                   fontSize: AppSizes.smallSize(
+                    //                     context,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           const Icon(
+                    //             Icons.language,
+                    //             color: AppColors.orangeAccent,
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 20),
+                    // Menu Items
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.radiusLarge,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 20,
+                              spreadRadius: 0,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.myChildren,
+                              '${l10n.children} - ${user.children?.length ?? 0}',
+                              Icons.child_care_outlined,
+                              () => _showChildrenBottomSheet(context),
+                            ),
+                            const Divider(height: 1, indent: 20, endIndent: 20),
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.editProfile,
+                              l10n.updateYourInfo,
+                              Icons.edit_outlined,
+                              () => context
+                                  .push(Routes.editProfile, extra: user)
+                                  .then((_) {
+                                    if (context.mounted) {
+                                      context.read<ProfileCubit>().getProfile();
+                                    }
+                                  }),
+                            ),
+                            const Divider(height: 1, indent: 20, endIndent: 20),
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.changePassword,
+                              l10n.updatePassword,
+                              Icons.lock_outline,
+                              () => context.push(Routes.changePassword),
+                            ),
+                            const Divider(height: 1, indent: 20, endIndent: 20),
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.notifications,
+                              l10n.manageNotifications,
+                              Icons.notifications_none_outlined,
+                              () {},
+                            ),
+                            const Divider(height: 1, indent: 20, endIndent: 20),
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.privacySecurity,
+                              l10n.controlYourData,
+                              Icons.security_outlined,
+                              () {},
+                            ),
+                            const Divider(height: 1, indent: 20, endIndent: 20),
+                            _buildCustomMenuItem(
+                              context,
+                              l10n.helpSupport,
+                              l10n.getHelp,
+                              Icons.help_outline,
+                              () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    // Logout Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: InkWell(
+                        onTap: () => context.go(Routes.login),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.designOrange),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.logout,
+                                color: AppColors.designOrange,
                               ),
-                              child: InkWell(
-                                onTap: () => context.go(Routes.login),
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 15,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: AppColors.designOrange,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.logout,
-                                        color: AppColors.designOrange,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        l10n.logout,
-                                        style: TextStyle(
-                                          color: AppColors.designOrange,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: AppSizes.bodySize(context),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              const SizedBox(width: 10),
+                              Text(
+                                l10n.logout,
+                                style: TextStyle(
+                                  color: AppColors.designOrange,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppSizes.bodySize(context),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 50),
-                          ]
-                          .animate(interval: 50.ms)
-                          .fade(duration: 400.ms)
-                          .slideY(begin: 0.05, end: 0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ].animate(interval: 50.ms).fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
                 ),
               );
             } else if (state is ProfileError) {

@@ -123,7 +123,7 @@ abstract class AppLocalizations {
   /// No description provided for @parentLogin.
   ///
   /// In en, this message translates to:
-  /// **'Parent Login'**
+  /// **'Login'**
   String get parentLogin;
 
   /// No description provided for @enterCredentials.
@@ -132,11 +132,17 @@ abstract class AppLocalizations {
   /// **'Enter your credentials to access your account'**
   String get enterCredentials;
 
-  /// No description provided for @phoneNumber.
+  /// No description provided for @emailOrPhone.
   ///
   /// In en, this message translates to:
-  /// **'Phone Number'**
-  String get phoneNumber;
+  /// **'Email/Phone Number'**
+  String get emailOrPhone;
+
+  /// No description provided for @enterEmailOrPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email or phone number'**
+  String get enterEmailOrPhone;
 
   /// No description provided for @password.
   ///
@@ -149,6 +155,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
 
   /// No description provided for @loginSuccessful.
   ///

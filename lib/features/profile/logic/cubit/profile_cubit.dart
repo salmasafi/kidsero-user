@@ -107,4 +107,30 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ChildrenError(ErrorHandler.handle(e)));
     }
   }
+
+  Future<void> addChild(String code) async {
+    emit(AddChildLoading());
+    try {
+      final response = await _profileRepository.addChild(code);
+      if (response.success) {
+        emit(
+          AddChildSuccess(
+            response.message ??
+                L10nUtils.translateWithGlobalContext('childAddedSuccessfully'),
+          ),
+        );
+        // Refresh children list after adding
+        await getChildren();
+      } else {
+        emit(
+          AddChildError(
+            response.message ??
+                L10nUtils.translateWithGlobalContext('failedToAddChild'),
+          ),
+        );
+      }
+    } catch (e) {
+      emit(AddChildError(ErrorHandler.handle(e)));
+    }
+  }
 }

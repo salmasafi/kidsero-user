@@ -69,4 +69,16 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<CommonResponseModel> addChild(String code) async {
+    try {
+      final response = await _parentApiHelper.post(
+        ApiEndpoints.addChild,
+        data: {'code': code},
+      );
+      return CommonResponseModel.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

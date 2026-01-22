@@ -7,12 +7,14 @@ class ApiEndpoints {
 
   // Driver Rides
   static const String driverRidesToday = '/api/users/driver/rides/today';
-  static String driverStartRide(String occurrenceId) => '/api/users/driver/rides/occurrence/$occurrenceId/start';
+  static String driverStartRide(String occurrenceId) =>
+      '/api/users/driver/rides/occurrence/$occurrenceId/start';
 
   // Profile
   static const String profileMe = '/api/users/profile/me';
   static const String changePassword = '/api/users/profile/change-password';
   static const String children = '/api/users/children/';
+  static const String addChild = '/api/users/children/add';
 
   static String getImageUrl(String path) {
     if (path.startsWith('http')) return path;

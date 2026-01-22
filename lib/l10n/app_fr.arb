@@ -3,12 +3,14 @@
   "selectRole": "Veuillez sélectionner votre rôle pour continuer",
   "imParent": "Je suis un parent",
 
-  "parentLogin": "Connexion Parent",
+  "parentLogin": "Se connecter",
 
   "enterCredentials": "Entrez vos identifiants pour accéder à votre compte",
-  "phoneNumber": "Numéro de téléphone",
+  "emailOrPhone": "Email/Numéro de téléphone",
+  "enterEmailOrPhone": "Entrez votre email ou numéro de téléphone",
   "password": "Mot de passe",
   "login": "Se connecter",
+  "signIn": "Se connecter",
   "loginSuccessful": "Connexion réussie",
   "loginFailed": "Échec de la connexion",
   "profile": "Profil",

@@ -18,20 +18,27 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imParent => 'Ich bin ein Elternteil';
 
   @override
-  String get parentLogin => 'Eltern-Login';
+  String get parentLogin => 'Anmelden';
 
   @override
   String get enterCredentials =>
       'Geben Sie Ihre Zugangsdaten ein, um auf Ihr Konto zuzugreifen';
 
   @override
-  String get phoneNumber => 'Telefonnummer';
+  String get emailOrPhone => 'E-Mail/Telefonnummer';
+
+  @override
+  String get enterEmailOrPhone =>
+      'Geben Sie Ihre E-Mail oder Telefonnummer ein';
 
   @override
   String get password => 'Passwort';
 
   @override
   String get login => 'Anmelden';
+
+  @override
+  String get signIn => 'Anmelden';
 
   @override
   String get loginSuccessful => 'Anmeldung erfolgreich';

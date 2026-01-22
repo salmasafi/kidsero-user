@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/logic/locale_cubit.dart';
+
+import 'package:kidsero_driver/core/widgets/language_toggle.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -26,61 +27,6 @@ class _LoginViewState extends State<LoginView> {
   bool _obscurePassword = true;
   String? _phoneError;
   String? _passwordError;
-
-  void _showLanguageDialog(BuildContext context) {
-    final localeCubit = context.read<LocaleCubit>();
-    final currentLocale = Localizations.localeOf(context).languageCode;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Language'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _LanguageOption(
-                label: 'English',
-                code: 'en',
-                isSelected: currentLocale == 'en',
-                onTap: () {
-                  localeCubit.changeLocale('en');
-                  Navigator.pop(context);
-                },
-              ),
-              _LanguageOption(
-                label: 'العربية',
-                code: 'ar',
-                isSelected: currentLocale == 'ar',
-                onTap: () {
-                  localeCubit.changeLocale('ar');
-                  Navigator.pop(context);
-                },
-              ),
-              _LanguageOption(
-                label: 'Deutsch',
-                code: 'de',
-                isSelected: currentLocale == 'de',
-                onTap: () {
-                  localeCubit.changeLocale('de');
-                  Navigator.pop(context);
-                },
-              ),
-              _LanguageOption(
-                label: 'Français',
-                code: 'fr',
-                isSelected: currentLocale == 'fr',
-                onTap: () {
-                  localeCubit.changeLocale('fr');
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
               child: IconButton(
                 icon: Icon(Icons.translate, color: primaryColor, size: 20),
                 onPressed: () {
-                  _showLanguageDialog(context);
+                  showLanguageDialog(context);
                 },
               ),
             ),
@@ -183,9 +129,9 @@ class _LoginViewState extends State<LoginView> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Phone Number',
-                          style: TextStyle(
+                        Text(
+                          l10n.emailOrPhone,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF1F2937),
@@ -201,25 +147,25 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           child: TextField(
                             controller: _phoneController,
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color(0xFF1F2937),
                               fontFamily: 'Cairo',
                             ),
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.phone_outlined,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(
+                                Icons.mail_outline,
                                 color: Color(0xFF6B7280),
                                 size: 20,
                               ),
-                              hintText: '01xxxxxxxxx',
-                              hintStyle: TextStyle(
+                              hintText: l10n.enterEmailOrPhone,
+                              hintStyle: const TextStyle(
                                 color: Color(0xFF9CA3AF),
                                 fontFamily: 'Cairo',
                               ),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 16,
                               ),
@@ -247,9 +193,9 @@ class _LoginViewState extends State<LoginView> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Password',
-                          style: TextStyle(
+                        Text(
+                          l10n.password,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF1F2937),
@@ -291,7 +237,7 @@ class _LoginViewState extends State<LoginView> {
                                   });
                                 },
                               ),
-                              hintText: 'Enter your password',
+                              hintText: l10n.enterCredentials,
                               hintStyle: const TextStyle(
                                 color: Color(0xFF9CA3AF),
                                 fontFamily: 'Cairo',
@@ -327,9 +273,9 @@ class _LoginViewState extends State<LoginView> {
                           : Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
-                        child: const Text(
-                          'Forgot Password?',
-                          style: TextStyle(
+                        child: Text(
+                          l10n.forgotPassword,
+                          style: const TextStyle(
                             color: Color(0xFFFA8231),
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -362,11 +308,11 @@ class _LoginViewState extends State<LoginView> {
                                     setState(() {
                                       _phoneError =
                                           _phoneController.text.isEmpty
-                                          ? 'Phone number is required'
+                                          ? l10n.phoneRequired
                                           : null;
                                       _passwordError =
                                           _passwordController.text.isEmpty
-                                          ? 'Password is required'
+                                          ? l10n.passwordRequired
                                           : null;
                                     });
 
@@ -394,9 +340,9 @@ class _LoginViewState extends State<LoginView> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text(
-                                    'Sign In',
-                                    style: TextStyle(
+                                : Text(
+                                    l10n.signIn,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -415,17 +361,17 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(height: 24),
 
                     RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
+                      text: TextSpan(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontFamily: 'Cairo',
                           color: Color(0xFF6B7280),
                         ),
                         children: [
-                          TextSpan(text: "Don't have an account? "),
+                          TextSpan(text: "${l10n.dontHaveAccount} "),
                           TextSpan(
-                            text: 'Contact Admin',
-                            style: TextStyle(
+                            text: l10n.contactAdmin,
+                            style: const TextStyle(
                               color: Color(0xFFFA8231),
                               fontWeight: FontWeight.bold,
                             ),
@@ -447,55 +393,6 @@ class _LoginViewState extends State<LoginView> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _LanguageOption extends StatelessWidget {
-  final String label;
-  final String code;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _LanguageOption({
-    required this.label,
-    required this.code,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF8B5CF6) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF8B5CF6) : Colors.grey.shade300,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? Colors.white : Colors.black87,
-                fontFamily: 'Cairo',
-              ),
-            ),
-            const Spacer(),
-            if (isSelected)
-              const Icon(Icons.check, color: Colors.white, size: 20),
-          ],
         ),
       ),
     );

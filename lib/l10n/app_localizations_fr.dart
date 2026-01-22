@@ -18,20 +18,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get imParent => 'Je suis un parent';
 
   @override
-  String get parentLogin => 'Connexion Parent';
+  String get parentLogin => 'Se connecter';
 
   @override
   String get enterCredentials =>
       'Entrez vos identifiants pour accéder à votre compte';
 
   @override
-  String get phoneNumber => 'Numéro de téléphone';
+  String get emailOrPhone => 'Email/Numéro de téléphone';
+
+  @override
+  String get enterEmailOrPhone => 'Entrez votre email ou numéro de téléphone';
 
   @override
   String get password => 'Mot de passe';
 
   @override
   String get login => 'Se connecter';
+
+  @override
+  String get signIn => 'Se connecter';
 
   @override
   String get loginSuccessful => 'Connexion réussie';

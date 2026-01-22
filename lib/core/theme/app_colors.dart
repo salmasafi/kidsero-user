@@ -37,7 +37,7 @@ class AppColors {
   static const Color onError = Colors.white;
 
   // Design Specific
-  static const Color designPurple = Color(0xFF8B5CF6);
+  static const Color designPurple = Color(0xFF0D9488);
   static const Color designOrange = Color(0xFFFA8231);
   static const Color lightGrey = Color(0xFFF8F9FA);
   static const Color gold = Color(0xFFF7B731);
@@ -48,20 +48,20 @@ class AppColors {
 
   // Gradients
   static const LinearGradient parentGradient = LinearGradient(
-    colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient driverGradient = LinearGradient(
     colors: [Color(0xFF0D9488), Color(0xFF14B8A6)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  // static const LinearGradient driverGradient = LinearGradient(
+  //   colors: [Color(0xFF0D9488), Color(0xFF14B8A6)],
+  //   begin: Alignment.topLeft,
+  //   end: Alignment.bottomRight,
+  // );
+
+  // static const LinearGradient primaryGradient = LinearGradient(
+  //   colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+  //   begin: Alignment.topLeft,
+  //   end: Alignment.bottomRight,
+  // );
 }
