@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:kidsero_driver/features/home/ui/home_screen.dart';
 import 'package:kidsero_driver/features/auth/ui/view/login_view.dart';
 import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
 import 'package:kidsero_driver/features/profile/ui/view/edit_profile_view.dart';
@@ -27,7 +28,7 @@ class AppRouter {
       GoRoute(
         path: Routes.home,
         pageBuilder: (context, state) =>
-            _buildPageWithTransition(child: const ProfileView(), state: state),
+            _buildPageWithTransition(child: const HomeScreen(), state: state),
       ),
       GoRoute(
         path: Routes.profile,

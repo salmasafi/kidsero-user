@@ -18,26 +18,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get imParent => 'Je suis un parent';
 
   @override
-  String get parentLogin => 'Se connecter';
+  String get imDriver => 'Je suis un chauffeur';
+
+  @override
+  String get parentLogin => 'Connexion Parent';
+
+  @override
+  String get driverLogin => 'Connexion Chauffeur';
 
   @override
   String get enterCredentials =>
       'Entrez vos identifiants pour accéder à votre compte';
 
   @override
-  String get emailOrPhone => 'Email/Numéro de téléphone';
-
-  @override
-  String get enterEmailOrPhone => 'Entrez votre email ou numéro de téléphone';
+  String get phoneNumber => 'Numéro de téléphone';
 
   @override
   String get password => 'Mot de passe';
 
   @override
   String get login => 'Se connecter';
-
-  @override
-  String get signIn => 'Se connecter';
 
   @override
   String get loginSuccessful => 'Connexion réussie';
@@ -99,9 +99,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Suivez le bus de votre enfant, communiquez avec les chauffeurs et gérez les ramassages';
 
   @override
+  String get imDriverDesc =>
+      'Gérez votre itinéraire, informez les parents et assurez des trajets sûrs';
+
+  @override
   String joinParents(Object count) {
     return 'Rejoignez $count+ parents';
   }
+
+  @override
+  String get trustedDrivers => 'Réseau de chauffeurs de confiance';
 
   @override
   String get forgotPassword => 'Mot de passe oublié ?';
@@ -207,4 +214,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get failedToLoadChildren => 'Échec du chargement des enfants';
+
+  @override
+  String get payments => 'Payments';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get paymentsRetrievedSuccessfully => 'Payments retrieved successfully';
+
+  @override
+  String get paymentRetrievedSuccessfully => 'Payment retrieved successfully';
+
+  @override
+  String get paymentCreatedSuccessfully => 'Payment created successfully';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get receiptImage => 'Receipt Image';
+
+  @override
+  String get noPaymentsFound => 'No payments found';
+
+  @override
+  String get failedToLoadPayments => 'Failed to load payments';
+
+  @override
+  String get createPayment => 'Create Payment';
+
+  @override
+  String get plan => 'Plan';
 }

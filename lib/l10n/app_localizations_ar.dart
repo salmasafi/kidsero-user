@@ -18,26 +18,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imParent => 'أنا ولي أمر';
 
   @override
-  String get parentLogin => 'تسجيل الدخول';
+  String get imDriver => 'أنا سائق';
+
+  @override
+  String get parentLogin => 'تسجيل دخول ولي الأمر';
+
+  @override
+  String get driverLogin => 'تسجيل دخول السائق';
 
   @override
   String get enterCredentials =>
       'أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك';
 
   @override
-  String get emailOrPhone => 'البريد الإلكتروني / رقم الهاتف';
-
-  @override
-  String get enterEmailOrPhone => 'أدخل البريد الإلكتروني أو رقم الهاتف';
+  String get phoneNumber => 'رقم الهاتف';
 
   @override
   String get password => 'كلمة المرور';
 
   @override
   String get login => 'تسجيل الدخول';
-
-  @override
-  String get signIn => 'تسجيل الدخول';
 
   @override
   String get loginSuccessful => 'تم تسجيل الدخول بنجاح';
@@ -98,9 +98,15 @@ class AppLocalizationsAr extends AppLocalizations {
       'تتبع حافلة طفلك، تواصل مع السائقين، وأدر عمليات التوصيل';
 
   @override
+  String get imDriverDesc => 'أدر مسارك، أبلغ أولياء الأمور، واضمن رحلات آمنة';
+
+  @override
   String joinParents(Object count) {
     return 'انضم لأكثر من $count ولي أمر';
   }
+
+  @override
+  String get trustedDrivers => 'شبكة سائقين موثوقين';
 
   @override
   String get forgotPassword => 'نسيت كلمة المرور؟';
@@ -205,4 +211,40 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToLoadChildren => 'فشل في تحميل الأطفال';
+
+  @override
+  String get payments => 'المدفوعات';
+
+  @override
+  String get payment => 'الدفعة';
+
+  @override
+  String get paymentsRetrievedSuccessfully => 'تم استرداد المدفوعات بنجاح';
+
+  @override
+  String get paymentRetrievedSuccessfully => 'تم استرداد الدفعة بنجاح';
+
+  @override
+  String get paymentCreatedSuccessfully => 'تم إنشاء الدفعة بنجاح';
+
+  @override
+  String get amount => 'المبلغ';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get receiptImage => 'صورة الإيصال';
+
+  @override
+  String get noPaymentsFound => 'لم يتم العثور على مدفوعات';
+
+  @override
+  String get failedToLoadPayments => 'فشل تحميل المدفوعات';
+
+  @override
+  String get createPayment => 'إنشاء دفعة';
+
+  @override
+  String get plan => 'الخطة';
 }

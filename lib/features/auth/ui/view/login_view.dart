@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/theme/app_colors.dart';
+import '../../../../core/network/api_helper.dart';
+import '../../data/repositories/auth_repository.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
-import '../../data/repositories/parent_auth_repository.dart';
-import 'package:kidsero_driver/core/network/parent_api_helper.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kidsero_driver/core/routing/routes.dart';
@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
-      create: (context) => AuthCubit(ParentAuthRepository(ParentApiHelper())),
+      create: (context) => AuthCubit(AuthRepository(ApiHelper())),
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F9FA),
         appBar: AppBar(
@@ -130,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.emailOrPhone,
+                          l10n.phoneNumber,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -159,7 +159,7 @@ class _LoginViewState extends State<LoginView> {
                                 color: Color(0xFF6B7280),
                                 size: 20,
                               ),
-                              hintText: l10n.enterEmailOrPhone,
+                              hintText: l10n.enterCredentials,
                               hintStyle: const TextStyle(
                                 color: Color(0xFF9CA3AF),
                                 fontFamily: 'Cairo',
@@ -341,7 +341,7 @@ class _LoginViewState extends State<LoginView> {
                                     ),
                                   )
                                 : Text(
-                                    l10n.signIn,
+                                    l10n.login,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,

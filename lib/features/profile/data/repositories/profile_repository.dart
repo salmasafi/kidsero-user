@@ -1,19 +1,18 @@
 import 'package:dio/dio.dart';
-import 'package:kidsero_driver/core/network/parent_api_helper.dart';
 import 'package:kidsero_driver/core/network/api_endpoints.dart';
-
 import '../../../../core/models/common_response_model.dart';
+import '../../../../core/network/api_helper.dart';
 import '../models/profile_response_model.dart';
 import '../models/children_response_model.dart';
 
 class ProfileRepository {
-  final ParentApiHelper _parentApiHelper;
+  final ApiHelper _apiHelper;
 
-  ProfileRepository(this._parentApiHelper);
+  ProfileRepository(this._apiHelper);
 
   Future<ProfileResponseModel> getProfile() async {
     try {
-      final response = await _parentApiHelper.get(ApiEndpoints.profileMe);
+      final response = await _apiHelper.get(ApiEndpoints.profile);
       return ProfileResponseModel.fromJson(response.data);
     } catch (e) {
       rethrow;
@@ -36,10 +35,7 @@ class ProfileRepository {
         data = {'name': name};
       }
 
-      final response = await _parentApiHelper.put(
-        ApiEndpoints.profileMe,
-        data: data,
-      );
+      final response = await _apiHelper.put(ApiEndpoints.profile, data: data);
       return CommonResponseModel.fromJson(response.data);
     } catch (e) {
       rethrow;
@@ -51,7 +47,7 @@ class ProfileRepository {
     String newPassword,
   ) async {
     try {
-      final response = await _parentApiHelper.post(
+      final response = await _apiHelper.post(
         ApiEndpoints.changePassword,
         data: {'oldPassword': oldPassword, 'newPassword': newPassword},
       );
@@ -63,7 +59,7 @@ class ProfileRepository {
 
   Future<ChildrenResponseModel> getChildren() async {
     try {
-      final response = await _parentApiHelper.get(ApiEndpoints.children);
+      final response = await _apiHelper.get(ApiEndpoints.children);
       return ChildrenResponseModel.fromJson(response.data);
     } catch (e) {
       rethrow;
@@ -72,7 +68,7 @@ class ProfileRepository {
 
   Future<CommonResponseModel> addChild(String code) async {
     try {
-      final response = await _parentApiHelper.post(
+      final response = await _apiHelper.post(
         ApiEndpoints.addChild,
         data: {'code': code},
       );

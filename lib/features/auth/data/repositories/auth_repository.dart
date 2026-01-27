@@ -1,16 +1,16 @@
-import 'package:kidsero_driver/core/network/parent_api_helper.dart';
 import 'package:kidsero_driver/core/network/api_endpoints.dart';
+import '../../../../core/network/api_helper.dart';
 import '../models/auth_response_model.dart';
 
-class ParentAuthRepository {
-  final ParentApiHelper _apiHelper;
+class AuthRepository {
+  final ApiHelper _apiHelper;
 
-  ParentAuthRepository(this._apiHelper);
+  AuthRepository(this._apiHelper);
 
-  Future<AuthResponseModel> parentLogin(String phone, String password) async {
+  Future<AuthResponseModel> login(String phone, String password) async {
     try {
       final response = await _apiHelper.post(
-        ApiEndpoints.parentLogin,
+        ApiEndpoints.login,
         data: {'identifier': phone, 'password': password},
       );
       return AuthResponseModel.fromJson(response.data);

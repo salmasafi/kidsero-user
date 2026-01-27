@@ -7,7 +7,8 @@ import 'core/network/cache_helper.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/network/parent_api_helper.dart';
+import 'core/network/api_helper.dart';
+import 'core/network/api_service.dart';
 import 'core/utils/app_strings.dart';
 import 'core/routing/app_router.dart';
 import 'core/logic/locale_cubit.dart';
@@ -39,12 +40,14 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late final ParentApiHelper _parentApiHelper;
+  late final ApiHelper _apiHelper;
+  late final ApiService _apiService;
 
   @override
   void initState() {
     super.initState();
-    _parentApiHelper = ParentApiHelper();
+    _apiHelper = ApiHelper();
+    _apiService = ApiService();
     _setupFCM();
   }
 
@@ -81,7 +84,10 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [RepositoryProvider.value(value: _parentApiHelper)],
+      providers: [
+        RepositoryProvider.value(value: _apiHelper),
+        RepositoryProvider.value(value: _apiService),
+      ],
       child: BlocProvider(
         create: (context) => LocaleCubit(),
         child: BlocBuilder<LocaleCubit, Locale>(

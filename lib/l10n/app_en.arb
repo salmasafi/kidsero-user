@@ -2,15 +2,13 @@
   "welcome": "Welcome to Kidsero",
   "selectRole": "Please select your role to continue",
   "imParent": "I'm a Parent",
-
-  "parentLogin": "Login",
-
+  "imDriver": "I'm a Driver",
+  "parentLogin": "Parent Login",
+  "driverLogin": "Driver Login",
   "enterCredentials": "Enter your credentials to access your account",
-  "emailOrPhone": "Email/Phone Number",
-  "enterEmailOrPhone": "Enter your email or phone number",
+  "phoneNumber": "Phone Number",
   "password": "Password",
   "login": "Login",
-  "signIn": "Sign In",
   "loginSuccessful": "Login Successful",
   "loginFailed": "Login Failed",
   "profile": "Profile",
@@ -30,9 +28,9 @@
   "somethingWentWrong": "Something went wrong, please try again",
   "safeRides": "Safe rides for your little ones",
   "imParentDesc": "Track your child's bus, communicate with drivers, and manage pickups",
-
+  "imDriverDesc": "Manage your route, update parents, and ensure safe journeys",
   "joinParents": "Join {count}+ parents",
-
+  "trustedDrivers": "Trusted drivers network",
   "forgotPassword": "Forgot Password?",
   "dontHaveAccount": "Don't have an account?",
   "contactAdmin": "Contact Admin",
@@ -66,5 +64,17 @@
   "status": "Status",
   "active": "Active",
   "inactive": "Inactive",
-  "failedToLoadChildren": "Failed to load children"
+  "failedToLoadChildren": "Failed to load children",
+  "payments": "Payments",
+  "payment": "Payment",
+  "paymentsRetrievedSuccessfully": "Payments retrieved successfully",
+  "paymentRetrievedSuccessfully": "Payment retrieved successfully",
+  "paymentCreatedSuccessfully": "Payment created successfully",
+  "amount": "Amount",
+  "date": "Date",
+  "receiptImage": "Receipt Image",
+  "noPaymentsFound": "No payments found",
+  "failedToLoadPayments": "Failed to load payments",
+  "createPayment": "Create Payment",
+  "plan": "Plan"
 }

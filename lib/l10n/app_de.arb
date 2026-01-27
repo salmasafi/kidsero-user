@@ -2,15 +2,13 @@
   "welcome": "Willkommen bei Kidsero",
   "selectRole": "Bitte wählen Sie Ihre Rolle aus, um fortzufahren",
   "imParent": "Ich bin ein Elternteil",
-
-  "parentLogin": "Anmelden",
-
+  "imDriver": "Ich bin ein Fahrer",
+  "parentLogin": "Eltern-Login",
+  "driverLogin": "Fahrer-Login",
   "enterCredentials": "Geben Sie Ihre Zugangsdaten ein, um auf Ihr Konto zuzugreifen",
-  "emailOrPhone": "E-Mail/Telefonnummer",
-  "enterEmailOrPhone": "Geben Sie Ihre E-Mail oder Telefonnummer ein",
+  "phoneNumber": "Telefonnummer",
   "password": "Passwort",
   "login": "Anmelden",
-  "signIn": "Anmelden",
   "loginSuccessful": "Anmeldung erfolgreich",
   "loginFailed": "Anmeldung fehlgeschlagen",
   "profile": "Profil",
@@ -30,9 +28,9 @@
   "somethingWentWrong": "Etwas ist schief gelaufen, bitte versuchen Sie es erneut",
   "safeRides": "Sichere Fahrten für Ihre Kleinen",
   "imParentDesc": "Verfolgen Sie den Bus Ihres Kindes, kommunizieren Sie mit Fahrern und verwalten Sie Abholungen",
-
+  "imDriverDesc": "Verwalten Sie Ihre Route, informieren Sie die Eltern und sorgen Sie für sichere Fahrten",
   "joinParents": "Tritt {count}+ Eltern bei",
-
+  "trustedDrivers": "Netzwerk vertrauenswürdiger Fahrer",
   "forgotPassword": "Passwort vergessen?",
   "dontHaveAccount": "Sie haben noch kein Konto?",
   "contactAdmin": "Admin kontaktieren",

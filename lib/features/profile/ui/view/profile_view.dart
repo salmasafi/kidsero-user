@@ -4,11 +4,10 @@ import 'package:kidsero_driver/core/theme/app_colors.dart';
 import 'package:kidsero_driver/core/theme/app_text_styles.dart';
 import 'package:kidsero_driver/core/theme/app_sizes.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/api_helper.dart';
 import '../../../../core/widgets/language_toggle.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
-import 'package:kidsero_driver/core/network/parent_api_helper.dart';
-
 import 'package:kidsero_driver/core/widgets/custom_loading.dart';
 import 'package:kidsero_driver/core/widgets/custom_error_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +24,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return BlocProvider(
-      create: (context) => ProfileCubit(ParentApiHelper())..getProfile(),
+      create: (context) => ProfileCubit(ApiHelper())..getProfile(),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocBuilder<ProfileCubit, ProfileState>(

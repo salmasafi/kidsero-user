@@ -120,11 +120,23 @@ abstract class AppLocalizations {
   /// **'I\'m a Parent'**
   String get imParent;
 
+  /// No description provided for @imDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m a Driver'**
+  String get imDriver;
+
   /// No description provided for @parentLogin.
   ///
   /// In en, this message translates to:
-  /// **'Login'**
+  /// **'Parent Login'**
   String get parentLogin;
+
+  /// No description provided for @driverLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Login'**
+  String get driverLogin;
 
   /// No description provided for @enterCredentials.
   ///
@@ -132,17 +144,11 @@ abstract class AppLocalizations {
   /// **'Enter your credentials to access your account'**
   String get enterCredentials;
 
-  /// No description provided for @emailOrPhone.
+  /// No description provided for @phoneNumber.
   ///
   /// In en, this message translates to:
-  /// **'Email/Phone Number'**
-  String get emailOrPhone;
-
-  /// No description provided for @enterEmailOrPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your email or phone number'**
-  String get enterEmailOrPhone;
+  /// **'Phone Number'**
+  String get phoneNumber;
 
   /// No description provided for @password.
   ///
@@ -155,12 +161,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
-
-  /// No description provided for @signIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign In'**
-  String get signIn;
 
   /// No description provided for @loginSuccessful.
   ///
@@ -276,11 +276,23 @@ abstract class AppLocalizations {
   /// **'Track your child\'s bus, communicate with drivers, and manage pickups'**
   String get imParentDesc;
 
+  /// No description provided for @imDriverDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your route, update parents, and ensure safe journeys'**
+  String get imDriverDesc;
+
   /// No description provided for @joinParents.
   ///
   /// In en, this message translates to:
   /// **'Join {count}+ parents'**
   String joinParents(Object count);
+
+  /// No description provided for @trustedDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted drivers network'**
+  String get trustedDrivers;
 
   /// No description provided for @forgotPassword.
   ///
@@ -485,6 +497,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load children'**
   String get failedToLoadChildren;
+
+  /// No description provided for @payments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get payments;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @paymentsRetrievedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments retrieved successfully'**
+  String get paymentsRetrievedSuccessfully;
+
+  /// No description provided for @paymentRetrievedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment retrieved successfully'**
+  String get paymentRetrievedSuccessfully;
+
+  /// No description provided for @paymentCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment created successfully'**
+  String get paymentCreatedSuccessfully;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @receiptImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Image'**
+  String get receiptImage;
+
+  /// No description provided for @noPaymentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments found'**
+  String get noPaymentsFound;
+
+  /// No description provided for @failedToLoadPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payments'**
+  String get failedToLoadPayments;
+
+  /// No description provided for @createPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Payment'**
+  String get createPayment;
+
+  /// No description provided for @plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan;
 }
 
 class _AppLocalizationsDelegate

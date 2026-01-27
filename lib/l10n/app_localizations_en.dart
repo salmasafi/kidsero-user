@@ -18,26 +18,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imParent => 'I\'m a Parent';
 
   @override
-  String get parentLogin => 'Login';
+  String get imDriver => 'I\'m a Driver';
+
+  @override
+  String get parentLogin => 'Parent Login';
+
+  @override
+  String get driverLogin => 'Driver Login';
 
   @override
   String get enterCredentials =>
       'Enter your credentials to access your account';
 
   @override
-  String get emailOrPhone => 'Email/Phone Number';
-
-  @override
-  String get enterEmailOrPhone => 'Enter your email or phone number';
+  String get phoneNumber => 'Phone Number';
 
   @override
   String get password => 'Password';
 
   @override
   String get login => 'Login';
-
-  @override
-  String get signIn => 'Sign In';
 
   @override
   String get loginSuccessful => 'Login Successful';
@@ -98,9 +98,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Track your child\'s bus, communicate with drivers, and manage pickups';
 
   @override
+  String get imDriverDesc =>
+      'Manage your route, update parents, and ensure safe journeys';
+
+  @override
   String joinParents(Object count) {
     return 'Join $count+ parents';
   }
+
+  @override
+  String get trustedDrivers => 'Trusted drivers network';
 
   @override
   String get forgotPassword => 'Forgot Password?';
@@ -205,4 +212,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToLoadChildren => 'Failed to load children';
+
+  @override
+  String get payments => 'Payments';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get paymentsRetrievedSuccessfully => 'Payments retrieved successfully';
+
+  @override
+  String get paymentRetrievedSuccessfully => 'Payment retrieved successfully';
+
+  @override
+  String get paymentCreatedSuccessfully => 'Payment created successfully';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get receiptImage => 'Receipt Image';
+
+  @override
+  String get noPaymentsFound => 'No payments found';
+
+  @override
+  String get failedToLoadPayments => 'Failed to load payments';
+
+  @override
+  String get createPayment => 'Create Payment';
+
+  @override
+  String get plan => 'Plan';
 }
