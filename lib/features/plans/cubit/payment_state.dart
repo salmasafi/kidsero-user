@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../model/payment_model.dart';
+import '../model/payment_method_model.dart';
 
 abstract class PaymentState extends Equatable {
   @override
@@ -45,4 +46,13 @@ class PaymentError extends PaymentState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class PaymentMethodsLoaded extends PaymentState {
+  final List<PaymentMethod> paymentMethods;
+
+  PaymentMethodsLoaded(this.paymentMethods);
+
+  @override
+  List<Object?> get props => [paymentMethods];
 }

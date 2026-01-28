@@ -247,4 +247,166 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plan => 'الخطة';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get track => 'تتبع';
+
+  @override
+  String get alerts => 'التنبيهات';
+
+  @override
+  String get goodMorning => 'صباح الخير';
+
+  @override
+  String get goodAfternoon => 'مساء الخير';
+
+  @override
+  String get goodEvening => 'مساء الخير';
+
+  @override
+  String get welcomeBack => 'مرحباً بعودتك';
+
+  @override
+  String get liveRides => 'رحلات مباشرة';
+
+  @override
+  String get viewSchedule => 'عرض الجدول';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get upcoming => 'القادمة';
+
+  @override
+  String get history => 'السجل';
+
+  @override
+  String get liveNow => 'مباشر الآن';
+
+  @override
+  String get trackLive => 'تتبع مباشر';
+
+  @override
+  String get scheduled => 'مجدولة';
+
+  @override
+  String get completed => 'مكتملة';
+
+  @override
+  String get cancelled => 'ملغاة';
+
+  @override
+  String get driver => 'السائق';
+
+  @override
+  String get eta => 'الوقت المتوقع';
+
+  @override
+  String get noRidesToday => 'لا رحلات اليوم';
+
+  @override
+  String get noRidesTodayDesc => 'لا توجد رحلات مجدولة لهذا اليوم.';
+
+  @override
+  String get noUpcomingRides => 'لا رحلات قادمة';
+
+  @override
+  String get noUpcomingRidesDesc => 'لا توجد رحلات مجدولة قادمة.';
+
+  @override
+  String get noRideHistory => 'لا سجل رحلات';
+
+  @override
+  String get noRideHistoryDesc => 'لم يتم العثور على رحلات سابقة.';
+
+  @override
+  String get scheduledRides => 'الرحلات المجدولة';
+
+  @override
+  String get morningTrip => 'الرحلة الصباحية';
+
+  @override
+  String get returnTrip => 'رحلة العودة';
+
+  @override
+  String get homeToSchool => 'المنزل ← المدرسة';
+
+  @override
+  String get schoolToHome => 'المدرسة ← المنزل';
+
+  @override
+  String get errorLoadingRides => 'خطأ في تحميل الرحلات';
+
+  @override
+  String get noChildrenFoundRides => 'لم يتم العثور على أطفال';
+
+  @override
+  String get addChildrenToTrack => 'أضف أطفالك للبدء في تتبع رحلاتهم.';
+
+  @override
+  String get appServices => 'خدمات التطبيق';
+
+  @override
+  String get schoolServices => 'خدمات المدرسة';
+
+  @override
+  String get activeServices => 'الخدمات النشطة';
+
+  @override
+  String get availableServices => 'الخدمات المتاحة';
+
+  @override
+  String get noServicesAvailable => 'لا توجد خدمات متاحة';
+
+  @override
+  String get checkBackLater => 'تحقق لاحقاً من وجود خدمات جديدة.';
+
+  @override
+  String get noSchoolServices => 'لا توجد خدمات مدرسية';
+
+  @override
+  String get noServicesForChild => 'لا توجد خدمات متاحة لهذا الطفل.';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get servicePlan => 'خطة الخدمة';
+
+  @override
+  String get schoolService => 'خدمة مدرسية';
+
+  @override
+  String get selectPaymentMethod => 'اختر طريقة الدفع';
+
+  @override
+  String get uploadReceipt => 'تحميل الإيصال';
+
+  @override
+  String get tapToChooseReceipt => 'انقر لاختيار الإيصال';
+
+  @override
+  String get subscribeNow => 'اشترك الآن';
+
+  @override
+  String get noActiveSubscriptions => 'لا توجد اشتراكات نشطة';
+
+  @override
+  String get choosePlanToSubscribe => 'يرجى اختيار خطة للاشتراك';
+
+  @override
+  String get chooseServiceToSubscribe => 'يرجى اختيار خدمة للاشتراك';
+
+  @override
+  String get student => 'الطالب';
+
+  @override
+  String get liveTracking => 'تتبع مباشر';
+
+  @override
+  String get timelineTracking => 'الجدول الزمني';
 }

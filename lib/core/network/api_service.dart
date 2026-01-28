@@ -4,6 +4,10 @@ import '../../features/children/model/child_model.dart' as childModel;
 import '../../features/plans/model/plans_model.dart';
 import '../../features/rides/models/ride_models.dart';
 import '../../features/plans/model/payment_model.dart';
+import '../../features/plans/model/parent_subscription_model.dart';
+import '../../features/plans/model/org_service_model.dart';
+import '../../features/plans/model/student_subscription_model.dart';
+import '../../features/plans/model/payment_method_model.dart';
 import 'api_endpoints.dart';
 import '../utils/app_preferences.dart';
 import '../utils/app_strings.dart';
@@ -102,6 +106,18 @@ class ApiService {
     }
   }
 
+  /// Get child-specific ride schedule with today, upcoming, and history rides
+  Future<ChildScheduleResponse> getChildSchedule(String childId) async {
+    try {
+      final response = await dio.get(
+        '/api/users/rides/children/$childId/schedule',
+      );
+      return ChildScheduleResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<PlanModel>> getPlans() async {
     try {
       final response = await dio.get('/api/users/parentplans');
@@ -150,6 +166,15 @@ class ApiService {
     }
   }
 
+  Future<PaymentMethodResponse> getPaymentMethods() async {
+    try {
+      final response = await dio.get('/api/users/paymentmethods');
+      return PaymentMethodResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<PaymentResponse> getPaymentById(String id) async {
     try {
       final response = await dio.get(ApiEndpoints.parentPaymentDetail(id));
@@ -180,6 +205,39 @@ class ApiService {
         data: request.toJson(),
       );
       return PaymentResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // --- SUBSCRIPTIONS & SERVICES ---
+
+  Future<ParentSubscriptionResponse> getParentSubscriptions() async {
+    try {
+      final response = await dio.get(ApiEndpoints.parentSubscriptions);
+      return ParentSubscriptionResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<OrgServiceResponse> getOrgServices(String studentId) async {
+    try {
+      final response = await dio.get(ApiEndpoints.orgServices(studentId));
+      return OrgServiceResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<StudentServiceResponse> getStudentSubscriptions(
+    String studentId,
+  ) async {
+    try {
+      final response = await dio.get(
+        ApiEndpoints.studentActiveServices(studentId),
+      );
+      return StudentServiceResponse.fromJson(response.data);
     } catch (e) {
       rethrow;
     }

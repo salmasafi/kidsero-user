@@ -68,4 +68,19 @@ class PaymentCubit extends Cubit<PaymentState> {
       emit(PaymentError(e.toString()));
     }
   }
+
+  Future<void> getPaymentMethods() async {
+    emit(PaymentLoading());
+    try {
+      final response = await _apiService.getPaymentMethods();
+      if (response.success) {
+        emit(PaymentMethodsLoaded(response.paymentMethods));
+      } else {
+        // Fallback or error
+        emit(PaymentMethodsLoaded(const []));
+      }
+    } catch (e) {
+      emit(PaymentError(e.toString()));
+    }
+  }
 }

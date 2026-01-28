@@ -569,6 +569,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan'**
   String get plan;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @track.
+  ///
+  /// In en, this message translates to:
+  /// **'Track'**
+  String get track;
+
+  /// No description provided for @alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alerts;
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get goodMorning;
+
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get goodEvening;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcomeBack;
+
+  /// No description provided for @liveRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Rides'**
+  String get liveRides;
+
+  /// No description provided for @viewSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'View Schedule'**
+  String get viewSchedule;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @upcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get upcoming;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @liveNow.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE NOW'**
+  String get liveNow;
+
+  /// No description provided for @trackLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Live'**
+  String get trackLive;
+
+  /// No description provided for @scheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get scheduled;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
+  /// No description provided for @driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get driver;
+
+  /// No description provided for @eta.
+  ///
+  /// In en, this message translates to:
+  /// **'ETA'**
+  String get eta;
+
+  /// No description provided for @noRidesToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No Rides Today'**
+  String get noRidesToday;
+
+  /// No description provided for @noRidesTodayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no rides scheduled for today.'**
+  String get noRidesTodayDesc;
+
+  /// No description provided for @noUpcomingRides.
+  ///
+  /// In en, this message translates to:
+  /// **'No Upcoming Rides'**
+  String get noUpcomingRides;
+
+  /// No description provided for @noUpcomingRidesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no upcoming rides scheduled.'**
+  String get noUpcomingRidesDesc;
+
+  /// No description provided for @noRideHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No Ride History'**
+  String get noRideHistory;
+
+  /// No description provided for @noRideHistoryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No past rides found.'**
+  String get noRideHistoryDesc;
+
+  /// No description provided for @scheduledRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Rides'**
+  String get scheduledRides;
+
+  /// No description provided for @morningTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning Trip'**
+  String get morningTrip;
+
+  /// No description provided for @returnTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Trip'**
+  String get returnTrip;
+
+  /// No description provided for @homeToSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'Home → School'**
+  String get homeToSchool;
+
+  /// No description provided for @schoolToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'School → Home'**
+  String get schoolToHome;
+
+  /// No description provided for @errorLoadingRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Rides'**
+  String get errorLoadingRides;
+
+  /// No description provided for @noChildrenFoundRides.
+  ///
+  /// In en, this message translates to:
+  /// **'No Children Found'**
+  String get noChildrenFoundRides;
+
+  /// No description provided for @addChildrenToTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your children to start tracking their rides.'**
+  String get addChildrenToTrack;
+
+  /// No description provided for @appServices.
+  ///
+  /// In en, this message translates to:
+  /// **'App Services'**
+  String get appServices;
+
+  /// No description provided for @schoolServices.
+  ///
+  /// In en, this message translates to:
+  /// **'School Services'**
+  String get schoolServices;
+
+  /// No description provided for @activeServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Services'**
+  String get activeServices;
+
+  /// No description provided for @availableServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Services'**
+  String get availableServices;
+
+  /// No description provided for @noServicesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Services Available'**
+  String get noServicesAvailable;
+
+  /// No description provided for @checkBackLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for new services.'**
+  String get checkBackLater;
+
+  /// No description provided for @noSchoolServices.
+  ///
+  /// In en, this message translates to:
+  /// **'No School Services'**
+  String get noSchoolServices;
+
+  /// No description provided for @noServicesForChild.
+  ///
+  /// In en, this message translates to:
+  /// **'No services available for this child.'**
+  String get noServicesForChild;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @servicePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Plan'**
+  String get servicePlan;
+
+  /// No description provided for @schoolService.
+  ///
+  /// In en, this message translates to:
+  /// **'School Service'**
+  String get schoolService;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Method'**
+  String get selectPaymentMethod;
+
+  /// No description provided for @uploadReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Receipt'**
+  String get uploadReceipt;
+
+  /// No description provided for @tapToChooseReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose receipt'**
+  String get tapToChooseReceipt;
+
+  /// No description provided for @subscribeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe Now'**
+  String get subscribeNow;
+
+  /// No description provided for @noActiveSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No active subscriptions'**
+  String get noActiveSubscriptions;
+
+  /// No description provided for @choosePlanToSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a plan to subscribe'**
+  String get choosePlanToSubscribe;
+
+  /// No description provided for @chooseServiceToSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a service to subscribe'**
+  String get chooseServiceToSubscribe;
+
+  /// No description provided for @student.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get student;
+
+  /// No description provided for @liveTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Tracking'**
+  String get liveTracking;
+
+  /// No description provided for @timelineTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get timelineTracking;
 }
 
 class _AppLocalizationsDelegate

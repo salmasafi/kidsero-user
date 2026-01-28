@@ -111,11 +111,7 @@ class Organization {
   Organization({required this.id, required this.name, this.logo});
 
   factory Organization.fromJson(Map<String, dynamic> json) {
-    return Organization(
-      id: json['id'],
-      name: json['name'],
-      logo: json['logo'],
-    );
+    return Organization(id: json['id'], name: json['name'], logo: json['logo']);
   }
 }
 
@@ -289,7 +285,9 @@ class UpcomingDay {
     return UpcomingDay(
       date: json['date'],
       dayName: json['dayName'],
-      rides: (json['rides'] as List).map((i) => UpcomingRide.fromJson(i)).toList(),
+      rides: (json['rides'] as List)
+          .map((i) => UpcomingRide.fromJson(i))
+          .toList(),
     );
   }
 }
@@ -319,6 +317,22 @@ class UpcomingRide {
       pickupTime: json['pickupTime'],
       childName: json['child']['name'],
       pickupPointName: json['pickupPointName'],
+    );
+  }
+}
+
+// --- CHILD SCHEDULE RESPONSE ---
+
+class ChildScheduleResponse {
+  final bool success;
+  final Map<String, dynamic> data;
+
+  ChildScheduleResponse({required this.success, required this.data});
+
+  factory ChildScheduleResponse.fromJson(Map<String, dynamic> json) {
+    return ChildScheduleResponse(
+      success: json['success'] ?? false,
+      data: json['data'] ?? {},
     );
   }
 }

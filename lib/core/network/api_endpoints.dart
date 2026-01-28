@@ -20,6 +20,16 @@ class ApiEndpoints {
   static const String parentPaymentsOrgService =
       '/api/users/parentpayments/org-service';
 
+  // Services & Subscriptions
+  static const String parentSubscriptions = '/api/users/parentsubscriptions';
+  static const String parentPlans = '/api/users/parentplans';
+
+  static String studentActiveServices(String studentId) =>
+      '/api/users/organizationservices/current-subscribed/$studentId';
+
+  static String orgServices(String studentId) =>
+      '/api/users/organizationservices/$studentId';
+
   static String getImageUrl(String path) {
     if (path.startsWith('http')) return path;
     return '$baseUrl$path';

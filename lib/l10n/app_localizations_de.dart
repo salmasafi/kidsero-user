@@ -249,4 +249,167 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get plan => 'Plan';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get track => 'Track';
+
+  @override
+  String get alerts => 'Alerts';
+
+  @override
+  String get goodMorning => 'Good morning';
+
+  @override
+  String get goodAfternoon => 'Good afternoon';
+
+  @override
+  String get goodEvening => 'Good evening';
+
+  @override
+  String get welcomeBack => 'Welcome Back';
+
+  @override
+  String get liveRides => 'Live Rides';
+
+  @override
+  String get viewSchedule => 'View Schedule';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get upcoming => 'Upcoming';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get liveNow => 'LIVE NOW';
+
+  @override
+  String get trackLive => 'Track Live';
+
+  @override
+  String get scheduled => 'Scheduled';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get driver => 'Driver';
+
+  @override
+  String get eta => 'ETA';
+
+  @override
+  String get noRidesToday => 'No Rides Today';
+
+  @override
+  String get noRidesTodayDesc => 'There are no rides scheduled for today.';
+
+  @override
+  String get noUpcomingRides => 'No Upcoming Rides';
+
+  @override
+  String get noUpcomingRidesDesc => 'There are no upcoming rides scheduled.';
+
+  @override
+  String get noRideHistory => 'No Ride History';
+
+  @override
+  String get noRideHistoryDesc => 'No past rides found.';
+
+  @override
+  String get scheduledRides => 'Scheduled Rides';
+
+  @override
+  String get morningTrip => 'Morning Trip';
+
+  @override
+  String get returnTrip => 'Return Trip';
+
+  @override
+  String get homeToSchool => 'Home → School';
+
+  @override
+  String get schoolToHome => 'School → Home';
+
+  @override
+  String get errorLoadingRides => 'Error Loading Rides';
+
+  @override
+  String get noChildrenFoundRides => 'No Children Found';
+
+  @override
+  String get addChildrenToTrack =>
+      'Add your children to start tracking their rides.';
+
+  @override
+  String get appServices => 'App Services';
+
+  @override
+  String get schoolServices => 'School Services';
+
+  @override
+  String get activeServices => 'Active Services';
+
+  @override
+  String get availableServices => 'Available Services';
+
+  @override
+  String get noServicesAvailable => 'No Services Available';
+
+  @override
+  String get checkBackLater => 'Check back later for new services.';
+
+  @override
+  String get noSchoolServices => 'No School Services';
+
+  @override
+  String get noServicesForChild => 'No services available for this child.';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get servicePlan => 'Service Plan';
+
+  @override
+  String get schoolService => 'School Service';
+
+  @override
+  String get selectPaymentMethod => 'Select Payment Method';
+
+  @override
+  String get uploadReceipt => 'Upload Receipt';
+
+  @override
+  String get tapToChooseReceipt => 'Tap to choose receipt';
+
+  @override
+  String get subscribeNow => 'Subscribe Now';
+
+  @override
+  String get noActiveSubscriptions => 'No active subscriptions';
+
+  @override
+  String get choosePlanToSubscribe => 'Please choose a plan to subscribe';
+
+  @override
+  String get chooseServiceToSubscribe => 'Please choose a service to subscribe';
+
+  @override
+  String get student => 'Student';
+
+  @override
+  String get liveTracking => 'Live Tracking';
+
+  @override
+  String get timelineTracking => 'Timeline';
 }

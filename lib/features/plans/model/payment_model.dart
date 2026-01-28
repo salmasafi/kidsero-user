@@ -3,6 +3,8 @@ class PaymentModel {
   final String? parentId;
   final String? planId;
   final String? serviceId;
+  final String? studentId;
+  final String? studentName;
   final String status;
   final num amount;
   final String? receiptImage;
@@ -13,6 +15,8 @@ class PaymentModel {
     this.parentId,
     this.planId,
     this.serviceId,
+    this.studentId,
+    this.studentName,
     required this.status,
     required this.amount,
     this.receiptImage,
@@ -25,6 +29,8 @@ class PaymentModel {
       parentId: json['parentId'],
       planId: json['planId'],
       serviceId: json['serviceId'],
+      studentId: json['studentId'],
+      studentName: json['studentName'],
       status: json['status'] ?? '',
       amount: json['amount'] ?? 0,
       receiptImage: json['receiptImage'],
@@ -38,6 +44,8 @@ class PaymentModel {
       'parentId': parentId,
       'planId': planId,
       'serviceId': serviceId,
+      'studentId': studentId,
+      'studentName': studentName,
       'status': status,
       'amount': amount,
       'receiptImage': receiptImage,
