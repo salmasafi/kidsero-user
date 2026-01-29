@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/api_helper.dart';
+import '../../../../core/network/api_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
 import 'package:kidsero_driver/core/utils/app_preferences.dart';
@@ -8,9 +9,16 @@ import 'package:kidsero_driver/core/network/error_handler.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
-  final ApiHelper _apiHelper = ApiHelper();
+  final ApiHelper _apiHelper;
+  final ApiService? _apiService;
 
-  AuthCubit(this._authRepository) : super(AuthInitial());
+  AuthCubit(
+    this._authRepository, {
+    ApiHelper? apiHelper,
+    ApiService? apiService,
+  })  : _apiHelper = apiHelper ?? ApiHelper(),
+        _apiService = apiService,
+        super(AuthInitial());
 
   Future<void> parentLogin(String phone, String password) async {
     emit(AuthLoading());
@@ -27,7 +35,13 @@ class AuthCubit extends Cubit<AuthState> {
             userAvatar: response.user!.avatar,
           );
         }
+        
+        // Update tokens in both ApiHelper and ApiService
         await _apiHelper.setToken(response.token!);
+        if (_apiService != null) {
+          await _apiService!.setToken(response.token!);
+        }
+        
         emit(AuthSuccess(response));
       } else {
         emit(
@@ -46,6 +60,9 @@ class AuthCubit extends Cubit<AuthState> {
     await AppPreferences.clearTokens();
     await AppPreferences.clearUserData();
     await _apiHelper.clearToken();
+    if (_apiService != null) {
+      await _apiService!.clearToken();
+    }
     emit(AuthInitial());
   }
 }

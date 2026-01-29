@@ -523,10 +523,12 @@ class ProfileView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => BlocProvider.value(
+      isDismissible: true,
+      enableDrag: true,
+      builder: (sheetContext) => BlocProvider.value(
         value: profileCubit,
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.8,
+          height: MediaQuery.of(sheetContext).size.height * 0.8,
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.vertical(
@@ -554,11 +556,15 @@ class ProfileView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.myChildren,
-                      style: AppTextStyles.heading(context),
+                      AppLocalizations.of(sheetContext)!.myChildren,
+                      style: AppTextStyles.heading(sheetContext),
                     ),
                     IconButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        if (Navigator.of(sheetContext).canPop()) {
+                          Navigator.of(sheetContext).pop();
+                        }
+                      },
                       icon: Icon(Icons.close, color: AppColors.textSecondary),
                     ),
                   ],

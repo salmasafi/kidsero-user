@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/theme/app_colors.dart';
 import '../../../../core/network/api_helper.dart';
+import '../../../../core/network/api_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
@@ -36,7 +37,14 @@ class _LoginViewState extends State<LoginView> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
-      create: (context) => AuthCubit(AuthRepository(ApiHelper())),
+      create: (context) {
+        // Get ApiService from the context if available
+        final apiService = context.read<ApiService>();
+        return AuthCubit(
+          AuthRepository(ApiHelper()),
+          apiService: apiService,
+        );
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F9FA),
         appBar: AppBar(

@@ -42,11 +42,6 @@ class _ChildrenListViewState extends State<ChildrenListView> {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is AddChildSuccess) {
-          // Check if dialog is open (can be tricky, but usually we pop the dialog in the dialog action or manually)
-          // Here we just show snackbar. The dialog is better closed by Navigator.pop inside the dialog itself or here?
-          // If we close it here, we might close the sheet.
-          // Let's assume the dialog is modal and we pop it.
-          // But wait, the listener triggers on the sheet context.
           CustomSnackbar.showSuccess(context, state.message);
         } else if (state is AddChildError) {
           CustomSnackbar.showError(context, state.message);
@@ -339,7 +334,9 @@ class _ChildrenListViewState extends State<ChildrenListView> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => ChildDetailsSheet(child: child),
+      isDismissible: true,
+      enableDrag: true,
+      builder: (sheetContext) => ChildDetailsSheet(child: child),
     );
   }
 
@@ -349,12 +346,13 @@ class _ChildrenListViewState extends State<ChildrenListView> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Add Child', // TODO: Localize
-          style: AppTextStyles.heading(context),
+          style: AppTextStyles.heading(dialogContext),
           textAlign: TextAlign.center,
         ),
         content: Column(
@@ -362,9 +360,9 @@ class _ChildrenListViewState extends State<ChildrenListView> {
           children: [
             Text(
               'Enter the code of your child to add them to your profile', // TODO: Localize
-              style: AppTextStyles.body(context).copyWith(
+              style: AppTextStyles.body(dialogContext).copyWith(
                 color: AppColors.textSecondary,
-                fontSize: AppSizes.smallSize(context),
+                fontSize: AppSizes.smallSize(dialogContext),
               ),
               textAlign: TextAlign.center,
             ),
@@ -379,7 +377,11 @@ class _ChildrenListViewState extends State<ChildrenListView> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.of(dialogContext).canPop()) {
+                Navigator.of(dialogContext).pop();
+              }
+            },
             child: Text(
               'Cancel', // TODO: Localize
               style: TextStyle(
@@ -391,8 +393,12 @@ class _ChildrenListViewState extends State<ChildrenListView> {
           TextButton(
             onPressed: () {
               if (codeController.text.isNotEmpty) {
+                // Close dialog first
+                if (Navigator.of(dialogContext).canPop()) {
+                  Navigator.of(dialogContext).pop();
+                }
+                // Then add child
                 profileCubit.addChild(codeController.text);
-                Navigator.pop(context);
               }
             },
             child: Text(

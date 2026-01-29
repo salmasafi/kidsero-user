@@ -41,7 +41,12 @@ class ApiService {
 
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
+          // Always get the latest token from storage before each request
+          if (_token == null) {
+            _token = await AppPreferences.getToken();
+          }
+          
           if (_token != null) {
             options.headers[AppStrings.authorization] =
                 '${AppStrings.bearer} $_token';
