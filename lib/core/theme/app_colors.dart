@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Brand Colors
-  static const Color primary = Color(0xFF0D9488); // Teal
-  static const Color secondary = Color(0xFFFA8231); // Orange
-  static const Color accent = Color(0xFFFA8231); // Orange
+  // Brand Colors - New Primary Colors
+  static const Color primary = Color(0xFF235F95); // Blue #235f95
+  static const Color secondary = Color(0xFFF4D449); // Yellow #f4d449
+  static const Color accent = Color(0xFF3CA9CD); // Light Blue #3ca9cd
 
   // Role Specific
-  static const Color parentPrimary = Color(0xFF0D9488);
-  static const Color driverPrimary = Color(0xFF0D9488);
+  static const Color parentPrimary = Color(0xFF235F95);
+  static const Color driverPrimary = Color(0xFF235F95);
+  
+  // Old Brand Colors (kept for potential reuse)
+  static const Color oldPrimary = Color(0xFF0D9488); // Teal
+  static const Color oldSecondary = Color(0xFFFA8231); // Orange
 
   // Semantic Colors
   static const Color success = Color(0xFF10B981);
@@ -37,17 +41,24 @@ class AppColors {
   static const Color onError = Colors.white;
 
   // Design Specific
-  static const Color designPurple = Color(0xFF0D9488);
-  static const Color designOrange = Color(0xFFFA8231);
+  static const Color designPurple = Color(0xFF235F95); // Updated to new primary
+  static const Color designOrange = Color(0xFFFA8231); // Kept old orange
   static const Color lightGrey = Color(0xFFF8F9FA);
   static const Color gold = Color(0xFFF7B731);
   static const Color lightOrange = Color(0xFFFFF4E8);
-  static const Color designYellow = Color(0xFFFFEAA7);
+  static const Color designYellow = Color(0xFFF4D449); // Updated to new secondary
   static const Color deepOrange = Color(0xFFF39C12);
   static const Color orangeAccent = Color(0xFFE67E22);
 
   // Gradients
   static const LinearGradient parentGradient = LinearGradient(
+    colors: [Color(0xFF235F95), Color(0xFF3CA9CD)], // Updated to new colors
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Old gradients (kept for potential reuse)
+  static const LinearGradient oldParentGradient = LinearGradient(
     colors: [Color(0xFF0D9488), Color(0xFF14B8A6)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

@@ -102,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(height: 24),
 
                     Text(
-                      l10n.parentLogin, // Using localized string which should exist
+                      l10n.login,
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -130,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.phoneNumber,
+                          l10n.emailOrPhone,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -159,7 +159,7 @@ class _LoginViewState extends State<LoginView> {
                                 color: Color(0xFF6B7280),
                                 size: 20,
                               ),
-                              hintText: l10n.enterCredentials,
+                              hintText: l10n.emailOrPhone,
                               hintStyle: const TextStyle(
                                 color: Color(0xFF9CA3AF),
                                 fontFamily: 'Cairo',
@@ -237,7 +237,7 @@ class _LoginViewState extends State<LoginView> {
                                   });
                                 },
                               ),
-                              hintText: l10n.enterCredentials,
+                              hintText: l10n.password,
                               hintStyle: const TextStyle(
                                 color: Color(0xFF9CA3AF),
                                 fontFamily: 'Cairo',
@@ -267,23 +267,24 @@ class _LoginViewState extends State<LoginView> {
 
                     const SizedBox(height: 16),
 
-                    Align(
-                      alignment: isArabic
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          l10n.forgotPassword,
-                          style: const TextStyle(
-                            color: Color(0xFFFA8231),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                      ),
-                    ).animate().fade(delay: 600.ms),
+                    // Commented out for App Store submission - non-functional button
+                    // Align(
+                    //   alignment: isArabic
+                    //       ? Alignment.centerLeft
+                    //       : Alignment.centerRight,
+                    //   child: TextButton(
+                    //     onPressed: () {},
+                    //     child: Text(
+                    //       l10n.forgotPassword,
+                    //       style: const TextStyle(
+                    //         color: Color(0xFFFA8231),
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 13,
+                    //         fontFamily: 'Cairo',
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ).animate().fade(delay: 600.ms),
 
                     const SizedBox(height: 32),
 

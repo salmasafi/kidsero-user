@@ -21,7 +21,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imDriver => 'أنا سائق';
 
   @override
-  String get parentLogin => 'تسجيل دخول ولي الأمر';
+  String get parentLogin => 'تسجيل الدخول';
 
   @override
   String get driverLogin => 'تسجيل دخول السائق';
@@ -32,6 +32,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get phoneNumber => 'رقم الهاتف';
+
+  @override
+  String get emailOrPhone => 'البريد الإلكتروني / رقم الهاتف';
 
   @override
   String get password => 'كلمة المرور';

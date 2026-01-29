@@ -12,8 +12,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: 0.20.2
-  firebase_core: ^4.3.0
-  firebase_messaging: ^16.1.0
+  # Commented out for App Store submission - Firebase not connected to iOS
+  # firebase_core: ^4.3.0
+  # firebase_messaging: ^16.1.0
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
   equatable: ^2.0.8
@@ -40,6 +41,10 @@ flutter:
   uses-material-design: true
   generate: true
 
+  assets:
+    - assets/images/
+    - assets/fonts/cairo/
+
   fonts:
     - family: Cairo
       fonts:
@@ -61,5 +66,5 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/app_logo.png"
+  image_path: "assets/images/app_logo2.png"
   min_sdk_android: 21

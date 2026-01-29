@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// Commented out for App Store submission - Firebase not connected to iOS
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'core/network/cache_helper.dart';
@@ -15,19 +16,22 @@ import 'core/logic/locale_cubit.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// Commented out for App Store submission - Firebase not connected to iOS
 // Background message handler must be a top-level function
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  log("Handling a background message: ${message.messageId}");
-}
+// @pragma('vm:entry-point')
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   log("Handling a background message: ${message.messageId}");
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // Commented out for App Store submission - Firebase not connected to iOS
+  // await Firebase.initializeApp();
   await CacheHelper.init();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Commented out for App Store submission - Firebase not connected to iOS
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const MainApp());
 }
@@ -48,38 +52,40 @@ class _MainAppState extends State<MainApp> {
     super.initState();
     _apiHelper = ApiHelper();
     _apiService = ApiService();
-    _setupFCM();
+    // Commented out for App Store submission - Firebase not connected to iOS
+    // _setupFCM();
   }
 
-  Future<void> _setupFCM() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    log('User granted permission: ${settings.authorizationStatus}');
-
-    // Get the token
-    String? token = await messaging.getToken();
-    log("FCM Token: $token");
-
-    // Listen to foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      log('Got a message whilst in the foreground!');
-      log('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        log('Message also contained a notification: ${message.notification}');
-      }
-    });
-  }
+  // Commented out for App Store submission - Firebase not connected to iOS
+  // Future<void> _setupFCM() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
+  //
+  //   log('User granted permission: ${settings.authorizationStatus}');
+  //
+  //   // Get the token
+  //   String? token = await messaging.getToken();
+  //   log("FCM Token: $token");
+  //
+  //   // Listen to foreground messages
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     log('Got a message whilst in the foreground!');
+  //     log('Message data: ${message.data}');
+  //
+  //     if (message.notification != null) {
+  //       log('Message also contained a notification: ${message.notification}');
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

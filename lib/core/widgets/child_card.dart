@@ -52,19 +52,26 @@ class ChildCard extends StatelessWidget {
               CircleAvatar(
                 radius: 32,
                 backgroundColor: avColor,
-                backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
-                    ? NetworkImage(avatarUrl!)
-                    : null,
-                child: avatarUrl == null || avatarUrl!.isEmpty
-                    ? Text(
-                        initials,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : null,
+                backgroundImage: const AssetImage(
+                  'assets/images/child_default.png',
+                ),
+                // Commented out for App Store submission - using default avatar
+                // backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
+                //     ? NetworkImage(avatarUrl!)
+                //     : const AssetImage('assets/images/child_default.png'),
+                onBackgroundImageError: (exception, stackTrace) {
+                  // Fallback handled by default image
+                },
+                // child: avatarUrl == null || avatarUrl!.isEmpty
+                //     ? Text(
+                //         initials,
+                //         style: const TextStyle(
+                //           color: Colors.white,
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       )
+                //     : null,
               ),
               if (isOnline)
                 Positioned(

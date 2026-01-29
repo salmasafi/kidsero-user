@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+// Commented out for App Store submission - image picking disabled
+// import 'package:image_picker/image_picker.dart';
 import 'package:kidsero_driver/core/theme/app_colors.dart';
 import 'package:kidsero_driver/core/widgets/custom_button.dart';
 import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
-import '../../../../core/network/api_endpoints.dart';
+// Commented out for App Store submission - not needed without image display
+// import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_helper.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -13,7 +15,8 @@ import '../../logic/cubit/profile_state.dart';
 import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../../core/widgets/image_viewer.dart';
+// Commented out for App Store submission - image viewer disabled
+// import '../../../../core/widgets/image_viewer.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -27,36 +30,40 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   late TextEditingController _nameController;
-  late TextEditingController _avatarController;
-  XFile? _imageFile;
-  final ImagePicker _picker = ImagePicker();
+  // Commented out for App Store submission - avatar URL field hidden
+  // late TextEditingController _avatarController;
+  // Commented out for App Store submission - image picking disabled
+  // XFile? _imageFile;
+  // final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.user.name);
-    _avatarController = TextEditingController(text: widget.user.avatar ?? '');
+    // Commented out for App Store submission - avatar URL field hidden
+    // _avatarController = TextEditingController(text: widget.user.avatar ?? '');
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
-      );
-      if (pickedFile != null) {
-        setState(() {
-          _imageFile = pickedFile;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        CustomSnackbar.showError(context, 'Failed to pick image');
-      }
-    }
-  }
+  // Commented out for App Store submission - image picking disabled
+  // Future<void> _pickImage() async {
+  //   try {
+  //     final XFile? pickedFile = await _picker.pickImage(
+  //       source: ImageSource.gallery,
+  //       maxWidth: 1024,
+  //       maxHeight: 1024,
+  //       imageQuality: 85,
+  //     );
+  //     if (pickedFile != null) {
+  //       setState(() {
+  //         _imageFile = pickedFile;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       CustomSnackbar.showError(context, 'Failed to pick image');
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,30 +139,31 @@ class _EditProfileViewState extends State<EditProfileView> {
                         bottom: -60,
                         child: GestureDetector(
                           onTap: () {
-                            if (_imageFile != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ImageViewer(
-                                    imageUrl: _imageFile!.path,
-                                    isLocalFile: true,
-                                    heroTag: 'edit_profile_avatar',
-                                  ),
-                                ),
-                              );
-                            } else if (_avatarController.text.isNotEmpty) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ImageViewer(
-                                    imageUrl: ApiEndpoints.getImageUrl(
-                                      _avatarController.text,
-                                    ),
-                                    heroTag: 'edit_profile_avatar',
-                                  ),
-                                ),
-                              );
-                            }
+                            // Commented out for App Store submission - image viewing disabled
+                            // if (_imageFile != null) {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (_) => ImageViewer(
+                            //         imageUrl: _imageFile!.path,
+                            //         isLocalFile: true,
+                            //         heroTag: 'edit_profile_avatar',
+                            //       ),
+                            //     ),
+                            //   );
+                            // } else if (_avatarController.text.isNotEmpty) {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (_) => ImageViewer(
+                            //         imageUrl: ApiEndpoints.getImageUrl(
+                            //           _avatarController.text,
+                            //         ),
+                            //         heroTag: 'edit_profile_avatar',
+                            //       ),
+                            //     ),
+                            //   );
+                            // }
                           },
                           child: Hero(
                             tag: 'edit_profile_avatar',
@@ -182,43 +190,45 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     backgroundImage: const AssetImage(
                                       'assets/images/parent_default.png',
                                     ),
+                                    // Commented out for App Store submission - using default avatar
                                     // _imageFile != null
                                     //     ? FileImage(File(_imageFile!.path))
                                     //     : (_avatarController.text.isNotEmpty
-                                    //               ? NetworkImage(
-                                    //                   ApiEndpoints.getImageUrl(
-                                    //                     _avatarController.text,
-                                    //                   ),
-                                    //                 )
-                                    //               : const AssetImage(
-                                    //                   'assets/images/parent_default.png',
-                                    //                 ))
-                                    //           as ImageProvider,
+                                    //           ? NetworkImage(
+                                    //               ApiEndpoints.getImageUrl(
+                                    //                 _avatarController.text,
+                                    //               ),
+                                    //             )
+                                    //           : const AssetImage(
+                                    //               'assets/images/parent_default.png',
+                                    //             ))
+                                    //       as ImageProvider,
                                     onBackgroundImageError: (e, s) {},
                                   ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    child: GestureDetector(
-                                      onTap: _pickImage,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.designPurple,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.camera_alt,
-                                          color: Colors.white,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // Commented out for App Store submission - hiding camera button
+                                  // Positioned(
+                                  //   bottom: 0,
+                                  //   left: 0,
+                                  //   child: GestureDetector(
+                                  //     onTap: _pickImage,
+                                  //     child: Container(
+                                  //       padding: const EdgeInsets.all(8),
+                                  //       decoration: BoxDecoration(
+                                  //         color: AppColors.designPurple,
+                                  //         shape: BoxShape.circle,
+                                  //         border: Border.all(
+                                  //           color: Colors.white,
+                                  //           width: 2,
+                                  //         ),
+                                  //       ),
+                                  //       child: const Icon(
+                                  //         Icons.camera_alt,
+                                  //         color: Colors.white,
+                                  //         size: 20,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -256,13 +266,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                             _nameController,
                             context,
                           ),
-                          const SizedBox(height: 20),
-                          _buildLabeledInput(
-                            l10n.avatarUrlOptional,
-                            Icons.camera_alt_outlined,
-                            _avatarController,
-                            context,
-                          ),
+                          // Commented out for App Store submission - hiding avatar URL field
+                          // const SizedBox(height: 20),
+                          // _buildLabeledInput(
+                          //   l10n.avatarUrlOptional,
+                          //   Icons.camera_alt_outlined,
+                          //   _avatarController,
+                          //   context,
+                          // ),
                           const SizedBox(height: 25),
                           const Divider(color: AppColors.border),
                           const SizedBox(height: 15),
@@ -295,7 +306,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                             onPressed: () {
                               context.read<ProfileCubit>().updateProfile(
                                 name: _nameController.text,
-                                imagePath: _imageFile?.path,
+                                // Commented out for App Store submission - image upload disabled
+                                // imagePath: _imageFile?.path,
                               );
                             },
                           ),

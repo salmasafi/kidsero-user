@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imDriver => 'I\'m a Driver';
 
   @override
-  String get parentLogin => 'Parent Login';
+  String get parentLogin => 'Login';
 
   @override
   String get driverLogin => 'Driver Login';
@@ -32,6 +32,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phoneNumber => 'Phone Number';
+
+  @override
+  String get emailOrPhone => 'Email/Phone Number';
 
   @override
   String get password => 'Password';

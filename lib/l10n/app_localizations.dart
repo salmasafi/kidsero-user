@@ -129,7 +129,7 @@ abstract class AppLocalizations {
   /// No description provided for @parentLogin.
   ///
   /// In en, this message translates to:
-  /// **'Parent Login'**
+  /// **'Login'**
   String get parentLogin;
 
   /// No description provided for @driverLogin.
@@ -149,6 +149,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone Number'**
   String get phoneNumber;
+
+  /// No description provided for @emailOrPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Email/Phone Number'**
+  String get emailOrPhone;
 
   /// No description provided for @password.
   ///

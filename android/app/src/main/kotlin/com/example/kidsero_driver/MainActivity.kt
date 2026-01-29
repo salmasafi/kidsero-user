@@ -1,4 +1,4 @@
-package com.kidsero.app
+package com.kidsero.parent
 
 import io.flutter.embedding.android.FlutterActivity
 
