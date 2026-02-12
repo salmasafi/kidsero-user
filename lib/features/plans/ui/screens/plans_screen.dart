@@ -3,12 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/network/api_service.dart';
 import 'package:kidsero_driver/features/plans/cubit/plans_cubit.dart';
 import 'package:kidsero_driver/features/plans/model/plans_model.dart';
+import 'package:kidsero_driver/l10n/app_localizations.dart';
+
+import '../../../../core/theme/app_colors.dart';
 
 class PlansScreen extends StatelessWidget {
-  const PlansScreen({Key? key}) : super(key: key);
+  const PlansScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Inject the Cubit here
     return BlocProvider(
       create: (context) => PlansCubit(context.read<ApiService>())..fetchPlans(),
@@ -23,13 +27,13 @@ class PlansScreen extends StatelessWidget {
                 pinned: true,
         
                 flexibleSpace: FlexibleSpaceBar(
-                  title: Text("Subscription Plans", style: TextStyle(color: Colors.white, fontSize: 16)),
+                  title: Text(l10n.appServices, style: TextStyle(color: Colors.white, fontSize: 16)),
                   background: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                        colors: [AppColors.primary, AppColors.secondary],
                       ),
                     ),
                   ),
@@ -39,12 +43,13 @@ class PlansScreen extends StatelessWidget {
           },
           body: BlocBuilder<PlansCubit, PlansState>(
             builder: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
               if (state is PlansLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is PlansError) {
                 return Center(
                     child: Text(state.message,
-                        style: const TextStyle(color: Colors.red)));
+                        style: const TextStyle(color: AppColors.error)));
               } else if (state is PlansLoaded) {
                 return ListView.separated(
                   padding: const EdgeInsets.symmetric(
@@ -52,7 +57,7 @@ class PlansScreen extends StatelessWidget {
                   itemCount: state.plans.length,
                   separatorBuilder: (c, i) => const SizedBox(height: 20),
                   itemBuilder: (context, index) {
-                    return _buildPlanCard(context, state.plans[index]);
+                    return _buildPlanCard(context, state.plans[index], l10n);
                   },
                 );
               }
@@ -64,7 +69,7 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlanCard(BuildContext context, PlanModel plan) {
+  Widget _buildPlanCard(BuildContext context, PlanModel plan, AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -85,7 +90,7 @@ class PlansScreen extends StatelessWidget {
             Container(
               height: 6,
               width: double.infinity,
-              color: const Color(0xFF4F46E5),
+              color: AppColors.primary,
             ),
             Padding(
               padding: const EdgeInsets.all(24),
@@ -114,7 +119,7 @@ class PlansScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF4F46E5),
+                            color: AppColors.primary,
                           ),
                         ),
                         const TextSpan(
@@ -130,19 +135,19 @@ class PlansScreen extends StatelessWidget {
                   ),
                   
                   const SizedBox(height: 24),
-                  const Divider(color: Color(0xFFEEEEEE), thickness: 1),
+                  const Divider(color: AppColors.border, thickness: 1),
                   const SizedBox(height: 24),
 
                   // Info Rows with Icons
                   _infoRow(
                     icon: Icons.receipt_long_rounded,
-                    label: "Subscription Fees",
+                    label: l10n.subscriptionFees,
                     value: "${plan.subscriptionFees} EGP",
                   ),
                   const SizedBox(height: 16),
                   _infoRow(
                     icon: Icons.savings_outlined,
-                    label: "Min. Payment",
+                    label: l10n.minPayment,
                     value: "${plan.minSubscriptionFeesPay} EGP",
                   ),
 
@@ -157,7 +162,7 @@ class PlansScreen extends StatelessWidget {
                         // Handle Subscribe Action
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4F46E5),
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shadowColor: Colors.transparent,
@@ -189,10 +194,10 @@ class PlansScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFF4F46E5).withOpacity(0.08),
+            color: AppColors.primary.withOpacity(0.08),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: const Color(0xFF4F46E5), size: 20),
+          child: Icon(icon, color: AppColors.primary, size: 20),
         ),
         const SizedBox(width: 16),
         Expanded(

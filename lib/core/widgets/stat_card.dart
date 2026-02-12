@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 /// A reusable stat card widget for displaying statistics
 class StatCard extends StatelessWidget {
   final IconData icon;
@@ -12,7 +14,7 @@ class StatCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const StatCard({
-    Key? key,
+    super.key,
     required this.icon,
     required this.value,
     required this.label,
@@ -21,12 +23,12 @@ class StatCard extends StatelessWidget {
     this.textColor,
     this.isHighlighted = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final bgColor = isHighlighted
-        ? const Color(0xFF00BFA5) // Teal for highlighted
+        ? AppColors.success // Teal for highlighted
         : backgroundColor ?? Colors.white.withOpacity(0.15);
     final txtColor = textColor ?? Colors.white;
     final icnColor = iconColor ?? Colors.white;

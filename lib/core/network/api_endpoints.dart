@@ -4,8 +4,24 @@ class ApiEndpoints {
   // Auth
   static const String login = '/api/users/auth/parent/login';
 
-  // Rides
-  static const String childRidesToday = '/api/users/driver/rides/today';
+  // Rides - Children
+  static const String ridesChildren = '/api/users/rides/children';
+  static const String ridesChildrenToday = '/api/users/rides/children/today';
+  static String rideChild(String childId) => '/api/users/rides/child/$childId';
+  static String rideChildSummary(String childId) =>
+      '/api/users/rides/child/$childId/summary';
+
+  // Rides - Active & Upcoming
+  static const String ridesActive = '/api/users/rides/active';
+  static const String ridesUpcoming = '/api/users/rides/upcoming';
+
+  // Rides - Tracking
+  static String rideTracking(String rideId) =>
+      '/api/users/rides/tracking/$rideId';
+
+  // Rides - Absence
+  static String reportAbsence(String occurrenceId, String studentId) =>
+      '/api/users/rides/excuse/$occurrenceId/$studentId';
 
   // Profile
   static const String profile = '/api/users/profile/me';

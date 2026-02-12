@@ -4,7 +4,7 @@ import '../theme/app_sizes.dart';
 
 class CustomSnackbar {
   static void showSuccess(BuildContext context, String message) {
-    _show(context, message, AppColors.driverPrimary, Icons.check_circle_outline);
+    _show(context, message, AppColors.success, Icons.check_circle_outline);
   }
 
   static void showError(BuildContext context, String message) {

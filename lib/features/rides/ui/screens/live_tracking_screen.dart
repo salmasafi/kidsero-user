@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../core/network/api_service.dart';
-import '../cubit/live_tracking_cubit.dart';
+import '../../../../core/network/api_service.dart';
+import '../../cubit/live_tracking_cubit.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
+import 'package:kidsero_driver/features/rides/data/rides_service.dart';
 
 class LiveTrackingScreen extends StatefulWidget {
   final String rideId;
@@ -30,10 +33,14 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final dio = context.read<ApiService>().dio;
+    final ridesService = RidesService(dio: dio);
+    final ridesRepository = RidesRepository(ridesService: ridesService);
+
     return BlocProvider(
       create: (context) => LiveTrackingCubit(
         rideId: widget.rideId,
-        apiService: context.read<ApiService>(),
+        ridesRepository: ridesRepository,
       )..startTracking(),
       child: Scaffold(
         appBar: AppBar(
@@ -101,6 +108,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
                             child: _AnimatedBusMarker(
                               location: _currentLocation!,
                               previousLocation: _previousLocation,
+                              rotation: state is LiveTrackingActive
+                                  ? state.rotation
+                                  : 0,
                             ),
                           ),
                         ],
@@ -117,6 +127,27 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
   }
 
   Widget _buildTrackingOverlay(LiveTrackingState state) {
+    String title = "Bus is on the move";
+    String subtitle = "Receiving live updates...";
+
+    if (state is LiveTrackingActive) {
+      if (state.eta != null) {
+        try {
+          final etaDate = DateTime.parse(state.eta!);
+          final hour = etaDate.hour > 12 ? etaDate.hour - 12 : etaDate.hour;
+          final minute = etaDate.minute.toString().padLeft(2, '0');
+          final period = etaDate.hour >= 12 ? 'PM' : 'AM';
+          title = "ETA: $hour:$minute $period";
+          subtitle = "Arriving at next stop";
+        } catch (_) {
+          // If parsing fails, just don't show specific ETA
+        }
+      } else if (state.speed != null && state.speed! > 0) {
+        title = "${state.speed!.toStringAsFixed(1)} km/h";
+        subtitle = "Current Speed";
+      }
+    }
+
     return Positioned(
       bottom: 20,
       left: 20,
@@ -139,23 +170,26 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFF4F46E5).withOpacity(0.1),
+                color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.directions_bus, color: Color(0xFF4F46E5)),
+              child: const Icon(Icons.directions_bus, color: AppColors.primary),
             ),
             const SizedBox(width: 16),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Bus is on the move",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 Text(
-                  "Receiving live updates...",
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
@@ -169,61 +203,66 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
 class _AnimatedBusMarker extends StatelessWidget {
   final LatLng location;
   final LatLng? previousLocation;
+  final double rotation;
 
-  const _AnimatedBusMarker({required this.location, this.previousLocation});
+  const _AnimatedBusMarker({
+    required this.location,
+    this.previousLocation,
+    this.rotation = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<Offset>(
-      tween: Tween<Offset>(
-        begin: Offset.zero, // This is just for internal widget animation
-        end: Offset.zero,
-      ),
-      duration: const Duration(seconds: 2),
-      builder: (context, value, child) {
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            // Outer glow
-            Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF4F46E5).withOpacity(0.2),
-                  ),
-                )
-                .animate(onPlay: (controller) => controller.repeat())
-                .scale(
-                  begin: const Offset(0.8, 0.8),
-                  end: const Offset(1.2, 1.2),
-                  duration: 1.seconds,
-                )
-                .fadeOut(duration: 1.seconds),
+    return Transform.rotate(
+      angle: rotation * (3.14159 / 180), // Convert degrees to radians
+      child: TweenAnimationBuilder<Offset>(
+        tween: Tween<Offset>(begin: Offset.zero, end: Offset.zero),
+        duration: const Duration(seconds: 2),
+        builder: (context, value, child) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer glow
+              Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withOpacity(0.2),
+                    ),
+                  )
+                  .animate(onPlay: (controller) => controller.repeat())
+                  .scale(
+                    begin: const Offset(0.8, 0.8),
+                    end: const Offset(1.2, 1.2),
+                    duration: 1.seconds,
+                  )
+                  .fadeOut(duration: 1.seconds),
 
-            // Bus Icon
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: const BoxDecoration(
-                color: Color(0xFF4F46E5),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+              // Bus Icon
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.directions_bus_filled,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
-              child: const Icon(
-                Icons.directions_bus_filled,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }

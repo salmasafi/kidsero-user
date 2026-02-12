@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/features/payments/ui/view/payment_history_view.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:kidsero_driver/features/payments/ui/widgets/app_services_tab.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/school_services_tab.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 class PaymentsScreen extends StatelessWidget {
-  const PaymentsScreen({Key? key}) : super(key: key);
+  const PaymentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +16,9 @@ class PaymentsScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: AppColors.background,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF9B59B6),
+          backgroundColor: AppColors.primary,
           elevation: 0,
           title: Text(
             l10n.payments,
@@ -26,21 +28,20 @@ class PaymentsScreen extends StatelessWidget {
             ),
           ),
           actions: [
+            // Payment History button
             IconButton(
               icon: const Icon(Icons.history, color: Colors.white),
+              tooltip: 'Payment History',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PaymentHistoryScreen(),
-                  ),
-                );
+                context.push(Routes.paymentHistory);
               },
             ),
           ],
           bottom: TabBar(
             indicatorColor: Colors.white,
             indicatorWeight: 3,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
@@ -57,15 +58,15 @@ class PaymentsScreen extends StatelessWidget {
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF9B59B6), Color(0xFF8E44AD)],
+                colors: [AppColors.primary, AppColors.accent],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
         ),
-        body: const TabBarView(
-          children: [AppServicesTab(), SchoolServicesTab()],
+        body: TabBarView(
+          children: [const AppServicesTab(), Container()],
         ),
       ),
     );

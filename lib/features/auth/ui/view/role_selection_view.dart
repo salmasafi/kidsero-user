@@ -100,7 +100,7 @@
 //                 child: IconButton(
 //                   icon: const Icon(
 //                     Icons.translate,
-//                     color: Color(0xFF8B5CF6),
+//                     color: AppColors.primary,
 //                     size: 20,
 //                   ),
 //                   onPressed: () {

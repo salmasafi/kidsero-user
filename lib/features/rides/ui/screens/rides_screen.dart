@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/widgets/stat_card.dart';
@@ -5,13 +6,12 @@ import 'package:kidsero_driver/core/widgets/child_card.dart';
 import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:kidsero_driver/core/widgets/language_toggle.dart';
-
 import '../../../../core/network/api_service.dart';
-import '../../../track_ride/ui/ride_tracking_screen.dart';
-import '../../../track_ride/ui/live_tracking_screen.dart';
-import '../../cubit/active_rides_cubit.dart';
-import '../../cubit/ride_cubit.dart';
-import '../../cubit/upcoming_rides_cubit.dart';
+import '../../../../core/theme/app_colors.dart';
+import 'ride_tracking_screen.dart';
+import 'live_tracking_screen.dart';
+import '../../cubit/rides_dashboard_cubit.dart';
+import '../../data/rides_repository.dart';
 import 'child_schedule_screen.dart';
 
 /// Main Rides Dashboard Screen matching the new UI design
@@ -20,40 +20,80 @@ class RidesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ridesRepository = context.read<RidesRepository>();
     final apiService = context.read<ApiService>();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              RideCubit(apiService: apiService)..loadChildrenRides(),
-        ),
-        BlocProvider(
-          create: (context) => ActiveRidesCubit(apiService)..loadActiveRides(),
-        ),
-        BlocProvider(
-          create: (context) =>
-              UpcomingRidesCubit(apiService)..loadUpcomingRides(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) =>
+          RidesDashboardCubit(
+            repository: ridesRepository,
+            apiService: apiService,  // Pass ApiService for children endpoint
+          )..loadDashboard(),
       child: const _RidesDashboard(),
     );
   }
 }
 
-class _RidesDashboard extends StatelessWidget {
-  const _RidesDashboard({Key? key}) : super(key: key);
+class _RidesDashboard extends StatefulWidget {
+  const _RidesDashboard();
+
+  @override
+  State<_RidesDashboard> createState() => _RidesDashboardState();
+}
+
+class _RidesDashboardState extends State<_RidesDashboard> with WidgetsBindingObserver {
+  Timer? _autoRefreshTimer;
+  static const _refreshInterval = Duration(seconds: 30);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _startAutoRefresh();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stopAutoRefresh();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Refresh immediately when app comes to foreground
+      context.read<RidesDashboardCubit>().refreshActiveRides();
+      _startAutoRefresh();
+    } else if (state == AppLifecycleState.paused) {
+      // Stop auto-refresh when app goes to background
+      _stopAutoRefresh();
+    }
+  }
+
+  void _startAutoRefresh() {
+    _stopAutoRefresh(); // Cancel any existing timer
+    _autoRefreshTimer = Timer.periodic(_refreshInterval, (_) {
+      if (mounted) {
+        context.read<RidesDashboardCubit>().refreshActiveRides();
+      }
+    });
+  }
+
+  void _stopAutoRefresh() {
+    _autoRefreshTimer?.cancel();
+    _autoRefreshTimer = null;
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.background,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<RideCubit>().loadChildrenRides();
-          context.read<ActiveRidesCubit>().loadActiveRides();
-          context.read<UpcomingRidesCubit>().loadUpcomingRides();
+          context.read<RidesDashboardCubit>().loadDashboard();
         },
         child: CustomScrollView(
           slivers: [
@@ -73,19 +113,9 @@ class _RidesDashboard extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF9B59B6), // Purple
-            Color(0xFF8E44AD), // Darker purple
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
+      decoration: BoxDecoration(
+        gradient: AppColors.parentGradient,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       child: SafeArea(
         bottom: false,
@@ -105,13 +135,13 @@ class _RidesDashboard extends StatelessWidget {
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF00BFA5),
+                          color: Colors.white,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2),
                         ),
                         child: const Icon(
                           Icons.person,
-                          color: Colors.white,
+                          color: AppColors.primary,
                           size: 24,
                         ),
                       ),
@@ -121,9 +151,9 @@ class _RidesDashboard extends StatelessWidget {
                         children: [
                           Text(
                             _getGreeting(l10n),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 13,
-                              color: Colors.white.withOpacity(0.85),
+                              color: Colors.white,
                             ),
                           ),
                           Text(
@@ -141,43 +171,15 @@ class _RidesDashboard extends StatelessWidget {
                   Row(
                     children: [
                       // Language button
-                      GestureDetector(
-                        onTap: () => showLanguageDialog(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            Localizations.localeOf(context).languageCode == 'ar'
-                                ? 'A'
-                                : 'E',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                      IconButton(
+                        onPressed: () => showLanguageDialog(context),
+                        icon: const Icon(
+                          Icons.translate,
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Notification bell
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.notifications_outlined,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                      ),
                     ],
                   ),
                 ],
@@ -186,41 +188,43 @@ class _RidesDashboard extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Stats cards
-              Row(
-                children: [
-                  // Children count card
-                  BlocBuilder<RideCubit, RideState>(
-                    builder: (context, state) {
-                      int childrenCount = 0;
-                      if (state is ChildrenRidesLoaded) {
-                        childrenCount = state.children.length;
-                      }
-                      return StatCard(
+              BlocBuilder<RidesDashboardCubit, RidesDashboardState>(
+                builder: (context, state) {
+                  int childrenCount = 0;
+                  int liveCount = 0;
+                  bool hasActiveRides = false;
+                  String? firstActiveRideId;
+
+                  if (state is RidesDashboardLoaded) {
+                    childrenCount = state.childrenCount;
+                    liveCount = state.activeRidesCount;
+                    hasActiveRides = state.hasActiveRides;
+                    firstActiveRideId = state.activeRides.isNotEmpty
+                        ? state.activeRides.first.rideId
+                        : null;
+                  }
+
+                  return Row(
+                    children: [
+                      // Children count card
+                      StatCard(
                         icon: Icons.people_outline,
                         value: childrenCount.toString(),
                         label: l10n.children,
                         backgroundColor: Colors.white.withOpacity(0.15),
-                      );
-                    },
-                  ),
+                      ),
 
-                  const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                  // Live rides card - expanded
-                  Expanded(
-                    child: BlocBuilder<ActiveRidesCubit, ActiveRidesState>(
-                      builder: (context, state) {
-                        int liveCount = 0;
-                        if (state is ActiveRidesLoaded) {
-                          liveCount = state.rides.length;
-                        }
-                        return Container(
+                      // Live rides card - expanded
+                      Expanded(
+                        child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 14,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00BFA5),
+                            color: AppColors.success,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Column(
@@ -253,17 +257,14 @@ class _RidesDashboard extends StatelessWidget {
                                       label: l10n.liveTracking,
                                       icon: Icons.map_outlined,
                                       onTap: () {
-                                        if (state is ActiveRidesLoaded &&
-                                            state.rides.isNotEmpty) {
+                                        if (hasActiveRides &&
+                                            firstActiveRideId != null) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   LiveTrackingScreen(
-                                                    rideId: state
-                                                        .rides
-                                                        .first
-                                                        .occurrenceId,
+                                                    rideId: firstActiveRideId!,
                                                   ),
                                             ),
                                           );
@@ -278,17 +279,14 @@ class _RidesDashboard extends StatelessWidget {
                                       label: l10n.timelineTracking,
                                       icon: Icons.timeline,
                                       onTap: () {
-                                        if (state is ActiveRidesLoaded &&
-                                            state.rides.isNotEmpty) {
+                                        if (hasActiveRides &&
+                                            firstActiveRideId != null) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   RideTrackingScreen(
-                                                    rideId: state
-                                                        .rides
-                                                        .first
-                                                        .occurrenceId,
+                                                    rideId: firstActiveRideId!,
                                                   ),
                                             ),
                                           );
@@ -300,11 +298,11 @@ class _RidesDashboard extends StatelessWidget {
                               ),
                             ],
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
@@ -329,38 +327,38 @@ class _RidesDashboard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          BlocBuilder<RideCubit, RideState>(
+          BlocBuilder<RidesDashboardCubit, RidesDashboardState>(
             builder: (context, state) {
-              if (state is RideLoading) {
+              if (state is RidesDashboardLoading) {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(32.0),
-                    child: CircularProgressIndicator(color: Color(0xFF9B59B6)),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                 );
               }
 
-              if (state is RideEmpty) {
+              if (state is RidesDashboardEmpty) {
                 return CustomEmptyState(
                   icon: Icons.child_care,
                   title: l10n.noChildrenFound,
                   message: l10n.addChildrenToTrack,
                   onRefresh: () =>
-                      context.read<RideCubit>().loadChildrenRides(),
+                      context.read<RidesDashboardCubit>().loadDashboard(),
                 );
               }
 
-              if (state is RideError) {
+              if (state is RidesDashboardError) {
                 return CustomEmptyState(
                   icon: Icons.error_outline,
                   title: l10n.failedToLoadChildren,
                   message: state.message,
                   onRefresh: () =>
-                      context.read<RideCubit>().loadChildrenRides(),
+                      context.read<RidesDashboardCubit>().loadDashboard(),
                 );
               }
 
-              if (state is ChildrenRidesLoaded) {
+              if (state is RidesDashboardLoaded) {
                 return SizedBox(
                   height: 190,
                   child: ListView.builder(
@@ -369,10 +367,10 @@ class _RidesDashboard extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final child = state.children[index];
                       final colors = [
-                        const Color(0xFF9B59B6),
-                        const Color(0xFF00BFA5),
-                        const Color(0xFFE91E63),
-                        const Color(0xFF3498DB),
+                        AppColors.primary,
+                        AppColors.success,
+                        AppColors.accent,
+                        AppColors.secondary,
                       ];
 
                       return Padding(
@@ -381,27 +379,26 @@ class _RidesDashboard extends StatelessWidget {
                         ),
                         child: ChildCard(
                           name: child.name,
-                          avatarUrl: child.avatar,
+                          avatarUrl: child.photoUrl,
                           initials: _getInitials(child.name),
-                          grade: child.grade ?? 'N/A',
-                          classroom: child.classroom ?? 'N/A',
-                          isOnline: _hasActiveRide(context, child.id),
+                          grade: child.displayGrade.isNotEmpty ? child.displayGrade : null,
+                          classroom: child.displayClassroom.isNotEmpty ? child.displayClassroom : null,
+                          schoolName: child.displaySchoolName.isNotEmpty ? child.displaySchoolName : null,
+                          isOnline: state.hasActiveRideForChild(child.id),
                           avatarColor: colors[index % colors.length],
                           onViewSchedule: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (ctx) => RepositoryProvider.value(
-                                  value: context.read<ApiService>(),
-                                  child: ChildScheduleScreen(
-                                    childId: child.id,
-                                    childName: child.name,
-                                    childAvatar: child.avatar,
-                                    initials: _getInitials(child.name),
-                                    grade: child.grade ?? 'N/A',
-                                    classroom: child.classroom ?? 'N/A',
-                                    avatarColor: colors[index % colors.length],
-                                  ),
+                                builder: (ctx) => ChildScheduleScreen(
+                                  childId: child.id,
+                                  childName: child.name,
+                                  childAvatar: child.photoUrl,
+                                  initials: _getInitials(child.name),
+                                  grade: child.displayGrade.isNotEmpty ? child.displayGrade : null,
+                                  classroom: child.displayClassroom.isNotEmpty ? child.displayClassroom : null,
+                                  schoolName: child.displaySchoolName.isNotEmpty ? child.displaySchoolName : null,
+                                  avatarColor: colors[index % colors.length],
                                 ),
                               ),
                             );
@@ -440,21 +437,6 @@ class _RidesDashboard extends StatelessWidget {
       return parts[0][0].toUpperCase();
     }
     return '?';
-  }
-
-  bool _hasActiveRide(BuildContext context, String childId) {
-    try {
-      final activeState = context.read<ActiveRidesCubit>().state;
-      if (activeState is ActiveRidesLoaded) {
-        // Check if there's an active ride for this child
-        return activeState.rides.any(
-          (ride) => true,
-        ); // Simplified - you can add proper child matching
-      }
-    } catch (e) {
-      // Cubit might not be available
-    }
-    return false;
   }
 
   Widget _buildTrackingButton({

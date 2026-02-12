@@ -6,8 +6,10 @@ import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
 import 'package:kidsero_driver/features/rides/ui/screens/rides_screen.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 
+import '../../../core/theme/app_colors.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           elevation: 0,
-          selectedItemColor: const Color(0xFF9B59B6),
+          selectedItemColor: AppColors.primary,
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w600,

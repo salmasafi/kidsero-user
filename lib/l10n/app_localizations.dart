@@ -570,6 +570,24 @@ abstract class AppLocalizations {
   /// **'Create Payment'**
   String get createPayment;
 
+  /// No description provided for @paymentStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get paymentStatusPending;
+
+  /// No description provided for @paymentStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get paymentStatusCompleted;
+
+  /// No description provided for @paymentStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get paymentStatusRejected;
+
   /// No description provided for @plan.
   ///
   /// In en, this message translates to:
@@ -867,13 +885,13 @@ abstract class AppLocalizations {
   /// No description provided for @noActiveSubscriptions.
   ///
   /// In en, this message translates to:
-  /// **'No active subscriptions'**
+  /// **'No active school services'**
   String get noActiveSubscriptions;
 
   /// No description provided for @choosePlanToSubscribe.
   ///
   /// In en, this message translates to:
-  /// **'Please choose a plan to subscribe'**
+  /// **'Please choose a service to subscribe'**
   String get choosePlanToSubscribe;
 
   /// No description provided for @chooseServiceToSubscribe.
@@ -888,6 +906,18 @@ abstract class AppLocalizations {
   /// **'Student'**
   String get student;
 
+  /// No description provided for @subscriptionFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Fees'**
+  String get subscriptionFees;
+
+  /// No description provided for @minPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Min. Payment'**
+  String get minPayment;
+
   /// No description provided for @liveTracking.
   ///
   /// In en, this message translates to:
@@ -899,6 +929,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timeline'**
   String get timelineTracking;
+
+  /// No description provided for @morningRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning Ride'**
+  String get morningRide;
+
+  /// No description provided for @afternoonRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon Ride'**
+  String get afternoonRide;
+
+  /// No description provided for @reportAbsence.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Absence'**
+  String get reportAbsence;
+
+  /// No description provided for @reportAbsenceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Please provide a reason for the absence.'**
+  String get reportAbsenceDescription;
+
+  /// No description provided for @rideAlreadyStartedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot report absence for a ride that has already started'**
+  String get rideAlreadyStartedError;
+
+  /// No description provided for @reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get reason;
+
+  /// No description provided for @enterReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter reason for absence...'**
+  String get enterReasonHint;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @rideSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride Summary'**
+  String get rideSummary;
+
+  /// No description provided for @totalScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Scheduled'**
+  String get totalScheduled;
+
+  /// No description provided for @attended.
+  ///
+  /// In en, this message translates to:
+  /// **'Attended'**
+  String get attended;
+
+  /// No description provided for @absent.
+  ///
+  /// In en, this message translates to:
+  /// **'Absent'**
+  String get absent;
+
+  /// No description provided for @lateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Late'**
+  String get lateLabel;
+
+  /// No description provided for @attendanceRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance Rate'**
+  String get attendanceRate;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @paymentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Type'**
+  String get paymentType;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @oneTimePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'One-Time Payment'**
+  String get oneTimePayment;
+
+  /// No description provided for @installmentPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment Payment'**
+  String get installmentPayment;
+
+  /// No description provided for @numberOfInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Installments'**
+  String get numberOfInstallments;
+
+  /// No description provided for @installmentsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of installments is required'**
+  String get installmentsRequired;
+
+  /// No description provided for @installmentsMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of installments must be a positive number'**
+  String get installmentsMustBePositive;
+
+  /// No description provided for @selectFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Select from Gallery'**
+  String get selectFromGallery;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @imageSizeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Image size exceeds {maxSize} MB. Selected image is {actualSize}.'**
+  String imageSizeError(String maxSize, String actualSize);
+
+  /// No description provided for @imagePickerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to select image. Please try again.'**
+  String get imagePickerError;
+
+  /// No description provided for @changeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Image'**
+  String get changeImage;
+
+  /// No description provided for @planPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Payments'**
+  String get planPayments;
+
+  /// No description provided for @servicePayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Payments'**
+  String get servicePayments;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @noPlanPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'No Plan Payments'**
+  String get noPlanPayments;
+
+  /// No description provided for @noPlanPaymentsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t made any plan payments yet.'**
+  String get noPlanPaymentsDesc;
+
+  /// No description provided for @noServicePayments.
+  ///
+  /// In en, this message translates to:
+  /// **'No Service Payments'**
+  String get noServicePayments;
+
+  /// No description provided for @noServicePaymentsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t made any service payments yet.'**
+  String get noServicePaymentsDesc;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentHistory;
+
+  /// No description provided for @createPlanPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Plan Payment'**
+  String get createPlanPayment;
+
+  /// No description provided for @createServicePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Service Payment'**
+  String get createServicePayment;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @rejectionReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejection Reason'**
+  String get rejectionReason;
+
+  /// No description provided for @service.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get service;
+
+  /// No description provided for @planRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan is required'**
+  String get planRequired;
+
+  /// No description provided for @serviceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Service is required'**
+  String get serviceRequired;
+
+  /// No description provided for @studentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Student is required'**
+  String get studentRequired;
+
+  /// No description provided for @paymentMethodRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method is required'**
+  String get paymentMethodRequired;
+
+  /// No description provided for @amountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get amountRequired;
+
+  /// No description provided for @amountMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than zero'**
+  String get amountMustBePositive;
+
+  /// No description provided for @receiptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt image is required'**
+  String get receiptRequired;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
 }
 
 class _AppLocalizationsDelegate

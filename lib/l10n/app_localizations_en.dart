@@ -250,6 +250,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createPayment => 'Create Payment';
 
   @override
+  String get paymentStatusPending => 'Pending';
+
+  @override
+  String get paymentStatusCompleted => 'Completed';
+
+  @override
+  String get paymentStatusRejected => 'Rejected';
+
+  @override
   String get plan => 'Plan';
 
   @override
@@ -398,10 +407,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscribeNow => 'Subscribe Now';
 
   @override
-  String get noActiveSubscriptions => 'No active subscriptions';
+  String get noActiveSubscriptions => 'No active school services';
 
   @override
-  String get choosePlanToSubscribe => 'Please choose a plan to subscribe';
+  String get choosePlanToSubscribe => 'Please choose a service to subscribe';
 
   @override
   String get chooseServiceToSubscribe => 'Please choose a service to subscribe';
@@ -410,8 +419,167 @@ class AppLocalizationsEn extends AppLocalizations {
   String get student => 'Student';
 
   @override
+  String get subscriptionFees => 'Service Fees';
+
+  @override
+  String get minPayment => 'Min. Payment';
+
+  @override
   String get liveTracking => 'Live Tracking';
 
   @override
   String get timelineTracking => 'Timeline';
+
+  @override
+  String get morningRide => 'Morning Ride';
+
+  @override
+  String get afternoonRide => 'Afternoon Ride';
+
+  @override
+  String get reportAbsence => 'Report Absence';
+
+  @override
+  String get reportAbsenceDescription =>
+      'Please provide a reason for the absence.';
+
+  @override
+  String get rideAlreadyStartedError =>
+      'Cannot report absence for a ride that has already started';
+
+  @override
+  String get reason => 'Reason';
+
+  @override
+  String get enterReasonHint => 'Enter reason for absence...';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get rideSummary => 'Ride Summary';
+
+  @override
+  String get totalScheduled => 'Total Scheduled';
+
+  @override
+  String get attended => 'Attended';
+
+  @override
+  String get absent => 'Absent';
+
+  @override
+  String get lateLabel => 'Late';
+
+  @override
+  String get attendanceRate => 'Attendance Rate';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get paymentType => 'Payment Type';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get oneTimePayment => 'One-Time Payment';
+
+  @override
+  String get installmentPayment => 'Installment Payment';
+
+  @override
+  String get numberOfInstallments => 'Number of Installments';
+
+  @override
+  String get installmentsRequired => 'Number of installments is required';
+
+  @override
+  String get installmentsMustBePositive =>
+      'Number of installments must be a positive number';
+
+  @override
+  String get selectFromGallery => 'Select from Gallery';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String imageSizeError(String maxSize, String actualSize) {
+    return 'Image size exceeds $maxSize MB. Selected image is $actualSize.';
+  }
+
+  @override
+  String get imagePickerError => 'Failed to select image. Please try again.';
+
+  @override
+  String get changeImage => 'Change Image';
+
+  @override
+  String get planPayments => 'Plan Payments';
+
+  @override
+  String get servicePayments => 'Service Payments';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noPlanPayments => 'No Plan Payments';
+
+  @override
+  String get noPlanPaymentsDesc => 'You haven\'t made any plan payments yet.';
+
+  @override
+  String get noServicePayments => 'No Service Payments';
+
+  @override
+  String get noServicePaymentsDesc =>
+      'You haven\'t made any service payments yet.';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get createPlanPayment => 'Create Plan Payment';
+
+  @override
+  String get createServicePayment => 'Create Service Payment';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get rejectionReason => 'Rejection Reason';
+
+  @override
+  String get service => 'Service';
+
+  @override
+  String get planRequired => 'Plan is required';
+
+  @override
+  String get serviceRequired => 'Service is required';
+
+  @override
+  String get studentRequired => 'Student is required';
+
+  @override
+  String get paymentMethodRequired => 'Payment method is required';
+
+  @override
+  String get amountRequired => 'Amount is required';
+
+  @override
+  String get amountMustBePositive => 'Amount must be greater than zero';
+
+  @override
+  String get receiptRequired => 'Receipt image is required';
+
+  @override
+  String get optional => 'Optional';
 }

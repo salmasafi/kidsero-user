@@ -1,57 +1,9 @@
-part of 'ride_cubit.dart';
-
-abstract class RideState extends Equatable {
-  const RideState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class RideInitial extends RideState {}
-
-class RideLoading extends RideState {}
-
-class RideEmpty extends RideState {}
-
-class RideError extends RideState {
-  final String message;
-  const RideError(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
-
-class ChildrenRidesLoaded extends RideState {
-  final List<Child> children;
-  const ChildrenRidesLoaded(this.children);
-
-  @override
-  List<Object> get props => [children];
-}
-
-
-// part of 'ride_cubit.dart';
-
-// abstract class RideState extends Equatable {
-//   const RideState();
-//   @override
-//   List<Object> get props => [];
-// }
-
-// class RideInitial extends RideState {}
-// class RideLoading extends RideState {}
-// class RideEmpty extends RideState {}
-// class RideError extends RideState {
-//   final String message;
-//   const RideError(this.message);
-//   @override
-//   List<Object> get props => [message];
-// }
-
-// // Replaces ChildrenRidesLoaded
-// class RideDashboardLoaded extends RideState {
-//   final RideDashboardData data;
-//   const RideDashboardLoaded(this.data);
-//   @override
-//   List<Object> get props => [data];
-// }
+// This file is deprecated - states are now defined within their respective cubit files
+// See:
+// - rides_dashboard_cubit.dart
+// - today_rides_cubit.dart
+// - active_rides_cubit.dart
+// - upcoming_rides_cubit.dart
+// - child_rides_cubit.dart
+// - ride_tracking_cubit.dart
+// - report_absence_cubit.dart

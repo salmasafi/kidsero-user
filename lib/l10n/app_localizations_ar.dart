@@ -249,6 +249,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createPayment => 'إنشاء دفعة';
 
   @override
+  String get paymentStatusPending => 'قيد الانتظار';
+
+  @override
+  String get paymentStatusCompleted => 'مكتملة';
+
+  @override
+  String get paymentStatusRejected => 'مرفوضة';
+
+  @override
   String get plan => 'الخطة';
 
   @override
@@ -396,10 +405,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subscribeNow => 'اشترك الآن';
 
   @override
-  String get noActiveSubscriptions => 'لا توجد اشتراكات نشطة';
+  String get noActiveSubscriptions => 'لا توجد خدمات مدرسية نشطة';
 
   @override
-  String get choosePlanToSubscribe => 'يرجى اختيار خطة للاشتراك';
+  String get choosePlanToSubscribe => 'يرجى اختيار خدمة للاشتراك';
 
   @override
   String get chooseServiceToSubscribe => 'يرجى اختيار خدمة للاشتراك';
@@ -408,8 +417,165 @@ class AppLocalizationsAr extends AppLocalizations {
   String get student => 'الطالب';
 
   @override
+  String get subscriptionFees => 'Service Fees';
+
+  @override
+  String get minPayment => 'Min. Payment';
+
+  @override
   String get liveTracking => 'تتبع مباشر';
 
   @override
   String get timelineTracking => 'الجدول الزمني';
+
+  @override
+  String get morningRide => 'رحلة صباحية';
+
+  @override
+  String get afternoonRide => 'رحلة مسائية';
+
+  @override
+  String get reportAbsence => 'إبلاغ عن غياب';
+
+  @override
+  String get reportAbsenceDescription => 'يرجى تقديم سبب للغياب.';
+
+  @override
+  String get rideAlreadyStartedError =>
+      'لا يمكن الإبلاغ عن غياب لرحلة بدأت بالفعل';
+
+  @override
+  String get reason => 'السبب';
+
+  @override
+  String get enterReasonHint => 'أدخل سبب الغياب...';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get submit => 'إرسال';
+
+  @override
+  String get rideSummary => 'ملخص الرحلات';
+
+  @override
+  String get totalScheduled => 'إجمالي المجدولة';
+
+  @override
+  String get attended => 'حضور';
+
+  @override
+  String get absent => 'غياب';
+
+  @override
+  String get lateLabel => 'متأخر';
+
+  @override
+  String get attendanceRate => 'نسبة الحضور';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get paymentType => 'نوع الدفع';
+
+  @override
+  String get paymentMethod => 'طريقة الدفع';
+
+  @override
+  String get oneTimePayment => 'دفعة واحدة';
+
+  @override
+  String get installmentPayment => 'دفع بالتقسيط';
+
+  @override
+  String get numberOfInstallments => 'عدد الأقساط';
+
+  @override
+  String get installmentsRequired => 'عدد الأقساط مطلوب';
+
+  @override
+  String get installmentsMustBePositive =>
+      'يجب أن يكون عدد الأقساط رقماً موجباً';
+
+  @override
+  String get selectFromGallery => 'اختر من المعرض';
+
+  @override
+  String get takePhoto => 'التقط صورة';
+
+  @override
+  String imageSizeError(String maxSize, String actualSize) {
+    return 'حجم الصورة يتجاوز $maxSize ميجابايت. الصورة المحددة $actualSize.';
+  }
+
+  @override
+  String get imagePickerError => 'فشل اختيار الصورة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get changeImage => 'تغيير الصورة';
+
+  @override
+  String get planPayments => 'مدفوعات الخطط';
+
+  @override
+  String get servicePayments => 'مدفوعات الخدمات';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get noPlanPayments => 'لا توجد مدفوعات خطط';
+
+  @override
+  String get noPlanPaymentsDesc => 'لم تقم بأي مدفوعات خطط بعد.';
+
+  @override
+  String get noServicePayments => 'لا توجد مدفوعات خدمات';
+
+  @override
+  String get noServicePaymentsDesc => 'لم تقم بأي مدفوعات خدمات بعد.';
+
+  @override
+  String get paymentHistory => 'سجل المدفوعات';
+
+  @override
+  String get createPlanPayment => 'إنشاء دفعة خطة';
+
+  @override
+  String get createServicePayment => 'إنشاء دفعة خدمة';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get rejectionReason => 'سبب الرفض';
+
+  @override
+  String get service => 'خدمة';
+
+  @override
+  String get planRequired => 'الخطة مطلوبة';
+
+  @override
+  String get serviceRequired => 'الخدمة مطلوبة';
+
+  @override
+  String get studentRequired => 'الطالب مطلوب';
+
+  @override
+  String get paymentMethodRequired => 'طريقة الدفع مطلوبة';
+
+  @override
+  String get amountRequired => 'المبلغ مطلوب';
+
+  @override
+  String get amountMustBePositive => 'يجب أن يكون المبلغ أكبر من الصفر';
+
+  @override
+  String get receiptRequired => 'صورة الإيصال مطلوبة';
+
+  @override
+  String get optional => 'اختياري';
 }

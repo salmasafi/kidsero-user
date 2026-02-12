@@ -46,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
         );
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -114,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+                        color: AppColors.textPrimary,
                         fontFamily: 'Cairo',
                       ),
                     ).animate().fade(delay: 200.ms).slideY(begin: 0.2, end: 0),
@@ -126,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF6B7280),
+                        color: AppColors.textSecondary,
                         fontFamily: 'Cairo',
                       ),
                     ).animate().fade(delay: 300.ms).slideY(begin: 0.2, end: 0),
@@ -142,34 +142,34 @@ class _LoginViewState extends State<LoginView> {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                            color: AppColors.textPrimary,
                             fontFamily: 'Cairo',
                           ),
                         ),
                         const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF3F4F6),
+                            color: AppColors.inputBackground,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                            border: Border.all(color: AppColors.border),
                           ),
                           child: TextField(
                             controller: _phoneController,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(
                               fontSize: 16,
-                              color: Color(0xFF1F2937),
+                              color: AppColors.textPrimary,
                               fontFamily: 'Cairo',
                             ),
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.mail_outline,
-                                color: Color(0xFF6B7280),
+                                color: AppColors.textSecondary,
                                 size: 20,
                               ),
                               hintText: l10n.emailOrPhone,
                               hintStyle: const TextStyle(
-                                color: Color(0xFF9CA3AF),
+                                color: AppColors.textTertiary,
                                 fontFamily: 'Cairo',
                               ),
                               border: InputBorder.none,
@@ -186,7 +186,7 @@ class _LoginViewState extends State<LoginView> {
                             child: Text(
                               _phoneError!,
                               style: const TextStyle(
-                                color: Color(0xFFEF4444),
+                                color: AppColors.error,
                                 fontSize: 12,
                                 fontFamily: 'Cairo',
                               ),
@@ -206,29 +206,29 @@ class _LoginViewState extends State<LoginView> {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                            color: AppColors.textPrimary,
                             fontFamily: 'Cairo',
                           ),
                         ),
                         const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF3F4F6),
+                            color: AppColors.inputBackground,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                            border: Border.all(color: AppColors.border),
                           ),
                           child: TextField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
                             style: const TextStyle(
                               fontSize: 16,
-                              color: Color(0xFF1F2937),
+                              color: AppColors.textPrimary,
                               fontFamily: 'Cairo',
                             ),
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.lock_outline,
-                                color: Color(0xFF6B7280),
+                                color: AppColors.textSecondary,
                                 size: 20,
                               ),
                               suffixIcon: IconButton(
@@ -236,7 +236,7 @@ class _LoginViewState extends State<LoginView> {
                                   _obscurePassword
                                       ? Icons.visibility_off
                                       : Icons.visibility,
-                                  color: const Color(0xFF6B7280),
+                                  color: AppColors.textSecondary,
                                   size: 20,
                                 ),
                                 onPressed: () {
@@ -247,7 +247,7 @@ class _LoginViewState extends State<LoginView> {
                               ),
                               hintText: l10n.password,
                               hintStyle: const TextStyle(
-                                color: Color(0xFF9CA3AF),
+                                color: AppColors.textTertiary,
                                 fontFamily: 'Cairo',
                               ),
                               border: InputBorder.none,
@@ -264,7 +264,7 @@ class _LoginViewState extends State<LoginView> {
                             child: Text(
                               _passwordError!,
                               style: const TextStyle(
-                                color: Color(0xFFEF4444),
+                                color: AppColors.error,
                                 fontSize: 12,
                                 fontFamily: 'Cairo',
                               ),
@@ -374,14 +374,14 @@ class _LoginViewState extends State<LoginView> {
                         style: const TextStyle(
                           fontSize: 13,
                           fontFamily: 'Cairo',
-                          color: Color(0xFF6B7280),
+                          color: AppColors.textSecondary,
                         ),
                         children: [
                           TextSpan(text: "${l10n.dontHaveAccount} "),
                           TextSpan(
                             text: l10n.contactAdmin,
                             style: const TextStyle(
-                              color: Color(0xFFFA8231),
+                              color: AppColors.secondary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

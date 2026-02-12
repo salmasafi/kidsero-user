@@ -7,27 +7,32 @@ class ChildCard extends StatelessWidget {
   final String name;
   final String? avatarUrl;
   final String initials;
-  final String grade;
-  final String classroom;
+  final String? grade;
+  final String? classroom;
+  final String? schoolName;
   final bool isOnline;
   final VoidCallback? onViewSchedule;
   final Color? avatarColor;
 
   const ChildCard({
-    Key? key,
+    super.key,
     required this.name,
     this.avatarUrl,
     required this.initials,
-    required this.grade,
-    required this.classroom,
+    this.grade,
+    this.classroom,
+    this.schoolName,
     this.isOnline = false,
     this.onViewSchedule,
     this.avatarColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final Color avColor = avatarColor ?? AppColors.primary;
+    final bool hasGradeOrClassroom = 
+        (grade != null && grade!.isNotEmpty) || 
+        (classroom != null && classroom!.isNotEmpty);
 
     return Container(
       width: 160,
@@ -37,7 +42,7 @@ class ChildCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -81,7 +86,7 @@ class ChildCard extends StatelessWidget {
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF00BFA5),
+                      color: AppColors.success,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
@@ -103,22 +108,42 @@ class ChildCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
-          // Grade and Classroom
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.school_outlined, size: 12, color: Colors.grey[500]),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  '$grade • $classroom',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          // Grade and Classroom or School Name
+          if (hasGradeOrClassroom)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.school_outlined, size: 12, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    _buildGradeClassroomText(),
+                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            )
+          else if (schoolName != null && schoolName!.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.business_outlined, size: 12, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    schoolName!,
+                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            )
+          else
+            SizedBox(height: 16), // Maintain spacing when no info available
+          
           const SizedBox(height: 12),
           // View Schedule link
           GestureDetector(
@@ -146,5 +171,19 @@ class ChildCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _buildGradeClassroomText() {
+    final hasGrade = grade != null && grade!.isNotEmpty;
+    final hasClassroom = classroom != null && classroom!.isNotEmpty;
+    
+    if (hasGrade && hasClassroom) {
+      return '$grade • $classroom';
+    } else if (hasGrade) {
+      return grade!;
+    } else if (hasClassroom) {
+      return classroom!;
+    }
+    return '';
   }
 }

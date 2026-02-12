@@ -218,201 +218,374 @@ class AppLocalizationsDe extends AppLocalizations {
   String get failedToLoadChildren => 'Fehler beim Laden der Kinder';
 
   @override
-  String get payments => 'Payments';
+  String get payments => 'Zahlungen';
 
   @override
-  String get payment => 'Payment';
+  String get payment => 'Zahlung';
 
   @override
-  String get paymentsRetrievedSuccessfully => 'Payments retrieved successfully';
+  String get paymentsRetrievedSuccessfully => 'Zahlungen erfolgreich abgerufen';
 
   @override
-  String get paymentRetrievedSuccessfully => 'Payment retrieved successfully';
+  String get paymentRetrievedSuccessfully => 'Zahlung erfolgreich abgerufen';
 
   @override
-  String get paymentCreatedSuccessfully => 'Payment created successfully';
+  String get paymentCreatedSuccessfully => 'Zahlung erfolgreich erstellt';
 
   @override
-  String get amount => 'Amount';
+  String get amount => 'Betrag';
 
   @override
-  String get date => 'Date';
+  String get date => 'Datum';
 
   @override
-  String get receiptImage => 'Receipt Image';
+  String get receiptImage => 'Quittungsbild';
 
   @override
-  String get noPaymentsFound => 'No payments found';
+  String get noPaymentsFound => 'Keine Zahlungen gefunden';
 
   @override
-  String get failedToLoadPayments => 'Failed to load payments';
+  String get failedToLoadPayments => 'Fehler beim Laden der Zahlungen';
 
   @override
-  String get createPayment => 'Create Payment';
+  String get createPayment => 'Zahlung erstellen';
+
+  @override
+  String get paymentStatusPending => 'Ausstehend';
+
+  @override
+  String get paymentStatusCompleted => 'Abgeschlossen';
+
+  @override
+  String get paymentStatusRejected => 'Abgelehnt';
 
   @override
   String get plan => 'Plan';
 
   @override
-  String get home => 'Home';
+  String get home => 'Startseite';
 
   @override
-  String get track => 'Track';
+  String get track => 'Verfolgen';
 
   @override
-  String get alerts => 'Alerts';
+  String get alerts => 'Warnungen';
 
   @override
-  String get goodMorning => 'Good morning';
+  String get goodMorning => 'Guten Morgen';
 
   @override
-  String get goodAfternoon => 'Good afternoon';
+  String get goodAfternoon => 'Guten Tag';
 
   @override
-  String get goodEvening => 'Good evening';
+  String get goodEvening => 'Guten Abend';
 
   @override
-  String get welcomeBack => 'Welcome Back';
+  String get welcomeBack => 'Willkommen zurück';
 
   @override
-  String get liveRides => 'Live Rides';
+  String get liveRides => 'Live-Fahrten';
 
   @override
-  String get viewSchedule => 'View Schedule';
+  String get viewSchedule => 'Zeitplan anzeigen';
 
   @override
-  String get today => 'Today';
+  String get today => 'Heute';
 
   @override
-  String get upcoming => 'Upcoming';
+  String get upcoming => 'Bevorstehend';
 
   @override
-  String get history => 'History';
+  String get history => 'Verlauf';
 
   @override
-  String get liveNow => 'LIVE NOW';
+  String get liveNow => 'JETZT LIVE';
 
   @override
-  String get trackLive => 'Track Live';
+  String get trackLive => 'Live verfolgen';
 
   @override
-  String get scheduled => 'Scheduled';
+  String get scheduled => 'Geplant';
 
   @override
-  String get completed => 'Completed';
+  String get completed => 'Abgeschlossen';
 
   @override
-  String get cancelled => 'Cancelled';
+  String get cancelled => 'Storniert';
 
   @override
-  String get driver => 'Driver';
+  String get driver => 'Fahrer';
 
   @override
-  String get eta => 'ETA';
+  String get eta => 'Voraussichtliche Ankunftszeit';
 
   @override
-  String get noRidesToday => 'No Rides Today';
+  String get noRidesToday => 'Keine Fahrten heute';
 
   @override
-  String get noRidesTodayDesc => 'There are no rides scheduled for today.';
+  String get noRidesTodayDesc => 'Es sind keine Fahrten für heute geplant.';
 
   @override
-  String get noUpcomingRides => 'No Upcoming Rides';
+  String get noUpcomingRides => 'Keine bevorstehenden Fahrten';
 
   @override
-  String get noUpcomingRidesDesc => 'There are no upcoming rides scheduled.';
+  String get noUpcomingRidesDesc =>
+      'Es sind keine bevorstehenden Fahrten geplant.';
 
   @override
-  String get noRideHistory => 'No Ride History';
+  String get noRideHistory => 'Kein Fahrtenverlauf';
 
   @override
-  String get noRideHistoryDesc => 'No past rides found.';
+  String get noRideHistoryDesc => 'Keine vergangenen Fahrten gefunden.';
 
   @override
-  String get scheduledRides => 'Scheduled Rides';
+  String get scheduledRides => 'Geplante Fahrten';
 
   @override
-  String get morningTrip => 'Morning Trip';
+  String get morningTrip => 'Morgenfahrt';
 
   @override
-  String get returnTrip => 'Return Trip';
+  String get returnTrip => 'Rückfahrt';
 
   @override
-  String get homeToSchool => 'Home → School';
+  String get homeToSchool => 'Zuhause → Schule';
 
   @override
-  String get schoolToHome => 'School → Home';
+  String get schoolToHome => 'Schule → Zuhause';
 
   @override
-  String get errorLoadingRides => 'Error Loading Rides';
+  String get errorLoadingRides => 'Fehler beim Laden der Fahrten';
 
   @override
-  String get noChildrenFoundRides => 'No Children Found';
+  String get noChildrenFoundRides => 'Keine Kinder gefunden';
 
   @override
   String get addChildrenToTrack =>
-      'Add your children to start tracking their rides.';
+      'Fügen Sie Ihre Kinder hinzu, um ihre Fahrten zu verfolgen.';
 
   @override
-  String get appServices => 'App Services';
+  String get appServices => 'App-Dienste';
 
   @override
-  String get schoolServices => 'School Services';
+  String get schoolServices => 'Schuldienste';
 
   @override
-  String get activeServices => 'Active Services';
+  String get activeServices => 'Aktive Dienste';
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'Verfügbare Dienste';
 
   @override
-  String get noServicesAvailable => 'No Services Available';
+  String get noServicesAvailable => 'Keine Dienste verfügbar';
 
   @override
-  String get checkBackLater => 'Check back later for new services.';
+  String get checkBackLater => 'Schauen Sie später nach neuen Diensten.';
 
   @override
-  String get noSchoolServices => 'No School Services';
+  String get noSchoolServices => 'Keine Schuldienste';
 
   @override
-  String get noServicesForChild => 'No services available for this child.';
+  String get noServicesForChild => 'Keine Dienste für dieses Kind verfügbar.';
 
   @override
-  String get price => 'Price';
+  String get price => 'Preis';
 
   @override
-  String get servicePlan => 'Service Plan';
+  String get servicePlan => 'Dienstplan';
 
   @override
-  String get schoolService => 'School Service';
+  String get schoolService => 'Schuldiens';
 
   @override
-  String get selectPaymentMethod => 'Select Payment Method';
+  String get selectPaymentMethod => 'Zahlungsmethode auswählen';
 
   @override
-  String get uploadReceipt => 'Upload Receipt';
+  String get uploadReceipt => 'Quittung hochladen';
 
   @override
-  String get tapToChooseReceipt => 'Tap to choose receipt';
+  String get tapToChooseReceipt => 'Tippen Sie, um Quittung auszuwählen';
 
   @override
-  String get subscribeNow => 'Subscribe Now';
+  String get subscribeNow => 'Jetzt abonnieren';
 
   @override
-  String get noActiveSubscriptions => 'No active subscriptions';
+  String get noActiveSubscriptions => 'Keine aktiven Schuldienste';
 
   @override
-  String get choosePlanToSubscribe => 'Please choose a plan to subscribe';
+  String get choosePlanToSubscribe =>
+      'Bitte wählen Sie einen Dienst zum Abonnieren';
 
   @override
-  String get chooseServiceToSubscribe => 'Please choose a service to subscribe';
+  String get chooseServiceToSubscribe =>
+      'Bitte wählen Sie einen Dienst zum Abonnieren';
 
   @override
   String get student => 'Student';
 
   @override
-  String get liveTracking => 'Live Tracking';
+  String get subscriptionFees => 'Service Fees';
 
   @override
-  String get timelineTracking => 'Timeline';
+  String get minPayment => 'Min. Payment';
+
+  @override
+  String get liveTracking => 'Live-Verfolgung';
+
+  @override
+  String get timelineTracking => 'Zeitachse';
+
+  @override
+  String get morningRide => 'Morgenfahrt';
+
+  @override
+  String get afternoonRide => 'Nachmittagsfahrt';
+
+  @override
+  String get reportAbsence => 'Abwesenheit melden';
+
+  @override
+  String get reportAbsenceDescription =>
+      'Bitte geben Sie einen Grund für die Abwesenheit an.';
+
+  @override
+  String get rideAlreadyStartedError =>
+      'Abwesenheit kann nicht für eine bereits begonnene Fahrt gemeldet werden';
+
+  @override
+  String get reason => 'Grund';
+
+  @override
+  String get enterReasonHint => 'Grund für Abwesenheit eingeben...';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get submit => 'Absenden';
+
+  @override
+  String get rideSummary => 'Fahrtzusammenfassung';
+
+  @override
+  String get totalScheduled => 'Gesamt geplant';
+
+  @override
+  String get attended => 'Anwesend';
+
+  @override
+  String get absent => 'Abwesend';
+
+  @override
+  String get lateLabel => 'Verspätet';
+
+  @override
+  String get attendanceRate => 'Anwesenheitsrate';
+
+  @override
+  String get close => 'Schließen';
+
+  @override
+  String get paymentType => 'Zahlungsart';
+
+  @override
+  String get paymentMethod => 'Zahlungsmethode';
+
+  @override
+  String get oneTimePayment => 'Einmalzahlung';
+
+  @override
+  String get installmentPayment => 'Ratenzahlung';
+
+  @override
+  String get numberOfInstallments => 'Anzahl der Raten';
+
+  @override
+  String get installmentsRequired => 'Anzahl der Raten ist erforderlich';
+
+  @override
+  String get installmentsMustBePositive =>
+      'Anzahl der Raten muss eine positive Zahl sein';
+
+  @override
+  String get selectFromGallery => 'Aus Galerie auswählen';
+
+  @override
+  String get takePhoto => 'Foto machen';
+
+  @override
+  String imageSizeError(String maxSize, String actualSize) {
+    return 'Bildgröße überschreitet $maxSize MB. Ausgewähltes Bild ist $actualSize.';
+  }
+
+  @override
+  String get imagePickerError =>
+      'Fehler bei der Bildauswahl. Bitte versuchen Sie es erneut.';
+
+  @override
+  String get changeImage => 'Bild ändern';
+
+  @override
+  String get planPayments => 'Planzahlungen';
+
+  @override
+  String get servicePayments => 'Dienstzahlungen';
+
+  @override
+  String get retry => 'Wiederholen';
+
+  @override
+  String get noPlanPayments => 'Keine Planzahlungen';
+
+  @override
+  String get noPlanPaymentsDesc =>
+      'Sie haben noch keine Planzahlungen getätigt.';
+
+  @override
+  String get noServicePayments => 'Keine Dienstzahlungen';
+
+  @override
+  String get noServicePaymentsDesc =>
+      'Sie haben noch keine Dienstzahlungen getätigt.';
+
+  @override
+  String get paymentHistory => 'Zahlungshistorie';
+
+  @override
+  String get createPlanPayment => 'Planzahlung erstellen';
+
+  @override
+  String get createServicePayment => 'Dienstzahlung erstellen';
+
+  @override
+  String get notes => 'Notizen';
+
+  @override
+  String get rejectionReason => 'Ablehnungsgrund';
+
+  @override
+  String get service => 'Dienst';
+
+  @override
+  String get planRequired => 'Plan ist erforderlich';
+
+  @override
+  String get serviceRequired => 'Dienst ist erforderlich';
+
+  @override
+  String get studentRequired => 'Student ist erforderlich';
+
+  @override
+  String get paymentMethodRequired => 'Zahlungsmethode ist erforderlich';
+
+  @override
+  String get amountRequired => 'Betrag ist erforderlich';
+
+  @override
+  String get amountMustBePositive => 'Betrag muss größer als null sein';
+
+  @override
+  String get receiptRequired => 'Belegbild ist erforderlich';
+
+  @override
+  String get optional => 'Optional';
 }

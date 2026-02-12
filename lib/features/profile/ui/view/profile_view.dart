@@ -28,6 +28,14 @@ class ProfileView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocBuilder<ProfileCubit, ProfileState>(
+          buildWhen: (previous, current) {
+            // Only rebuild for profile-related states, ignore children states
+            return current is ProfileLoading ||
+                   current is ProfileLoaded ||
+                   current is ProfileError ||
+                   current is ProfileUpdateSuccess ||
+                   current is PasswordChangeSuccess;
+          },
           builder: (context, state) {
             if (state is ProfileLoading) {
               return const CustomLoading();
@@ -100,14 +108,8 @@ class ProfileView extends StatelessWidget {
                                       context,
                                     ).copyWith(color: Colors.white),
                                   ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.white,
-                                      size: AppSizes.bodySize(context) * 1.5,
-                                    ),
-                                    onPressed: () => context.pop(),
-                                  ),
+                                  // Removed back button - profile is a main tab, no screen to pop to
+                                  const SizedBox(width: 48), // Spacer to balance the layout
                                 ],
                               ),
                             ),
@@ -561,9 +563,7 @@ class ProfileView extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        if (Navigator.of(sheetContext).canPop()) {
-                          Navigator.of(sheetContext).pop();
-                        }
+                        Navigator.of(sheetContext).pop();
                       },
                       icon: Icon(Icons.close, color: AppColors.textSecondary),
                     ),
@@ -578,6 +578,11 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      // Refresh profile data when bottom sheet is closed
+      if (context.mounted) {
+        profileCubit.getProfile();
+      }
+    });
   }
 }

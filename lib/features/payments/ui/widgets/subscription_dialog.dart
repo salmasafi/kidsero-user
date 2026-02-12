@@ -63,6 +63,46 @@ class _SubscriptionDialogState extends State<SubscriptionDialog> {
     return 'data:image/$extension;base64,${base64Encode(bytes)}';
   }
 
+  Widget _buildPaymentMethodLogo(String logoUrl) {
+    // Handle empty or invalid URLs
+    if (logoUrl.isEmpty) {
+      return const Icon(Icons.payment, size: 40);
+    }
+
+    // If the URL doesn't start with http/https, it's likely a relative path
+    // In this case, just show the payment icon instead of trying to load an invalid URL
+    if (!logoUrl.startsWith('http://') && !logoUrl.startsWith('https://')) {
+      return const Icon(Icons.payment, size: 40);
+    }
+
+    return Image.network(
+      logoUrl,
+      width: 40,
+      height: 40,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) {
+        // Show icon if image fails to load
+        return const Icon(Icons.payment, size: 40);
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return SizedBox(
+          width: 40,
+          height: 40,
+          child: Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+              strokeWidth: 2,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _handleSubscription(BuildContext context) async {
     if (_imageFile == null || _selectedPaymentMethodId == null) return;
 
@@ -169,7 +209,7 @@ class _SubscriptionDialogState extends State<SubscriptionDialog> {
                           title: Text(method.name),
                           subtitle: Text(method.description),
                           secondary: method.logo.isNotEmpty
-                              ? Image.network(method.logo, width: 40)
+                              ? _buildPaymentMethodLogo(method.logo)
                               : const Icon(Icons.payment),
                           contentPadding: EdgeInsets.zero,
                         );

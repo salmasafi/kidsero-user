@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../core/network/api_service.dart';
+import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
 import '../../../core/network/socket_service.dart';
 import '../../../core/utils/app_preferences.dart';
-import '../models/tracking_models.dart';
 
 abstract class LiveTrackingState {}
 
@@ -17,8 +16,15 @@ class LiveTrackingLoading extends LiveTrackingState {}
 class LiveTrackingActive extends LiveTrackingState {
   final LatLng busLocation;
   final double rotation;
+  final String? eta;
+  final double? speed;
 
-  LiveTrackingActive({required this.busLocation, this.rotation = 0});
+  LiveTrackingActive({
+    required this.busLocation,
+    this.rotation = 0,
+    this.eta,
+    this.speed,
+  });
 }
 
 class LiveTrackingError extends LiveTrackingState {
@@ -28,26 +34,33 @@ class LiveTrackingError extends LiveTrackingState {
 
 class LiveTrackingCubit extends Cubit<LiveTrackingState> {
   final String rideId;
-  final ApiService apiService;
+  final RidesRepository ridesRepository;
   final SocketService _socketService = SocketService();
 
-  LiveTrackingCubit({required this.rideId, required this.apiService})
+  LiveTrackingCubit({required this.rideId, required this.ridesRepository})
     : super(LiveTrackingInitial());
 
   Future<void> startTracking() async {
     emit(LiveTrackingLoading());
     try {
       // 1. Fetch initial location from REST API
-      final response = await apiService.getRideTracking(rideId);
-      final trackingData = TrackingData.fromJson(response['data']);
+      final trackingData = await ridesRepository.getRideTracking(rideId);
 
-      final initialLocation = LatLng(
-        trackingData.bus.currentLocation.lat,
-        trackingData.bus.currentLocation.lng,
-      );
-
-      if (initialLocation.latitude != 0.0) {
-        emit(LiveTrackingActive(busLocation: initialLocation));
+      if (trackingData.currentLocation != null) {
+        final initialLocation = LatLng(
+          trackingData.currentLocation!.lat,
+          trackingData.currentLocation!.lng,
+        );
+        emit(
+          LiveTrackingActive(
+            busLocation: initialLocation,
+            rotation: trackingData.currentLocation!.heading ?? 0,
+            eta: trackingData.route?.nextStopEta,
+            speed: trackingData.currentLocation!.speedKmh,
+          ),
+        );
+      } else {
+        // Fallback or just stay loading/waiting for socket
       }
 
       // 2. Connect to WebSocket for live updates
@@ -83,8 +96,23 @@ class LiveTrackingCubit extends Cubit<LiveTrackingState> {
             final lng = double.tryParse(data['lng'].toString()) ?? 0.0;
 
             if (lat != 0.0 && lng != 0.0) {
+              final heading =
+                  double.tryParse(data['heading']?.toString() ?? '0') ?? 0.0;
+              final speed = double.tryParse(data['speed']?.toString() ?? '0');
+
+              // Preserve ETA from previous state if not in socket data
+              String? eta;
+              if (state is LiveTrackingActive) {
+                eta = (state as LiveTrackingActive).eta;
+              }
+
               emit(
-                LiveTrackingActive(busLocation: LatLng(lat, lng), rotation: 0),
+                LiveTrackingActive(
+                  busLocation: LatLng(lat, lng),
+                  rotation: heading,
+                  eta: eta,
+                  speed: speed,
+                ),
               );
             }
           }

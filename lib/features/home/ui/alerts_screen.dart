@@ -1,48 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_driver/core/widgets/language_toggle.dart';
+
+import '../../../core/theme/app_colors.dart';
 
 /// Alerts/Notifications screen - placeholder for now
 class AlertsScreen extends StatelessWidget {
-  const AlertsScreen({Key? key}) : super(key: key);
+  const AlertsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF9B59B6),
-        elevation: 0,
-        title: Text(
-          l10n.alerts,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF9B59B6), Color(0xFF8E44AD)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      backgroundColor: AppColors.background,
+      body: Column(
+        children: [
+          // Elegant gradient header
+          Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.parentGradient,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(30),
+              ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.alerts,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    // Language button
+                    IconButton(
+                      onPressed: () => showLanguageDialog(context),
+                      icon: const Icon(
+                        Icons.translate,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.white),
-            onPressed: () {
-              // TODO: Open notification settings
-            },
+          // Body content
+          Expanded(
+            child: CustomEmptyState(
+              icon: Icons.notifications_off_outlined,
+              title: l10n.alerts,
+              message: l10n.somethingWentWrong,
+            ),
           ),
         ],
-      ),
-      body: CustomEmptyState(
-        icon: Icons.notifications_off_outlined,
-        title: l10n.alerts,
-        message: l10n.somethingWentWrong,
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_text_styles.dart';
-import '../theme/app_sizes.dart';
+import '../theme/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -30,7 +29,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonHeight = height ?? 56;
     final buttonRadius = borderRadius ?? 16;
-    final buttonColor = color ?? const Color(0xFF8B5CF6);
+    final buttonColor = color ?? AppColors.primary;
     final buttonGradient = gradient ?? LinearGradient(
       colors: [buttonColor, buttonColor.withOpacity(0.8)],
       begin: Alignment.topLeft,

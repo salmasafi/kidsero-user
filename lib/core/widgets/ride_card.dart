@@ -16,11 +16,13 @@ class RideCard extends StatelessWidget {
   final String? driverAvatar;
   final RideStatus status;
   final String? eta;
-  final VoidCallback? onTrackLive;
+  final VoidCallback? onTrackLive; // For live map tracking
+  final VoidCallback? onTrackTimeline; // For timeline tracking
   final VoidCallback? onTap;
+  final VoidCallback? onReportAbsence; // For reporting absence
 
   const RideCard({
-    Key? key,
+    super.key,
     required this.time,
     this.amPm,
     required this.dateLabel,
@@ -31,8 +33,10 @@ class RideCard extends StatelessWidget {
     required this.status,
     this.eta,
     this.onTrackLive,
+    this.onTrackTimeline,
     this.onTap,
-  }) : super(key: key);
+    this.onReportAbsence,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +52,14 @@ class RideCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF00BFA5), Color(0xFF00897B)],
+          colors: [AppColors.success, AppColors.success],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00BFA5).withOpacity(0.3),
+            color: AppColors.success.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -174,29 +178,57 @@ class RideCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // Track Live button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onTrackLive,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF00897B),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+            // Track buttons - Live and Timeline
+            Row(
+              children: [
+                // Live Tracking button
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: onTrackLive,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.success,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 0,
+                    ),
+                    icon: const Icon(Icons.navigation_rounded, size: 18),
+                    label: Text(
+                      l10n.liveTracking,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
-                  elevation: 0,
                 ),
-                icon: const Icon(Icons.navigation_rounded, size: 18),
-                label: Text(
-                  l10n.trackLive,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                const SizedBox(width: 8),
+                // Timeline Tracking button
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: onTrackTimeline,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 0,
+                    ),
+                    icon: const Icon(Icons.timeline, size: 18),
+                    label: Text(
+                      l10n.timelineTracking,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -358,29 +390,29 @@ class RideCard extends StatelessWidget {
       case RideStatus.live:
         return {
           'label': l10n.liveNow,
-          'color': Colors.green,
-          'bgColor': Colors.green.withOpacity(0.1),
+          'color': AppColors.success,
+          'bgColor': AppColors.success.withOpacity(0.1),
           'icon': Icons.sensors,
         };
       case RideStatus.scheduled:
         return {
           'label': l10n.scheduled,
-          'color': const Color(0xFF00BFA5),
-          'bgColor': const Color(0xFF00BFA5).withOpacity(0.1),
+          'color': AppColors.success,
+          'bgColor': AppColors.success.withOpacity(0.1),
           'icon': null,
         };
       case RideStatus.completed:
         return {
           'label': l10n.completed,
-          'color': Colors.green,
-          'bgColor': Colors.green.withOpacity(0.1),
+          'color': AppColors.success,
+          'bgColor': AppColors.success.withOpacity(0.1),
           'icon': Icons.check,
         };
       case RideStatus.cancelled:
         return {
           'label': l10n.cancelled,
-          'color': Colors.red,
-          'bgColor': Colors.red.withOpacity(0.1),
+          'color': AppColors.error,
+          'bgColor': AppColors.error.withOpacity(0.1),
           'icon': Icons.close,
         };
     }

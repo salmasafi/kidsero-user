@@ -1,18 +1,22 @@
-import 'dart:developer';
 // Commented out for App Store submission - Firebase not connected to iOS
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'core/theme/app_theme.dart';
-import 'core/network/cache_helper.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+
+import 'core/network/cache_helper.dart';
 import 'core/network/api_helper.dart';
 import 'core/network/api_service.dart';
-import 'core/utils/app_strings.dart';
 import 'core/routing/app_router.dart';
+import 'core/theme/app_theme.dart';
+import 'core/utils/app_strings.dart';
 import 'core/logic/locale_cubit.dart';
+import 'features/rides/data/rides_repository.dart';
+import 'features/rides/data/rides_service.dart';
+import 'features/payments/data/repositories/payment_repository.dart';
+import 'l10n/app_localizations.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -46,14 +50,33 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   late final ApiHelper _apiHelper;
   late final ApiService _apiService;
+  late final RidesRepository _ridesRepository;
+  late final PaymentRepository _paymentRepository;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _apiHelper = ApiHelper();
-    _apiService = ApiService();
+    _initializeServices();
     // Commented out for App Store submission - Firebase not connected to iOS
     // _setupFCM();
+  }
+
+  Future<void> _initializeServices() async {
+    _apiHelper = ApiHelper();
+    _apiService = ApiService();
+    _ridesRepository = RidesRepository(
+      ridesService: RidesService(dio: _apiService.dio),
+    );
+    _paymentRepository = PaymentRepository(_apiService);
+    
+    // Ensure tokens are loaded before the app renders
+    await _apiHelper.refreshToken();
+    await _apiService.refreshToken();
+    
+    setState(() {
+      _isInitialized = true;
+    });
   }
 
   // Commented out for App Store submission - Firebase not connected to iOS
@@ -89,10 +112,22 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+    
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: _apiHelper),
         RepositoryProvider.value(value: _apiService),
+        RepositoryProvider.value(value: _ridesRepository),
+        RepositoryProvider.value(value: _paymentRepository),
       ],
       child: BlocProvider(
         create: (context) => LocaleCubit(),

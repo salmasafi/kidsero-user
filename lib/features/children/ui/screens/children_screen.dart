@@ -12,12 +12,12 @@
 //     return BlocProvider(
 //       create: (context) => ChildrenCubit(context.read<ApiService>())..loadChildren(),
 //       child: Scaffold(
-        
+
 //         floatingActionButton: Builder(
 //           builder: (context) {
 //             return FloatingActionButton.extended(
 //               onPressed: () => _showAddChildDialog(context),
-//               backgroundColor: const Color(0xFF4F46E5),
+//               backgroundColor: AppColors.primary,
 //               icon: const Icon(Icons.add),
 //               label: const Text("Add Child"),
 //             );
@@ -30,7 +30,7 @@
 //                 expandedHeight: 60,
 //                 floating: false,
 //                 pinned: true,
-        
+
 //                 flexibleSpace: FlexibleSpaceBar(
 //                   title: Text("My Children", style: TextStyle(color: Colors.white, fontSize: 16)),
 //                   background: Container(
@@ -59,7 +59,7 @@
 //                 );
 //               }
 //             },
-//             buildWhen: (previous, current) => 
+//             buildWhen: (previous, current) =>
 //                 current is ChildrenLoaded || current is ChildrenLoading,
 //             builder: (context, state) {
 //               if (state is ChildrenLoading) {
@@ -140,7 +140,7 @@
 
 //   Widget _buildChildCard(Child child) {
 //     final bool isActive = child.status.toLowerCase() == 'active';
-    
+
 //     return Card(
 //       margin: const EdgeInsets.only(bottom: 16),
 //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -179,7 +179,7 @@
 //                         child: Text(
 //                           child.status.toUpperCase(),
 //                           style: TextStyle(
-//                             fontSize: 10, 
+//                             fontSize: 10,
 //                             fontWeight: FontWeight.bold,
 //                             color: isActive ? Colors.green : Colors.red,
 //                           ),
@@ -215,7 +215,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/network/api_service.dart';
@@ -227,21 +226,22 @@ class ChildrenScreen extends StatelessWidget {
   const ChildrenScreen({Key? key}) : super(key: key);
 
   // Define theme colors locally for consistency
-  final Color primaryColor = const Color(0xFF4F46E5);
-  final Color secondaryColor = const Color(0xFF7C3AED);
+  final Color primaryColor = AppColors.primary;
+  final Color secondaryColor = AppColors.secondary;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChildrenCubit(context.read<ApiService>())..loadChildren(),
+      create: (context) =>
+          ChildrenCubit(context.read<ApiService>())..loadChildren(),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9FAFB), // Softer background color
+        backgroundColor: AppColors.background, // Softer background color
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
                 expandedHeight: 60, // Taller header for a modern look
-               floating: false,
+                floating: false,
                 pinned: true,
                 backgroundColor: primaryColor,
                 flexibleSpace: FlexibleSpaceBar(
@@ -269,9 +269,10 @@ class ChildrenScreen extends StatelessWidget {
                         Positioned(
                           right: -20,
                           top: -20,
-                          child: Icon(Icons.family_restroom, 
-                            size: 150, 
-                            color: Colors.white.withOpacity(0.1)
+                          child: Icon(
+                            Icons.family_restroom,
+                            size: 150,
+                            color: Colors.white.withOpacity(0.1),
                           ),
                         ),
                       ],
@@ -294,15 +295,15 @@ class ChildrenScreen extends StatelessWidget {
                         Text(state.message),
                       ],
                     ),
-                    backgroundColor: Colors.green.shade600,
+                    backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
               } else if (state is ChildrenError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.message), 
-                    backgroundColor: Colors.red.shade600,
+                    content: Text(state.message),
+                    backgroundColor: AppColors.error,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -315,15 +316,34 @@ class ChildrenScreen extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ChildrenLoaded) {
                 if (state.children.isEmpty) {
-                  return _buildEmptyState(context);
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await context.read<ChildrenCubit>().loadChildren();
+                    },
+                    color: primaryColor,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: _buildEmptyState(context),
+                      ),
+                    ),
+                  );
                 }
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 80),
-                  itemCount: state.children.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    return _ChildCard(child: state.children[index]);
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<ChildrenCubit>().loadChildren();
                   },
+                  color: primaryColor,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 80),
+                    itemCount: state.children.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      return _ChildCard(child: state.children[index]);
+                    },
+                  ),
                 );
               }
               return const SizedBox();
@@ -339,7 +359,10 @@ class ChildrenScreen extends StatelessWidget {
               icon: const Icon(Icons.add_rounded, color: AppColors.background),
               label: const Text(
                 "Add Child",
-                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.background),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.background,
+                ),
               ),
             );
           },
@@ -363,7 +386,7 @@ class ChildrenScreen extends StatelessWidget {
                   color: Colors.grey.withOpacity(0.1),
                   blurRadius: 20,
                   spreadRadius: 5,
-                )
+                ),
               ],
             ),
             child: Icon(Icons.child_care, size: 64, color: Colors.grey[400]),
@@ -461,9 +484,9 @@ class ChildrenScreen extends StatelessWidget {
                             ? null
                             : () {
                                 if (codeController.text.isNotEmpty) {
-                                  context
-                                      .read<ChildrenCubit>()
-                                      .addChild(codeController.text);
+                                  context.read<ChildrenCubit>().addChild(
+                                    codeController.text,
+                                  );
                                 }
                               },
                         style: ElevatedButton.styleFrom(
@@ -478,7 +501,9 @@ class ChildrenScreen extends StatelessWidget {
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2),
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Text(
                                 "Add Child",
@@ -514,7 +539,7 @@ class _ChildCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isActive = child.status.toLowerCase() == 'active';
-    final Color statusColor = isActive ? Colors.green : Colors.red;
+    final Color statusColor = isActive ? AppColors.success : AppColors.error;
 
     return Container(
       decoration: BoxDecoration(
@@ -534,10 +559,7 @@ class _ChildCard extends StatelessWidget {
           child: Row(
             children: [
               // Left Status Indicator Bar
-              Container(
-                width: 6,
-                color: statusColor,
-              ),
+              Container(width: 6, color: statusColor),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -547,17 +569,23 @@ class _ChildCard extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey[100]!, width: 2),
+                          border: Border.all(
+                            color: Colors.grey[100]!,
+                            width: 2,
+                          ),
                         ),
                         child: CircleAvatar(
                           radius: 28,
                           backgroundColor: Colors.grey[100],
-                          backgroundImage: child.avatar != null
-                              ? NetworkImage(child.avatar!)
+                          backgroundImage: child.photoUrl != null
+                              ? NetworkImage(child.photoUrl!)
                               : null,
-                          child: child.avatar == null
-                              ? Icon(Icons.person,
-                                  size: 30, color: Colors.grey[400])
+                          child: child.photoUrl == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: 30,
+                                  color: Colors.grey[400],
+                                )
                               : null,
                         ),
                       ),
@@ -587,33 +615,13 @@ class _ChildCard extends StatelessWidget {
                             const SizedBox(height: 4),
                             // Class Info
                             Text(
-                              "${child.grade ?? 'No Grade'}  •  ${child.classroom ?? 'No Class'}",
+                              "${child.grade ?? 'No Grade'}  •  ${child.schoolName ?? 'No School'}",
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            // Organization Info
-                            if (child.organization != null)
-                              Row(
-                                children: [
-                                  Icon(Icons.school,
-                                      size: 14, color: Colors.grey[400]),
-                                  const SizedBox(width: 6),
-                                  Flexible(
-                                    child: Text(
-                                      child.organization!.name,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey[500],
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
                           ],
                         ),
                       ),
@@ -633,8 +641,8 @@ class _ChildCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: isActive
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+            ? AppColors.success.withOpacity(0.1)
+            : AppColors.error.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -643,7 +651,7 @@ class _ChildCard extends StatelessWidget {
           fontSize: 10,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.5,
-          color: isActive ? Colors.green[700] : Colors.red[700],
+          color: isActive ? AppColors.success : AppColors.error,
         ),
       ),
     );

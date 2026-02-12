@@ -1,76 +1,135 @@
 class ChildResponse {
-  final List<Child> children;
+  final bool success;
+  final List<Child> data;
 
-  ChildResponse({required this.children});
+  ChildResponse({required this.success, required this.data});
 
   factory ChildResponse.fromJson(Map<String, dynamic> json) {
-    // Navigating data -> children
-    var list = json['data']['children'] as List;
-    List<Child> childrenList = list.map((i) => Child.fromJson(i)).toList();
-    return ChildResponse(children: childrenList);
+    List<Child> children = [];
+    
+    try {
+      // Case 1: data is directly a list (simple response)
+      if (json['data'] is List) {
+        children = (json['data'] as List).map((i) => Child.fromJson(i as Map<String, dynamic>)).toList();
+      } 
+      // Case 2: data is an object with nested structure
+      else if (json['data'] is Map) {
+        final dataMap = json['data'] as Map<String, dynamic>;
+        
+        // Check for 'children' field
+        if (dataMap['children'] is List) {
+          children = (dataMap['children'] as List).map((i) => Child.fromJson(i as Map<String, dynamic>)).toList();
+        }
+        // Check if data map itself contains child objects
+        else if (dataMap.containsKey('id') && dataMap.containsKey('name')) {
+          children = [Child.fromJson(dataMap)];
+        }
+      }
+    } catch (e) {
+      print('Error parsing children response: $e');
+      print('Response data: ${json['data']}');
+    }
+    
+    return ChildResponse(
+      success: json['success'] ?? false,
+      data: children,
+    );
+  }
+}
+
+class AddChildResponse {
+  final bool success;
+  final String message;
+  final Child? data;
+
+  AddChildResponse({required this.success, required this.message, this.data});
+
+  factory AddChildResponse.fromJson(Map<String, dynamic> json) {
+    return AddChildResponse(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] != null ? Child.fromJson(json['data']) : null,
+    );
   }
 }
 
 class Child {
   final String id;
   final String name;
-  final String? avatar;
+  final String code;
   final String? grade;
   final String? classroom;
-  final String code;
+  final String? schoolName;
+  final String? photoUrl;
   final String status;
+  final String? createdAt;
+  final String? updatedAt;
   final Organization? organization;
-  final Wallet? wallet;
 
   Child({
     required this.id,
     required this.name,
-    this.avatar,
+    required this.code,
     this.grade,
     this.classroom,
-    required this.code,
+    this.schoolName,
+    this.photoUrl,
     required this.status,
+    this.createdAt,
+    this.updatedAt,
     this.organization,
-    this.wallet,
   });
+
+  /// Get display grade - returns grade or empty string if not available
+  String get displayGrade => grade ?? '';
+  
+  /// Get display classroom - returns classroom or empty string if not available
+  String get displayClassroom => classroom ?? '';
+  
+  /// Get display school name - returns organization name or schoolName or empty string
+  String get displaySchoolName => 
+      organization?.name ?? schoolName ?? '';
+  
+  /// Check if child has complete grade and classroom info
+  bool get hasCompleteInfo => 
+      (grade != null && grade!.isNotEmpty) || 
+      (classroom != null && classroom!.isNotEmpty);
 
   factory Child.fromJson(Map<String, dynamic> json) {
     return Child(
-      id: json['id'] ?? '',
-      name: json['name'] ?? 'Unknown',
-      avatar: json['avatar'],
-      grade: json['grade'],
-      classroom: json['classroom'],
-      code: json['code'] ?? '',
-      status: json['status'] ?? 'inactive',
-      organization: json['organization'] != null
-          ? Organization.fromJson(json['organization'])
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      grade: json['grade']?.toString(),
+      classroom: json['classroom']?.toString(),
+      schoolName: json['schoolName']?.toString(),
+      photoUrl: json['avatar']?.toString() ?? json['photoUrl']?.toString(),
+      status: json['status']?.toString() ?? 'active',
+      createdAt: json['createdAt']?.toString(),
+      updatedAt: json['updatedAt']?.toString(),
+      organization: json['organization'] != null 
+          ? Organization.fromJson(json['organization']) 
           : null,
-      wallet: json['wallet'] != null ? Wallet.fromJson(json['wallet']) : null,
     );
   }
 }
 
 class Organization {
+  final String id;
   final String name;
   final String? logo;
 
-  Organization({required this.name, this.logo});
+  Organization({
+    required this.id,
+    required this.name,
+    this.logo,
+  });
 
   factory Organization.fromJson(Map<String, dynamic> json) {
     return Organization(
-      name: json['name'] ?? '',
-      logo: json['logo'],
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      logo: json['logo']?.toString(),
     );
-  }
-}
-
-class Wallet {
-  final num balance;
-
-  Wallet({required this.balance});
-
-  factory Wallet.fromJson(Map<String, dynamic> json) {
-    return Wallet(balance: json['balance'] ?? 0);
   }
 }

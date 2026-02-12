@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 /// A reusable gradient header widget
 class GradientHeader extends StatelessWidget {
   final Widget child;
@@ -10,14 +12,14 @@ class GradientHeader extends StatelessWidget {
   final VoidCallback? onBack;
 
   const GradientHeader({
-    Key? key,
+    super.key,
     required this.child,
     this.height,
     this.gradientColors,
     this.padding,
     this.showBackButton = false,
     this.onBack,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,8 @@ class GradientHeader extends StatelessWidget {
           colors:
               gradientColors ??
               [
-                const Color(0xFF9B59B6), // Purple
-                const Color(0xFF8E44AD), // Darker purple
+                AppColors.primary,
+                AppColors.secondary
               ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

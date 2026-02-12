@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kidsero_driver/core/network/api_service.dart';
+import 'package:kidsero_driver/core/theme/app_colors.dart';
 import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_driver/core/routing/routes.dart';
 import 'package:kidsero_driver/features/plans/cubit/app_services_cubit.dart';
 import 'package:kidsero_driver/features/payments/ui/widgets/service_card.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/subscription_dialog.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class AppServicesTab extends StatelessWidget {
-  const AppServicesTab({Key? key}) : super(key: key);
+  const AppServicesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class _AppServicesTabContent extends StatelessWidget {
       builder: (context, state) {
         if (state is AppServicesLoading) {
           return const Center(
-            child: CircularProgressIndicator(color: Color(0xFF9B59B6)),
+            child: CircularProgressIndicator(color: AppColors.primary),
           );
         }
 
@@ -77,19 +79,19 @@ class _AppServicesTabContent extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.1),
+                      color: AppColors.secondary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                      border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
                     ),
                     child: Column(
                       children: [
-                        const Icon(Icons.info_outline, color: Colors.amber),
+                        const Icon(Icons.info_outline, color: AppColors.secondary),
                         const SizedBox(height: 8),
                         Text(
                           l10n.noActiveSubscriptions,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.amber,
+                            color: AppColors.secondary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -98,25 +100,32 @@ class _AppServicesTabContent extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.amber[900],
+                            color: Colors.grey[800],
                           ),
                         ),
                       ],
                     ),
-                  )
-                else
+                  ),
                   ...state.activeSubscriptions.map((sub) {
+                    // Find the corresponding plan to get the price
+                    final matchingPlan = state.availablePlans
+                        .where((plan) => plan.id == sub.parentPlanId)
+                        .firstOrNull;
+                    final price = matchingPlan?.price ?? 0;
+                    
                     return ServiceCard(
-                      title: l10n.servicePlan,
-                      description: '${l10n.active} ${l10n.date} ${sub.endDate}',
-                      priceLabel: l10n.active,
+                      title: matchingPlan?.name ?? l10n.servicePlan,
+                      description: matchingPlan?.name != null 
+                          ? '${l10n.active} ${l10n.date} ${sub.endDate}'
+                          : '${l10n.active} ${l10n.date} ${sub.endDate}',
+                      priceLabel: '${price} AED',
                       isSubscribed: true,
                       subscriptionStatus: sub.isActive
                           ? l10n.active.toUpperCase()
                           : l10n.inactive.toUpperCase(),
-                      accentColor: const Color(0xFF9B59B6),
+                      accentColor: AppColors.primary,
                     );
-                  }).toList(),
+                  }),
                 const SizedBox(height: 24),
 
                 if (hasPlans) ...[
@@ -135,24 +144,13 @@ class _AppServicesTabContent extends StatelessWidget {
                       description: 'Premium service plan',
                       priceLabel: '${plan.price} AED',
                       isSubscribed: false,
-                      accentColor: const Color(0xFF9B59B6),
-                      onTap: () async {
-                        final result = await showDialog<bool>(
-                          context: context,
-                          builder: (_) => SubscriptionDialog(
-                            title: plan.name,
-                            amount: plan.price,
-                            planId: plan.id,
-                          ),
-                        );
-                        if (result == true) {
-                          if (context.mounted) {
-                            context.read<AppServicesCubit>().loadAppServices();
-                          }
-                        }
+                      accentColor: AppColors.primary,
+                      buttonText: l10n.subscribeNow,
+                      onTap: () {
+                        context.push(Routes.createPlanPayment);
                       },
                     );
-                  }).toList(),
+                  }),
                 ],
               ],
             ),
