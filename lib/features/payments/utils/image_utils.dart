@@ -52,7 +52,10 @@ class ImageUtils {
   static Future<String> imageToBase64(File imageFile) async {
     try {
       final bytes = await imageFile.readAsBytes();
-      return base64Encode(bytes);
+      final base64Data = base64Encode(bytes);
+      final mimeType = _detectMimeType(imageFile.path);
+
+      return 'data:$mimeType;base64,$base64Data';
     } catch (e) {
       debugPrint('Error encoding image to base64: $e');
       rethrow;
@@ -187,6 +190,31 @@ class ImageUtils {
       return '${(bytes / 1024).toStringAsFixed(2)} KB';
     } else {
       return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    }
+  }
+
+  static String _detectMimeType(String path) {
+    if (!path.contains('.')) {
+      return 'image/jpeg';
+    }
+
+    final extension = path.split('.').last.toLowerCase();
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'gif':
+        return 'image/gif';
+      case 'webp':
+        return 'image/webp';
+      case 'heic':
+        return 'image/heic';
+      case 'bmp':
+        return 'image/bmp';
+      default:
+        return 'image/jpeg';
     }
   }
 }

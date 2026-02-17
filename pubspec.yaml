@@ -12,6 +12,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: 0.20.2
+  provider: ^6.1.2
   # Commented out for App Store submission - Firebase not connected to iOS
   # firebase_core: ^4.3.0
   # firebase_messaging: ^16.1.0

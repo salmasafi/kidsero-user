@@ -1,9 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_driver/core/widgets/stat_card.dart';
 import 'package:kidsero_driver/core/widgets/child_card.dart';
 import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_driver/features/notes/logic/cubit/upcoming_notes_cubit.dart';
+import 'package:kidsero_driver/features/notes/ui/widgets/upcoming_notices_section.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:kidsero_driver/core/widgets/language_toggle.dart';
 import '../../../../core/network/api_service.dart';
@@ -12,23 +13,51 @@ import 'ride_tracking_screen.dart';
 import 'live_tracking_screen.dart';
 import '../../cubit/rides_dashboard_cubit.dart';
 import '../../data/rides_repository.dart';
+import '../../../notes/data/notes_repository.dart';
 import 'child_schedule_screen.dart';
 
 /// Main Rides Dashboard Screen matching the new UI design
-class RidesScreen extends StatelessWidget {
+class RidesScreen extends StatefulWidget {
   const RidesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<RidesScreen> createState() => _RidesScreenState();
+}
+
+class _RidesScreenState extends State<RidesScreen> {
+  late final RidesDashboardCubit _ridesDashboardCubit;
+  late final UpcomingNotesCubit _upcomingNotesCubit;
+
+  @override
+  void initState() {
+    super.initState();
     final ridesRepository = context.read<RidesRepository>();
+    final notesRepository = context.read<NotesRepository>();
     final apiService = context.read<ApiService>();
 
-    return BlocProvider(
-      create: (context) =>
-          RidesDashboardCubit(
-            repository: ridesRepository,
-            apiService: apiService,  // Pass ApiService for children endpoint
-          )..loadDashboard(),
+    _ridesDashboardCubit = RidesDashboardCubit(
+      repository: ridesRepository,
+      apiService: apiService,
+    )..loadDashboard();
+
+    _upcomingNotesCubit = UpcomingNotesCubit(notesRepository)
+      ..loadUpcomingNotes();
+  }
+
+  @override
+  void dispose() {
+    _ridesDashboardCubit.close();
+    _upcomingNotesCubit.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _ridesDashboardCubit),
+        BlocProvider.value(value: _upcomingNotesCubit),
+      ],
       child: const _RidesDashboard(),
     );
   }
@@ -41,51 +70,7 @@ class _RidesDashboard extends StatefulWidget {
   State<_RidesDashboard> createState() => _RidesDashboardState();
 }
 
-class _RidesDashboardState extends State<_RidesDashboard> with WidgetsBindingObserver {
-  Timer? _autoRefreshTimer;
-  static const _refreshInterval = Duration(seconds: 30);
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _startAutoRefresh();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _stopAutoRefresh();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      // Refresh immediately when app comes to foreground
-      context.read<RidesDashboardCubit>().refreshActiveRides();
-      _startAutoRefresh();
-    } else if (state == AppLifecycleState.paused) {
-      // Stop auto-refresh when app goes to background
-      _stopAutoRefresh();
-    }
-  }
-
-  void _startAutoRefresh() {
-    _stopAutoRefresh(); // Cancel any existing timer
-    _autoRefreshTimer = Timer.periodic(_refreshInterval, (_) {
-      if (mounted) {
-        context.read<RidesDashboardCubit>().refreshActiveRides();
-      }
-    });
-  }
-
-  void _stopAutoRefresh() {
-    _autoRefreshTimer?.cancel();
-    _autoRefreshTimer = null;
-  }
-
+class _RidesDashboardState extends State<_RidesDashboard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -93,7 +78,10 @@ class _RidesDashboardState extends State<_RidesDashboard> with WidgetsBindingObs
       backgroundColor: AppColors.background,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<RidesDashboardCubit>().loadDashboard();
+          await Future.wait([
+            context.read<RidesDashboardCubit>().loadDashboard(),
+            context.read<UpcomingNotesCubit>().refresh(),
+          ]);
         },
         child: CustomScrollView(
           slivers: [
@@ -102,6 +90,9 @@ class _RidesDashboardState extends State<_RidesDashboard> with WidgetsBindingObs
 
             // My Children section
             SliverToBoxAdapter(child: _buildMyChildrenSection(context, l10n)),
+
+            // Upcoming notices section
+            const SliverToBoxAdapter(child: UpcomingNoticesSection()),
 
             // Add some bottom padding
             const SliverToBoxAdapter(child: SizedBox(height: 100)),

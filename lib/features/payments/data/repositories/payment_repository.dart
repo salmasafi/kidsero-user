@@ -2,6 +2,7 @@ import '../../../../core/network/api_service.dart';
 import '../../../../core/network/error_handler.dart';
 import '../models/payment_model.dart';
 import '../models/payment_response_model.dart';
+import '../models/payment_status.dart';
 import '../models/service_payment_model.dart';
 import '../models/payment_type.dart';
 
@@ -125,7 +126,17 @@ class PaymentRepository {
       );
       
       if (response.data['success'] == true && response.data['data'] != null) {
-        return PaymentModel.fromJson(response.data['data']);
+        final responseData = response.data['data'];
+        final payment = _parsePlanPaymentResponse(responseData) ??
+            _buildPendingPlanPayment(
+              planId: planId,
+              paymentMethodId: paymentMethodId,
+              amount: amount,
+              receiptImage: receiptImage,
+              notes: notes,
+            );
+
+        return payment;
       } else {
         throw Exception('Failed to create payment');
       }
@@ -179,12 +190,127 @@ class PaymentRepository {
       );
       
       if (response.data['success'] == true && response.data['data'] != null) {
-        return ServicePaymentModel.fromJson(response.data['data']);
+        final responseData = response.data['data'];
+        final payment = _parseServicePaymentResponse(responseData) ??
+            _buildPendingServicePayment(
+              serviceId: serviceId,
+              studentId: studentId,
+              paymentMethodId: paymentMethodId,
+              amount: amount,
+              receiptImage: receiptImage,
+              paymentType: paymentType,
+              numberOfInstallments: numberOfInstallments,
+            );
+
+        return payment;
       } else {
         throw Exception('Failed to create service payment');
       }
     } catch (e) {
       throw Exception(ErrorHandler.handle(e));
     }
+  }
+
+  PaymentModel? _parsePlanPaymentResponse(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      if (data['payment'] is Map<String, dynamic>) {
+        return PaymentModel.fromJson(
+          Map<String, dynamic>.from(data['payment'] as Map),
+        );
+      }
+
+      if (_hasPlanPaymentFields(data)) {
+        return PaymentModel.fromJson(Map<String, dynamic>.from(data));
+      }
+    }
+
+    return null;
+  }
+
+  bool _hasPlanPaymentFields(Map<String, dynamic> data) {
+    return data.containsKey('id') &&
+        data.containsKey('parentId') &&
+        data.containsKey('amount');
+  }
+
+  PaymentModel _buildPendingPlanPayment({
+    required String planId,
+    required String paymentMethodId,
+    required double amount,
+    required String receiptImage,
+    String? notes,
+  }) {
+    final now = DateTime.now();
+    return PaymentModel(
+      id: '',
+      parentId: '',
+      amount: amount,
+      receiptImage: receiptImage,
+      status: PaymentStatus.pending,
+      rejectedReason: null,
+      createdAt: now,
+      updatedAt: now,
+      planId: planId,
+      notes: notes,
+      paymentMethodId: paymentMethodId,
+    );
+  }
+
+  ServicePaymentModel? _parseServicePaymentResponse(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      if (data['payment'] is Map<String, dynamic>) {
+        return ServicePaymentModel.fromJson(
+          Map<String, dynamic>.from(data['payment'] as Map),
+        );
+      }
+
+      if (data['servicePayment'] is Map<String, dynamic>) {
+        return ServicePaymentModel.fromJson(
+          Map<String, dynamic>.from(data['servicePayment'] as Map),
+        );
+      }
+
+      if (_hasServicePaymentFields(data)) {
+        return ServicePaymentModel.fromJson(Map<String, dynamic>.from(data));
+      }
+    }
+
+    return null;
+  }
+
+  bool _hasServicePaymentFields(Map<String, dynamic> data) {
+    return data.containsKey('id') &&
+        data.containsKey('serviceId') &&
+        data.containsKey('amount');
+  }
+
+  ServicePaymentModel _buildPendingServicePayment({
+    required String serviceId,
+    required String studentId,
+    required String paymentMethodId,
+    required double amount,
+    required String receiptImage,
+    required PaymentType paymentType,
+    int? numberOfInstallments,
+  }) {
+    final now = DateTime.now();
+    return ServicePaymentModel(
+      id: '',
+      parentId: '',
+      serviceId: serviceId,
+      studentId: studentId,
+      amount: amount,
+      receiptImage: receiptImage,
+      status: PaymentStatus.pending,
+      rejectedReason: null,
+      paymentType: paymentType,
+      requestedInstallments: numberOfInstallments,
+      createdAt: now,
+      updatedAt: now,
+      paymentMethodId: paymentMethodId,
+      student: null,
+      service: null,
+      paymentMethod: null,
+    );
   }
 }

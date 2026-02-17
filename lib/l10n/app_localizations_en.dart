@@ -292,6 +292,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
   String get upcoming => 'Upcoming';
 
   @override
@@ -368,10 +371,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schoolServices => 'School Services';
 
   @override
+  String get appSubscriptionsTitle => 'App Subscriptions';
+
+  @override
+  String get noAppSubscriptions => 'You have no app subscriptions yet.';
+
+  @override
+  String get browseParentPlans =>
+      'Browse the parent plans below to get started.';
+
+  @override
+  String get parentPlansTitle => 'Parent Plans';
+
+  @override
+  String get subscribeAppPlan => 'Subscribe App Plan';
+
+  @override
+  String get subscribeSchoolPlan => 'Subscribe School Plan';
+
+  @override
   String get activeServices => 'Active Services';
 
   @override
   String get availableServices => 'Available Services';
+
+  @override
+  String get schoolSubscribedServices => 'Subscribed School Services';
+
+  @override
+  String get availableSchoolServices => 'Available School Services';
+
+  @override
+  String get filterByChild => 'Filter by child';
+
+  @override
+  String get noSchoolSubscriptions =>
+      'You have no school service subscriptions yet.';
+
+  @override
+  String get browseSchoolServices =>
+      'Browse the available school services below.';
 
   @override
   String get noServicesAvailable => 'No Services Available';
@@ -417,6 +456,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get student => 'Student';
+
+  @override
+  String get all => 'All';
 
   @override
   String get subscriptionFees => 'Service Fees';
@@ -496,6 +538,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get numberOfInstallments => 'Number of Installments';
 
   @override
+  String get perInstallmentAmount => 'Per Installment';
+
+  @override
+  String get remainingAmount => 'Remaining Amount';
+
+  @override
   String get installmentsRequired => 'Number of installments is required';
 
   @override
@@ -551,7 +599,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createServicePayment => 'Create Service Payment';
 
   @override
+  String get totalAmount => 'Total Amount';
+
+  @override
   String get notes => 'Notes';
+
+  @override
+  String get upcomingNotices => 'Upcoming Notices';
+
+  @override
+  String get upcomingNoticesSubtitle => 'Stay informed about school events.';
+
+  @override
+  String get noUpcomingNotices => 'No Upcoming Notices';
+
+  @override
+  String get noUpcomingNoticesDesc =>
+      'There are no events or holidays in the next few days.';
+
+  @override
+  String get noticeTypeHoliday => 'Holiday';
+
+  @override
+  String get noticeTypeEvent => 'Event';
+
+  @override
+  String get noticeTypeOther => 'Notice';
+
+  @override
+  String get ridesAffected => 'Rides affected';
+
+  @override
+  String get ridesNotAffected => 'Rides not affected';
+
+  @override
+  String inDays(int days) {
+    return 'in $days days';
+  }
 
   @override
   String get rejectionReason => 'Rejection Reason';

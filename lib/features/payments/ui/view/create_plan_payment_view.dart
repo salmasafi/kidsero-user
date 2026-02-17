@@ -10,7 +10,6 @@ import 'package:kidsero_driver/features/payments/data/repositories/payment_repos
 import 'package:kidsero_driver/features/payments/logic/cubit/create_plan_payment_cubit.dart';
 import 'package:kidsero_driver/features/payments/logic/cubit/create_plan_payment_state.dart';
 import 'package:kidsero_driver/features/payments/ui/widgets/receipt_image_picker.dart';
-import 'package:kidsero_driver/features/plans/cubit/plans_cubit.dart';
 import 'package:kidsero_driver/features/plans/model/payment_method_model.dart';
 import 'package:kidsero_driver/features/plans/model/plans_model.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
@@ -19,13 +18,18 @@ import 'package:kidsero_driver/core/routing/routes.dart';
 /// Screen for creating plan subscription payments
 /// 
 /// Provides a form to create a new plan payment with:
-/// - Plan selection
+/// - Selected plan summary
 /// - Payment method selection
 /// - Amount input
 /// - Optional notes
 /// - Receipt image upload
 class CreatePlanPaymentScreen extends StatefulWidget {
-  const CreatePlanPaymentScreen({super.key});
+  final PlanModel? preselectedPlan;
+
+  const CreatePlanPaymentScreen({
+    super.key,
+    this.preselectedPlan,
+  });
 
   @override
   State<CreatePlanPaymentScreen> createState() =>
@@ -41,13 +45,14 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
   PaymentMethod? _selectedPaymentMethod;
   String? _receiptImageBase64;
 
-  List<PlanModel> _plans = [];
   List<PaymentMethod> _paymentMethods = [];
   bool _isLoadingData = true;
 
   @override
   void initState() {
     super.initState();
+    _selectedPlan = widget.preselectedPlan;
+    _prefillAmount();
     _loadInitialData();
   }
 
@@ -58,26 +63,24 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
     super.dispose();
   }
 
-  /// Load plans and payment methods
+  void _prefillAmount() {
+    if (_selectedPlan != null) {
+      _amountController.text = _selectedPlan!.price.toString();
+    }
+  }
+
+  /// Load payment methods
   Future<void> _loadInitialData() async {
     try {
       final apiService = context.read<ApiService>();
 
-      // Load plans
-      final plansCubit = PlansCubit(apiService);
-      await plansCubit.fetchPlans();
-      final plansState = plansCubit.state;
-      if (plansState is PlansLoaded) {
-        _plans = plansState.plans;
-      }
-
-      // Load payment methods
       final paymentMethodsResponse = await apiService.getPaymentMethods();
-      _paymentMethods = paymentMethodsResponse.paymentMethods
+      final activeMethods = paymentMethodsResponse.paymentMethods
           .where((method) => method.isActive)
           .toList();
 
       setState(() {
+        _paymentMethods = activeMethods;
         _isLoadingData = false;
       });
     } catch (e) {
@@ -94,7 +97,9 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
   }
 
   /// Validate and submit the form
-  void _submitForm() {
+  void _submitForm(BuildContext submitContext) {
+    final localizations = AppLocalizations.of(submitContext)!;
+
     // Validate form fields
     if (!_formKey.currentState!.validate()) {
       return;
@@ -102,33 +107,24 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
 
     // Validate plan selection
     if (_selectedPlan == null) {
-      CustomSnackbar.showError(
-        context,
-        AppLocalizations.of(context)!.choosePlanToSubscribe,
-      );
+      CustomSnackbar.showError(submitContext, localizations.planRequired);
       return;
     }
 
     // Validate payment method selection
     if (_selectedPaymentMethod == null) {
-      CustomSnackbar.showError(
-        context,
-        AppLocalizations.of(context)!.selectPaymentMethod,
-      );
+      CustomSnackbar.showError(submitContext, localizations.selectPaymentMethod);
       return;
     }
 
     // Validate receipt image
     if (_receiptImageBase64 == null || _receiptImageBase64!.isEmpty) {
-      CustomSnackbar.showError(
-        context,
-        AppLocalizations.of(context)!.uploadReceipt,
-      );
+      CustomSnackbar.showError(submitContext, localizations.uploadReceipt);
       return;
     }
 
     // Create payment
-    context.read<CreatePlanPaymentCubit>().createPayment(
+    submitContext.read<CreatePlanPaymentCubit>().createPayment(
           planId: _selectedPlan!.id,
           paymentMethodId: _selectedPaymentMethod!.id,
           amount: double.parse(_amountController.text),
@@ -141,167 +137,250 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
     return BlocProvider(
       create: (context) => CreatePlanPaymentCubit(
         context.read<PaymentRepository>(),
       ),
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          elevation: 0,
-          title: Text(
-            localizations.createPayment,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.accent],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+      child: Builder(
+        builder: (blocContext) {
+          final localizations = AppLocalizations.of(blocContext)!;
+
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: AppBar(
+              backgroundColor: AppColors.primary,
+              elevation: 0,
+              title: Text(
+                localizations.subscribeAppPlan,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ),
-        ),
-        body: BlocListener<CreatePlanPaymentCubit, CreatePlanPaymentState>(
-          listener: (context, state) {
-            if (state is CreatePlanPaymentSuccess) {
-              CustomSnackbar.showSuccess(
-                context,
-                localizations.paymentCreatedSuccessfully,
-              );
-              // Navigate back to payment history
-              context.go(Routes.paymentHistory);
-            } else if (state is CreatePlanPaymentError) {
-              CustomSnackbar.showError(context, state.message);
-            }
-          },
-          child: _isLoadingData
-              ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  padding: EdgeInsets.all(AppSizes.padding(context)),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Plan selector
-                        _buildPlanSelector(localizations),
-                        SizedBox(height: AppSizes.spacing(context)),
-
-                        // Payment method selector
-                        _buildPaymentMethodSelector(localizations),
-                        SizedBox(height: AppSizes.spacing(context)),
-
-                        // Amount input
-                        _buildAmountInput(localizations),
-                        SizedBox(height: AppSizes.spacing(context)),
-
-                        // Notes input (optional)
-                        _buildNotesInput(localizations),
-                        SizedBox(height: AppSizes.spacing(context)),
-
-                        // Receipt image picker
-                        ReceiptImagePicker(
-                          onImageSelected: (base64Image) {
-                            setState(() {
-                              _receiptImageBase64 = base64Image;
-                            });
-                          },
-                          onImageRemoved: () {
-                            setState(() {
-                              _receiptImageBase64 = null;
-                            });
-                          },
-                        ),
-                        SizedBox(height: AppSizes.spacing(context) * 2),
-
-                        // Submit button
-                        BlocBuilder<CreatePlanPaymentCubit,
-                            CreatePlanPaymentState>(
-                          builder: (context, state) {
-                            final isLoading = state is CreatePlanPaymentLoading;
-                            return CustomButton(
-                              text: localizations.submit,
-                              onPressed: isLoading ? () {} : _submitForm,
-                              isLoading: isLoading,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primary, AppColors.accent],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                 ),
-        ),
+              ),
+            ),
+            body: BlocListener<CreatePlanPaymentCubit, CreatePlanPaymentState>(
+              listener: (listenerContext, state) {
+                if (state is CreatePlanPaymentSuccess) {
+                  CustomSnackbar.showSuccess(
+                    listenerContext,
+                    localizations.paymentCreatedSuccessfully,
+                  );
+                  // Navigate back to payment history
+                  listenerContext.go(Routes.paymentHistory);
+                } else if (state is CreatePlanPaymentError) {
+                  CustomSnackbar.showError(listenerContext, state.message);
+                }
+              },
+              child: _selectedPlan == null
+                  ? _buildMissingPlanState(localizations)
+                  : _isLoadingData
+                      ? const Center(child: CircularProgressIndicator())
+                      : SingleChildScrollView(
+                          padding:
+                              EdgeInsets.all(AppSizes.padding(blocContext)),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                            // Selected plan summary
+                            _buildPlanSummary(localizations),
+                            SizedBox(height: AppSizes.spacing(blocContext)),
+
+                            // Total amount summary
+                            _buildTotalAmountCard(localizations),
+                            SizedBox(height: AppSizes.spacing(blocContext)),
+
+                            // Payment method selector
+                            _buildPaymentMethodSelector(localizations),
+                            SizedBox(height: AppSizes.spacing(context)),
+
+                            // Amount input
+                            _buildAmountInput(localizations),
+                            SizedBox(height: AppSizes.spacing(context)),
+
+                            // Notes input (optional)
+                            _buildNotesInput(localizations),
+                            SizedBox(height: AppSizes.spacing(context)),
+
+                            // Receipt image picker
+                            ReceiptImagePicker(
+                              onImageSelected: (base64Image) {
+                                setState(() {
+                                  _receiptImageBase64 = base64Image;
+                                });
+                              },
+                              onImageRemoved: () {
+                                setState(() {
+                                  _receiptImageBase64 = null;
+                                });
+                              },
+                            ),
+                            SizedBox(height: AppSizes.spacing(context) * 2),
+
+                            // Submit button
+                                BlocBuilder<CreatePlanPaymentCubit,
+                                    CreatePlanPaymentState>(
+                                  builder: (context, state) {
+                                    final isLoading =
+                                        state is CreatePlanPaymentLoading;
+                                    return CustomButton(
+                                      text: localizations.submit,
+                                      onPressed: isLoading
+                                          ? () {}
+                                          : () => _submitForm(blocContext),
+                                      isLoading: isLoading,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  /// Build plan selector dropdown
-  Widget _buildPlanSelector(AppLocalizations localizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          localizations.plan,
-          style: TextStyle(
-            fontSize: AppSizes.bodySize(context),
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+  /// Build selected plan summary card
+  Widget _buildPlanSummary(AppLocalizations localizations) {
+    final plan = _selectedPlan;
+    if (plan == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
-        ),
-        SizedBox(height: AppSizes.spacingSmall(context)),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.inputBackground,
-            borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
-            border: Border.all(color: AppColors.border),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.workspace_premium,
+              color: AppColors.primary,
+              size: 28,
+            ),
           ),
-          child: DropdownButtonFormField<PlanModel>(
-            value: _selectedPlan,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              prefixIcon: Icon(Icons.card_membership, color: AppColors.textSecondary),
-            ),
-            hint: Text(
-              localizations.choosePlanToSubscribe,
-              style: const TextStyle(color: AppColors.textTertiary),
-            ),
-            items: _plans.map((plan) {
-              return DropdownMenuItem<PlanModel>(
-                value: plan,
-                child: Text(
-                  '${plan.name} - ${plan.price} ${localizations.amount}',
-                  style: const TextStyle(color: AppColors.textPrimary),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  localizations.plan,
+                  style: TextStyle(
+                    fontSize: AppSizes.smallSize(context),
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedPlan = value;
-                // Auto-fill amount with plan price
-                if (value != null) {
-                  _amountController.text = value.price.toString();
-                }
-              });
-            },
+                const SizedBox(height: 4),
+                Text(
+                  plan.name,
+                  style: TextStyle(
+                    fontSize: AppSizes.subHeadingSize(context),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${plan.price} AED',
+                  style: TextStyle(
+                    fontSize: AppSizes.bodySize(context),
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  /// Build total amount summary card
+  Widget _buildTotalAmountCard(AppLocalizations localizations) {
+    final plan = _selectedPlan;
+    if (plan == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                localizations.totalAmount,
+                style: TextStyle(
+                  fontSize: AppSizes.bodySize(context),
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                localizations.oneTimePayment,
+                style: TextStyle(
+                  fontSize: AppSizes.smallSize(context),
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+          Text(
+            '${plan.price} AED',
+            style: TextStyle(
+              fontSize: AppSizes.headingSize(context),
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -381,6 +460,8 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
           ),
           child: TextFormField(
             controller: _amountController,
+            readOnly: true,
+            enableInteractiveSelection: false,
             keyboardType: TextInputType.number,
             style: const TextStyle(
               fontSize: 16,
@@ -399,6 +480,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
                 horizontal: 16,
               ),
             ),
+            onTap: () => FocusScope.of(context).unfocus(),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return localizations.amountRequired;
@@ -458,6 +540,48 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMissingPlanState(AppLocalizations localizations) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.info_outline,
+              size: 48,
+              color: AppColors.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              localizations.choosePlanToSubscribe,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: AppSizes.bodySize(context),
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              localizations.browseParentPlans,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: AppSizes.smallSize(context),
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
+              text: localizations.close,
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

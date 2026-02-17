@@ -291,6 +291,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today => 'اليوم';
 
   @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
   String get upcoming => 'القادمة';
 
   @override
@@ -366,10 +369,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get schoolServices => 'خدمات المدرسة';
 
   @override
+  String get appSubscriptionsTitle => 'اشتراكات التطبيق';
+
+  @override
+  String get noAppSubscriptions => 'لا توجد لديك اشتراكات في التطبيق بعد.';
+
+  @override
+  String get browseParentPlans => 'استعرض خطط التطبيق أدناه للبدء.';
+
+  @override
+  String get parentPlansTitle => 'خطط التطبيق';
+
+  @override
+  String get subscribeAppPlan => 'اشترك في خطة التطبيق';
+
+  @override
+  String get subscribeSchoolPlan => 'اشترك في خطة المدرسة';
+
+  @override
   String get activeServices => 'الخدمات النشطة';
 
   @override
   String get availableServices => 'الخدمات المتاحة';
+
+  @override
+  String get schoolSubscribedServices => 'اشتراكات المدرسة الحالية';
+
+  @override
+  String get availableSchoolServices => 'خدمات المدرسة المتاحة';
+
+  @override
+  String get filterByChild => 'تصفية حسب الطفل';
+
+  @override
+  String get noSchoolSubscriptions => 'لا توجد لديك اشتراكات مدرسية حالياً.';
+
+  @override
+  String get browseSchoolServices => 'استعرض الخدمات المدرسية المتاحة أدناه.';
 
   @override
   String get noServicesAvailable => 'لا توجد خدمات متاحة';
@@ -415,6 +451,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get student => 'الطالب';
+
+  @override
+  String get all => 'الكل';
 
   @override
   String get subscriptionFees => 'Service Fees';
@@ -493,6 +532,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get numberOfInstallments => 'عدد الأقساط';
 
   @override
+  String get perInstallmentAmount => 'قيمة كل قسط';
+
+  @override
+  String get remainingAmount => 'المبلغ المتبقي';
+
+  @override
   String get installmentsRequired => 'عدد الأقساط مطلوب';
 
   @override
@@ -547,7 +592,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createServicePayment => 'إنشاء دفعة خدمة';
 
   @override
+  String get totalAmount => 'إجمالي المبلغ';
+
+  @override
   String get notes => 'ملاحظات';
+
+  @override
+  String get upcomingNotices => 'Upcoming Notices';
+
+  @override
+  String get upcomingNoticesSubtitle => 'Stay informed about school events.';
+
+  @override
+  String get noUpcomingNotices => 'No Upcoming Notices';
+
+  @override
+  String get noUpcomingNoticesDesc =>
+      'There are no events or holidays in the next few days.';
+
+  @override
+  String get noticeTypeHoliday => 'Holiday';
+
+  @override
+  String get noticeTypeEvent => 'Event';
+
+  @override
+  String get noticeTypeOther => 'Notice';
+
+  @override
+  String get ridesAffected => 'Rides affected';
+
+  @override
+  String get ridesNotAffected => 'Rides not affected';
+
+  @override
+  String inDays(int days) {
+    return 'in $days days';
+  }
 
   @override
   String get rejectionReason => 'سبب الرفض';

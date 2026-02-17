@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -67,7 +68,7 @@ class _AppServicesTabContent extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               children: [
                 Text(
-                  l10n.activeServices,
+                  l10n.appSubscriptionsTitle,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -88,7 +89,7 @@ class _AppServicesTabContent extends StatelessWidget {
                         const Icon(Icons.info_outline, color: AppColors.secondary),
                         const SizedBox(height: 8),
                         Text(
-                          l10n.noActiveSubscriptions,
+                          l10n.noAppSubscriptions,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.secondary,
@@ -96,7 +97,7 @@ class _AppServicesTabContent extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          l10n.choosePlanToSubscribe,
+                          l10n.browseParentPlans,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 12,
@@ -130,7 +131,7 @@ class _AppServicesTabContent extends StatelessWidget {
 
                 if (hasPlans) ...[
                   Text(
-                    l10n.availableServices,
+                    l10n.parentPlansTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -147,7 +148,10 @@ class _AppServicesTabContent extends StatelessWidget {
                       accentColor: AppColors.primary,
                       buttonText: l10n.subscribeNow,
                       onTap: () {
-                        context.push(Routes.createPlanPayment);
+                        context.push(
+                          Routes.createPlanPayment,
+                          extra: plan,
+                        );
                       },
                     );
                   }),

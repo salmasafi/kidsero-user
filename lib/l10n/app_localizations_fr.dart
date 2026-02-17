@@ -294,6 +294,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get today => 'Aujourd\'hui';
 
   @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
   String get upcoming => 'À venir';
 
   @override
@@ -366,16 +369,53 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ajoutez vos enfants pour commencer à suivre leurs trajets.';
 
   @override
-  String get appServices => 'Services App';
+  String get appServices => 'Services de l\'application';
 
   @override
-  String get schoolServices => 'Services Scolaires';
+  String get schoolServices => 'Services scolaires';
+
+  @override
+  String get appSubscriptionsTitle => 'Abonnements de l\'application';
+
+  @override
+  String get noAppSubscriptions =>
+      'Vous n\'avez pas encore d\'abonnements à l\'application.';
+
+  @override
+  String get browseParentPlans =>
+      'Consultez les plans ci-dessous pour commencer.';
+
+  @override
+  String get parentPlansTitle => 'Plans parents';
+
+  @override
+  String get subscribeAppPlan => 'Souscrire au plan de l\'application';
+
+  @override
+  String get subscribeSchoolPlan => 'Souscrire au plan scolaire';
 
   @override
   String get activeServices => 'Services actifs';
 
   @override
   String get availableServices => 'Services disponibles';
+
+  @override
+  String get schoolSubscribedServices => 'Services scolaires souscrits';
+
+  @override
+  String get availableSchoolServices => 'Services scolaires disponibles';
+
+  @override
+  String get filterByChild => 'Filtrer par enfant';
+
+  @override
+  String get noSchoolSubscriptions =>
+      'You have no school service subscriptions yet.';
+
+  @override
+  String get browseSchoolServices =>
+      'Browse the available school services below.';
 
   @override
   String get noServicesAvailable => 'Aucun service disponible';
@@ -423,6 +463,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get student => 'Étudiant';
+
+  @override
+  String get all => 'All';
 
   @override
   String get subscriptionFees => 'Service Fees';
@@ -496,10 +539,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get oneTimePayment => 'Paiement unique';
 
   @override
-  String get installmentPayment => 'Paiement par acomptes';
+  String get installmentPayment => 'Paiement échelonné';
 
   @override
   String get numberOfInstallments => 'Nombre d\'acomptes';
+
+  @override
+  String get perInstallmentAmount => 'Par acompte';
+
+  @override
+  String get remainingAmount => 'Montant restant';
 
   @override
   String get installmentsRequired => 'Le nombre d\'acomptes est requis';
@@ -559,7 +608,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get createServicePayment => 'Créer un paiement de service';
 
   @override
+  String get totalAmount => 'Montant total';
+
+  @override
   String get notes => 'Notes';
+
+  @override
+  String get upcomingNotices => 'Upcoming Notices';
+
+  @override
+  String get upcomingNoticesSubtitle => 'Stay informed about school events.';
+
+  @override
+  String get noUpcomingNotices => 'No Upcoming Notices';
+
+  @override
+  String get noUpcomingNoticesDesc =>
+      'There are no events or holidays in the next few days.';
+
+  @override
+  String get noticeTypeHoliday => 'Holiday';
+
+  @override
+  String get noticeTypeEvent => 'Event';
+
+  @override
+  String get noticeTypeOther => 'Notice';
+
+  @override
+  String get ridesAffected => 'Rides affected';
+
+  @override
+  String get ridesNotAffected => 'Rides not affected';
+
+  @override
+  String inDays(int days) {
+    return 'in $days days';
+  }
 
   @override
   String get rejectionReason => 'Motif de rejet';

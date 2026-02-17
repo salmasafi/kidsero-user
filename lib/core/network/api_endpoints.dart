@@ -46,6 +46,11 @@ class ApiEndpoints {
   static String orgServices(String studentId) =>
       '/api/users/organizationservices/$studentId';
 
+  // Notes
+  static const String notes = '/api/users/notes';
+  static const String upcomingNotes = '/api/users/notes/upcoming';
+  static String noteDetail(String id) => '/api/users/notes/$id';
+
   static String getImageUrl(String path) {
     if (path.startsWith('http')) return path;
     return '$baseUrl$path';

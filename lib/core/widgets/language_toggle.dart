@@ -5,11 +5,31 @@ import '../theme/app_colors.dart';
 import '../logic/locale_cubit.dart';
 
 class LanguageToggle extends StatelessWidget {
-  const LanguageToggle({super.key});
+  const LanguageToggle({
+    super.key,
+    this.showBackground = true,
+    this.iconColor,
+  });
+
+  final bool showBackground;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = AppColors.primary;
+    final iconButton = IconButton(
+      icon: Icon(
+        Icons.translate,
+        color: iconColor ?? primaryColor,
+        size: 20,
+      ),
+      onPressed: () => showLanguageDialog(context),
+    );
+
+    if (!showBackground) {
+      return iconButton;
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -22,10 +42,7 @@ class LanguageToggle extends StatelessWidget {
           ),
         ],
       ),
-      child: IconButton(
-        icon: Icon(Icons.translate, color: primaryColor, size: 20),
-        onPressed: () => showLanguageDialog(context),
-      ),
+      child: iconButton,
     );
   }
 }

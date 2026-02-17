@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
 
 import 'core/network/cache_helper.dart';
 import 'core/network/api_helper.dart';
@@ -16,6 +15,7 @@ import 'core/logic/locale_cubit.dart';
 import 'features/rides/data/rides_repository.dart';
 import 'features/rides/data/rides_service.dart';
 import 'features/payments/data/repositories/payment_repository.dart';
+import 'features/notes/data/notes_repository.dart';
 import 'l10n/app_localizations.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -52,6 +52,7 @@ class _MainAppState extends State<MainApp> {
   late final ApiService _apiService;
   late final RidesRepository _ridesRepository;
   late final PaymentRepository _paymentRepository;
+  late final NotesRepository _notesRepository;
   bool _isInitialized = false;
 
   @override
@@ -69,6 +70,7 @@ class _MainAppState extends State<MainApp> {
       ridesService: RidesService(dio: _apiService.dio),
     );
     _paymentRepository = PaymentRepository(_apiService);
+    _notesRepository = NotesRepository(_apiService);
     
     // Ensure tokens are loaded before the app renders
     await _apiHelper.refreshToken();
@@ -128,6 +130,7 @@ class _MainAppState extends State<MainApp> {
         RepositoryProvider.value(value: _apiService),
         RepositoryProvider.value(value: _ridesRepository),
         RepositoryProvider.value(value: _paymentRepository),
+        RepositoryProvider.value(value: _notesRepository),
       ],
       child: BlocProvider(
         create: (context) => LocaleCubit(),

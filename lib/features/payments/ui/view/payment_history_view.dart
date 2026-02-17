@@ -9,6 +9,7 @@ import 'package:kidsero_driver/features/payments/data/models/service_payment_mod
 import 'package:kidsero_driver/features/payments/data/repositories/payment_repository.dart';
 import 'package:kidsero_driver/features/payments/logic/cubit/payment_history_cubit.dart';
 import 'package:kidsero_driver/features/payments/logic/cubit/payment_history_state.dart';
+import 'package:kidsero_driver/features/payments/ui/widgets/child_filter_bar.dart';
 import 'package:kidsero_driver/features/payments/ui/widgets/payment_list_item.dart';
 import 'package:kidsero_driver/l10n/app_localizations.dart';
 import 'package:kidsero_driver/core/routing/routes.dart';
@@ -32,6 +33,25 @@ class PaymentHistoryScreen extends StatelessWidget {
   }
 }
 
+class _StudentFilterItem {
+  final String id;
+  final String label;
+
+  const _StudentFilterItem({
+    required this.id,
+    required this.label,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _StudentFilterItem && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
 class _PaymentHistoryContent extends StatefulWidget {
   const _PaymentHistoryContent();
 
@@ -43,7 +63,7 @@ class _PaymentHistoryContentState extends State<_PaymentHistoryContent>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String? _selectedStudentId;
-  List<String> _uniqueStudents = [];
+  List<_StudentFilterItem> _studentFilters = [];
 
   @override
   void initState() {
@@ -58,15 +78,20 @@ class _PaymentHistoryContentState extends State<_PaymentHistoryContent>
   }
 
   void _extractUniqueStudents(List<ServicePaymentModel> servicePayments) {
-    final students = <String>{};
+    final items = <_StudentFilterItem>{};
     for (final payment in servicePayments) {
-      if (payment.student?.name != null) {
-        students.add(payment.student!.name);
-      } else if (payment.studentId.isNotEmpty) {
-        students.add(payment.studentId);
-      }
+      final displayName = payment.student?.name;
+      final id = payment.student?.id ?? payment.studentId;
+      if (id.isEmpty) continue;
+      items.add(
+        _StudentFilterItem(
+          id: id,
+          label: displayName?.isNotEmpty == true ? displayName! : id,
+        ),
+      );
     }
-    _uniqueStudents = students.toList()..sort();
+    _studentFilters = items.toList()
+      ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
   }
 
   List<ServicePaymentModel> _filterServicePayments(List<ServicePaymentModel> payments) {
@@ -75,8 +100,8 @@ class _PaymentHistoryContentState extends State<_PaymentHistoryContent>
     }
     
     return payments.where((payment) {
-      final studentName = payment.student?.name ?? payment.studentId;
-      return studentName == _selectedStudentId;
+      final studentId = payment.student?.id ?? payment.studentId;
+      return studentId == _selectedStudentId;
     }).toList();
   }
 
@@ -92,7 +117,14 @@ class _PaymentHistoryContentState extends State<_PaymentHistoryContent>
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            final router = GoRouter.of(context);
+            if (router.canPop()) {
+              router.pop();
+            } else {
+              router.go(Routes.home);
+            }
+          },
         ),
         title: Text(
           l10n.paymentHistory,
@@ -237,97 +269,27 @@ class _PaymentHistoryContentState extends State<_PaymentHistoryContent>
 
     return Column(
       children: [
-        // Student Filter Chips
-        Container(
-          margin: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.student,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  // "All" chip
-                  FilterChip(
-                    label: Text(
-                      'All',
-                      style: TextStyle(
-                        color: _selectedStudentId == null ? Colors.white : Colors.black87,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    selected: _selectedStudentId == null,
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedStudentId = null;
-                      });
-                    },
-                    backgroundColor: _selectedStudentId == null ? AppColors.primary : Colors.grey.shade100,
-                    selectedColor: AppColors.primary,
-                    checkmarkColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: _selectedStudentId == null ? AppColors.primary : Colors.grey.shade300,
-                        width: 1,
-                      ),
-                    ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: ChildFilterBar<_StudentFilterItem>(
+            label: l10n.filterByChild,
+            options: _studentFilters
+                .map(
+                  (student) => ChildFilterOption<_StudentFilterItem>(
+                    id: student.id,
+                    label: student.label,
+                    payload: student,
                   ),
-                  
-                  // Student chips
-                  ..._uniqueStudents.map((student) => FilterChip(
-                    label: Text(
-                      student,
-                      style: TextStyle(
-                        color: _selectedStudentId == student ? Colors.white : Colors.black87,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    selected: _selectedStudentId == student,
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedStudentId = selected ? student : null;
-                      });
-                    },
-                    backgroundColor: _selectedStudentId == student ? AppColors.primary : Colors.grey.shade100,
-                    selectedColor: AppColors.primary,
-                    checkmarkColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: _selectedStudentId == student ? AppColors.primary : Colors.grey.shade300,
-                        width: 1,
-                      ),
-                    ),
-                  )),
-                ],
-              ),
-            ],
+                )
+                .toList(),
+            selectedOptionId: _selectedStudentId,
+            onOptionSelected: (option) {
+              setState(() {
+                _selectedStudentId = option?.id;
+              });
+            },
+            showAllOption: true,
+            allChipLabel: l10n.all,
           ),
         ),
         

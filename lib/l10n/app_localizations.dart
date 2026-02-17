@@ -654,6 +654,12 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get today;
 
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
   /// No description provided for @upcoming.
   ///
   /// In en, this message translates to:
@@ -804,6 +810,42 @@ abstract class AppLocalizations {
   /// **'School Services'**
   String get schoolServices;
 
+  /// No description provided for @appSubscriptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App Subscriptions'**
+  String get appSubscriptionsTitle;
+
+  /// No description provided for @noAppSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no app subscriptions yet.'**
+  String get noAppSubscriptions;
+
+  /// No description provided for @browseParentPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the parent plans below to get started.'**
+  String get browseParentPlans;
+
+  /// No description provided for @parentPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent Plans'**
+  String get parentPlansTitle;
+
+  /// No description provided for @subscribeAppPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe App Plan'**
+  String get subscribeAppPlan;
+
+  /// No description provided for @subscribeSchoolPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe School Plan'**
+  String get subscribeSchoolPlan;
+
   /// No description provided for @activeServices.
   ///
   /// In en, this message translates to:
@@ -815,6 +857,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Available Services'**
   String get availableServices;
+
+  /// No description provided for @schoolSubscribedServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribed School Services'**
+  String get schoolSubscribedServices;
+
+  /// No description provided for @availableSchoolServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Available School Services'**
+  String get availableSchoolServices;
+
+  /// No description provided for @filterByChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by child'**
+  String get filterByChild;
+
+  /// No description provided for @noSchoolSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no school service subscriptions yet.'**
+  String get noSchoolSubscriptions;
+
+  /// No description provided for @browseSchoolServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the available school services below.'**
+  String get browseSchoolServices;
 
   /// No description provided for @noServicesAvailable.
   ///
@@ -905,6 +977,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Student'**
   String get student;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
 
   /// No description provided for @subscriptionFees.
   ///
@@ -1056,6 +1134,18 @@ abstract class AppLocalizations {
   /// **'Number of Installments'**
   String get numberOfInstallments;
 
+  /// No description provided for @perInstallmentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Per Installment'**
+  String get perInstallmentAmount;
+
+  /// No description provided for @remainingAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining Amount'**
+  String get remainingAmount;
+
   /// No description provided for @installmentsRequired.
   ///
   /// In en, this message translates to:
@@ -1158,11 +1248,77 @@ abstract class AppLocalizations {
   /// **'Create Service Payment'**
   String get createServicePayment;
 
+  /// No description provided for @totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get totalAmount;
+
   /// No description provided for @notes.
   ///
   /// In en, this message translates to:
   /// **'Notes'**
   String get notes;
+
+  /// No description provided for @upcomingNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Notices'**
+  String get upcomingNotices;
+
+  /// No description provided for @upcomingNoticesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay informed about school events.'**
+  String get upcomingNoticesSubtitle;
+
+  /// No description provided for @noUpcomingNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'No Upcoming Notices'**
+  String get noUpcomingNotices;
+
+  /// No description provided for @noUpcomingNoticesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no events or holidays in the next few days.'**
+  String get noUpcomingNoticesDesc;
+
+  /// No description provided for @noticeTypeHoliday.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday'**
+  String get noticeTypeHoliday;
+
+  /// No description provided for @noticeTypeEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get noticeTypeEvent;
+
+  /// No description provided for @noticeTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice'**
+  String get noticeTypeOther;
+
+  /// No description provided for @ridesAffected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rides affected'**
+  String get ridesAffected;
+
+  /// No description provided for @ridesNotAffected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rides not affected'**
+  String get ridesNotAffected;
+
+  /// No description provided for @inDays.
+  ///
+  /// In en, this message translates to:
+  /// **'in {days} days'**
+  String inDays(int days);
 
   /// No description provided for @rejectionReason.
   ///

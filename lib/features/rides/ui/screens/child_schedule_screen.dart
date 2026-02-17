@@ -277,11 +277,11 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
   ) {
     switch (_selectedTabIndex) {
       case 0:
-        return _buildUpcomingTab(context, l10n);
+        return _buildHistoryTab(context, l10n);
       case 1:
         return _buildTodayTab(context, l10n);
       case 2:
-        return _buildHistoryTab(context, l10n);
+        return _buildUpcomingTab(context, l10n);
       default:
         return const SizedBox();
     }

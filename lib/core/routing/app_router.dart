@@ -10,6 +10,9 @@ import 'package:kidsero_driver/features/payments/ui/view/payment_history_view.da
 import 'package:kidsero_driver/features/payments/ui/view/payment_detail_view.dart';
 import 'package:kidsero_driver/features/payments/ui/view/create_plan_payment_view.dart';
 import 'package:kidsero_driver/features/payments/ui/view/create_service_payment_view.dart';
+import 'package:kidsero_driver/features/plans/model/plans_model.dart';
+import 'package:kidsero_driver/features/plans/model/org_service_model.dart';
+import 'package:kidsero_driver/features/children/model/child_model.dart';
 
 import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
 import 'package:kidsero_driver/core/utils/app_preferences.dart';
@@ -99,17 +102,43 @@ class AppRouter {
       ),
       GoRoute(
         path: Routes.createPlanPayment,
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          child: const CreatePlanPaymentScreen(),
-          state: state,
-        ),
+        pageBuilder: (context, state) {
+          final preselectedPlan = state.extra is PlanModel
+              ? state.extra as PlanModel
+              : null;
+
+          return _buildPageWithTransition(
+            child: CreatePlanPaymentScreen(
+              preselectedPlan: preselectedPlan,
+            ),
+            state: state,
+          );
+        },
       ),
       GoRoute(
         path: Routes.createServicePayment,
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          child: const CreateServicePaymentScreen(),
-          state: state,
-        ),
+        pageBuilder: (context, state) {
+          OrgService? preselectedService;
+          Child? preselectedStudent;
+
+          if (state.extra is Map<String, dynamic>) {
+            final extra = state.extra as Map<String, dynamic>;
+            if (extra['service'] is OrgService) {
+              preselectedService = extra['service'] as OrgService;
+            }
+            if (extra['student'] is Child) {
+              preselectedStudent = extra['student'] as Child;
+            }
+          }
+
+          return _buildPageWithTransition(
+            child: CreateServicePaymentScreen(
+              preselectedService: preselectedService,
+              preselectedStudent: preselectedStudent,
+            ),
+            state: state,
+          );
+        },
       ),
     ],
   );
