@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:kidsero_driver/core/network/api_endpoints.dart';
+import 'package:kidsero_parent/core/network/api_endpoints.dart';
 import '../../../../core/models/common_response_model.dart';
 import '../../../../core/network/api_helper.dart';
 import '../models/profile_response_model.dart';

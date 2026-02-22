@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/children/model/child_model.dart' show Child;
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/children/model/child_model.dart' show Child;
 
 // --- STATES ---
 abstract class ChildrenState {}

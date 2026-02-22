@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_loading.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_model.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_status.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_type.dart';
-import 'package:kidsero_driver/features/payments/data/models/service_payment_model.dart';
-import 'package:kidsero_driver/features/payments/data/repositories/payment_repository.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/payment_detail_cubit.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/payment_detail_state.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/payment_status_badge.dart';
-import 'package:kidsero_driver/features/payments/utils/image_utils.dart';
-import 'package:kidsero_driver/features/payments/services/payment_lookup_service.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/widgets/custom_loading.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_model.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_status.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_type.dart';
+import 'package:kidsero_parent/features/payments/data/models/service_payment_model.dart';
+import 'package:kidsero_parent/features/payments/data/repositories/payment_repository.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/payment_detail_cubit.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/payment_detail_state.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/payment_status_badge.dart';
+import 'package:kidsero_parent/features/payments/utils/image_utils.dart';
+import 'package:kidsero_parent/features/payments/services/payment_lookup_service.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 /// Payment Detail Screen
-/// 
+///
 /// Displays detailed information about a specific payment.
 /// Supports both plan payments and service payments.
 /// Shows receipt images, payment status, and rejection reasons.
@@ -38,23 +38,32 @@ class PaymentDetailScreen extends StatelessWidget {
         final cubit = PaymentDetailCubit(
           PaymentRepository(context.read<ApiService>()),
         );
-        
+
         // Load the appropriate payment type
         if (isPlanPayment) {
           cubit.loadPlanPayment(paymentId);
         } else {
           cubit.loadServicePayment(paymentId);
         }
-        
+
         return cubit;
       },
-      child: const _PaymentDetailContent(),
+      child: _PaymentDetailContent(
+        paymentId: paymentId,
+        isPlanPayment: isPlanPayment,
+      ),
     );
   }
 }
 
 class _PaymentDetailContent extends StatelessWidget {
-  const _PaymentDetailContent();
+  final String paymentId;
+  final bool isPlanPayment;
+
+  const _PaymentDetailContent({
+    required this.paymentId,
+    required this.isPlanPayment,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,61 +96,10 @@ class _PaymentDetailContent extends StatelessWidget {
             return const CustomLoading();
           }
 
-          // Error state
-          if (state is PaymentDetailError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: AppColors.error,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.somethingWentWrong,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      state.message,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 12,
-                        ),
-                      ),
-                      child: Text(
-                        l10n.close,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
           // Loaded state
           if (state is PaymentDetailLoaded) {
             final payment = state.payment;
-            
+
             if (payment is PaymentModel) {
               return _buildPlanPaymentDetail(context, payment);
             } else if (payment is ServicePaymentModel) {
@@ -167,13 +125,11 @@ class _PaymentDetailContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Status Badge
-          Center(
-            child: PaymentStatusBadge(status: payment.status),
-          ),
+          Center(child: PaymentStatusBadge(status: payment.status)),
           const SizedBox(height: 24),
 
           // Rejection Reason (if rejected)
-          if (payment.status == PaymentStatus.rejected && 
+          if (payment.status == PaymentStatus.rejected &&
               payment.rejectedReason != null) ...[
             _buildRejectionReasonCard(context, l10n, payment.rejectedReason!),
             const SizedBox(height: 24),
@@ -183,14 +139,25 @@ class _PaymentDetailContent extends StatelessWidget {
           _buildInfoCard(
             context,
             children: [
-              _buildInfoRow(l10n.amount, '\$${payment.amount.toStringAsFixed(2)}'),
+              _buildInfoRow(
+                l10n.amount,
+                '\$${payment.amount.toStringAsFixed(2)}',
+              ),
               const Divider(height: 24),
-              _buildInfoRow(l10n.appServices, payment.planId != null 
-                  ? PaymentLookupService().getPlanName(payment.planId!)
-                  : 'N/A'),
+              _buildInfoRow(
+                l10n.appServices,
+                payment.planId != null
+                    ? PaymentLookupService().getPlanName(payment.planId!)
+                    : 'N/A',
+              ),
               const Divider(height: 24),
               if (payment.paymentMethodId != null) ...[
-                _buildInfoRow(l10n.paymentMethod, PaymentLookupService().getPaymentMethodName(payment.paymentMethodId!)),
+                _buildInfoRow(
+                  l10n.paymentMethod,
+                  PaymentLookupService().getPaymentMethodName(
+                    payment.paymentMethodId!,
+                  ),
+                ),
                 const Divider(height: 24),
               ],
               _buildInfoRow(l10n.date, dateFormat.format(payment.createdAt)),
@@ -225,13 +192,11 @@ class _PaymentDetailContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Status Badge
-          Center(
-            child: PaymentStatusBadge(status: payment.status),
-          ),
+          Center(child: PaymentStatusBadge(status: payment.status)),
           const SizedBox(height: 24),
 
           // Rejection Reason (if rejected)
-          if (payment.status == PaymentStatus.rejected && 
+          if (payment.status == PaymentStatus.rejected &&
               payment.rejectedReason != null) ...[
             _buildRejectionReasonCard(context, l10n, payment.rejectedReason!),
             const SizedBox(height: 24),
@@ -241,10 +206,16 @@ class _PaymentDetailContent extends StatelessWidget {
           _buildInfoCard(
             context,
             children: [
-              _buildInfoRow(l10n.amount, '\$${payment.amount.toStringAsFixed(2)}'),
+              _buildInfoRow(
+                l10n.amount,
+                '\$${payment.amount.toStringAsFixed(2)}',
+              ),
               const Divider(height: 24),
-              _buildInfoRow(l10n.paymentType, _getPaymentTypeLabel(l10n, payment.paymentType)),
-              if (payment.paymentType == PaymentType.installment && 
+              _buildInfoRow(
+                l10n.paymentType,
+                _getPaymentTypeLabel(l10n, payment.paymentType),
+              ),
+              if (payment.paymentType == PaymentType.installment &&
                   payment.requestedInstallments != null) ...[
                 const Divider(height: 24),
                 _buildInfoRow(
@@ -253,11 +224,20 @@ class _PaymentDetailContent extends StatelessWidget {
                 ),
               ],
               const Divider(height: 24),
-              _buildInfoRow(l10n.student, payment.student?.name ?? payment.studentId),
+              _buildInfoRow(
+                l10n.student,
+                payment.student?.name ?? payment.studentId,
+              ),
               const Divider(height: 24),
-              _buildInfoRow(l10n.schoolServices, payment.service?.name ?? payment.serviceId),
+              _buildInfoRow(
+                l10n.schoolServices,
+                payment.service?.name ?? payment.serviceId,
+              ),
               const Divider(height: 24),
-              _buildInfoRow(l10n.paymentMethod, payment.paymentMethod?.name ?? payment.paymentMethodId ?? 'N/A'),
+              _buildInfoRow(
+                l10n.paymentMethod,
+                payment.paymentMethod?.name ?? payment.paymentMethodId ?? 'N/A',
+              ),
               const Divider(height: 24),
               _buildInfoRow(l10n.date, dateFormat.format(payment.createdAt)),
             ],
@@ -295,11 +275,7 @@ class _PaymentDetailContent extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.error_outline,
-                color: AppColors.error,
-                size: 20,
-              ),
+              Icon(Icons.error_outline, color: AppColors.error, size: 20),
               const SizedBox(width: 8),
               Text(
                 l10n.rejectionReason,
@@ -312,20 +288,17 @@ class _PaymentDetailContent extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            reason,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[800],
-            ),
-          ),
+          Text(reason, style: TextStyle(fontSize: 14, color: Colors.grey[800])),
         ],
       ),
     );
   }
 
   /// Build information card
-  Widget _buildInfoCard(BuildContext context, {required List<Widget> children}) {
+  Widget _buildInfoCard(
+    BuildContext context, {
+    required List<Widget> children,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -419,10 +392,7 @@ class _PaymentDetailContent extends StatelessWidget {
         Center(
           child: Text(
             l10n.tapToViewClearly,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey[500]),
           ),
         ),
       ],
@@ -432,7 +402,8 @@ class _PaymentDetailContent extends StatelessWidget {
   /// Build receipt image widget based on image type (URL or base64)
   Widget _buildReceiptImageWidget(String receiptImage) {
     // Check if it's a URL or base64
-    if (receiptImage.startsWith('http://') || receiptImage.startsWith('https://')) {
+    if (receiptImage.startsWith('http://') ||
+        receiptImage.startsWith('https://')) {
       // It's a URL, use NetworkImage
       return Image.network(
         receiptImage,
@@ -449,7 +420,8 @@ class _PaymentDetailContent extends StatelessWidget {
               color: AppColors.primary,
               strokeWidth: 2,
               value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        (loadingProgress.expectedTotalBytes ?? 1)
                   : null,
             ),
           );
@@ -473,18 +445,11 @@ class _PaymentDetailContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.broken_image_outlined,
-            size: 48,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.broken_image_outlined, size: 48, color: Colors.grey[400]),
           const SizedBox(height: 8),
           Text(
             'Failed to load image',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -502,20 +467,21 @@ class _PaymentDetailContent extends StatelessWidget {
           children: [
             Center(
               child: InteractiveViewer(
-                child: imageString.startsWith('http://') || imageString.startsWith('https://')
+                child:
+                    imageString.startsWith('http://') ||
+                        imageString.startsWith('https://')
                     ? Image.network(imageString, fit: BoxFit.contain)
-                    : Image.memory(ImageUtils.base64ToImage(imageString), fit: BoxFit.contain),
+                    : Image.memory(
+                        ImageUtils.base64ToImage(imageString),
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
             Positioned(
               top: 0,
               right: 0,
               child: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 32,
-                ),
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),

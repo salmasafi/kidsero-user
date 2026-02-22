@@ -104,6 +104,8 @@ class ActiveRidesCubit extends Cubit<ActiveRidesState> {
   }
 
   /// Start automatic refresh every 30 seconds
+  /// NOTE: Auto-refresh is disabled by default to reduce API calls
+  /// Use manual refresh instead with the refresh() method
   void startAutoRefresh() {
     // Cancel any existing timer
     stopAutoRefresh();

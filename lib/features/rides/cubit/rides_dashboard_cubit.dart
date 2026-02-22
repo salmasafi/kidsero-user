@@ -97,7 +97,25 @@ class RidesDashboardCubit extends Cubit<RidesDashboardState> {
 
       final children = results[0] as List<child_model.Child>;
       final activeRides = results[1] as List<ActiveRide>;
-      final upcomingRides = results[2] as List<UpcomingRide>;
+      final upcomingRidesData = results[2] as UpcomingRidesData;
+      
+      // Convert UpcomingRidesData to List<UpcomingRide> for dashboard
+      final upcomingRides = <UpcomingRide>[];
+      for (final dayRide in upcomingRidesData.upcomingRides) {
+        for (final rideInfo in dayRide.rides) {
+          upcomingRides.add(UpcomingRide(
+            rideId: rideInfo.ride.id,
+            childId: rideInfo.child.id,
+            childName: rideInfo.child.name,
+            date: dayRide.date, // Use date from UpcomingDayRides
+            period: rideInfo.ride.type,
+            pickupTime: rideInfo.pickupTime,
+            pickupLocation: rideInfo.pickupPointName,
+            dropoffLocation: null, // Not available in UpcomingRideInfo
+            status: 'scheduled',
+          ));
+        }
+      }
 
       if (children.isEmpty) {
         emit(RidesDashboardEmpty());
@@ -111,6 +129,7 @@ class RidesDashboardCubit extends Cubit<RidesDashboardState> {
         );
       }
     } catch (e) {
+      print('RidesDashboardCubit: Error loading dashboard: $e');
       emit(RidesDashboardError(e.toString()));
     }
   }

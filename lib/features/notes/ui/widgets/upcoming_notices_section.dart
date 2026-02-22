@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/features/notes/data/models/note_model.dart';
-import 'package:kidsero_driver/features/notes/logic/cubit/upcoming_notes_cubit.dart';
-import 'package:kidsero_driver/features/notes/logic/cubit/upcoming_notes_state.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/features/notes/data/models/note_model.dart';
+import 'package:kidsero_parent/features/notes/logic/cubit/upcoming_notes_cubit.dart';
+import 'package:kidsero_parent/features/notes/logic/cubit/upcoming_notes_state.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 class UpcomingNoticesSection extends StatelessWidget {
   final EdgeInsetsGeometry padding;

@@ -701,6 +701,14 @@ class BusInfo {
       capacity: json['capacity'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'plateNumber': plateNumber,
+      'capacity': capacity,
+    };
+  }
 }
 
 /// Driver information
@@ -720,6 +728,15 @@ class DriverInfo {
       avatar: json['avatar'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'phone': phone,
+      'avatar': avatar,
+    };
+  }
 }
 
 /// Location information
@@ -735,6 +752,937 @@ class LocationInfo {
       lat: double.tryParse(json['lat']?.toString() ?? '0') ?? 0.0,
       lng: double.tryParse(json['lng']?.toString() ?? '0') ?? 0.0,
       recordedAt: json['recordedAt'],
+    );
+  }
+}
+
+/// ============================================================
+/// NEW API RESPONSE MODELS
+/// ============================================================
+
+/// Response for GET /api/users/rides/child/{childId} - Single child today's rides
+class ChildTodayRidesResponse {
+  final bool success;
+  final ChildTodayRidesData data;
+
+  ChildTodayRidesResponse({required this.success, required this.data});
+
+  factory ChildTodayRidesResponse.fromJson(Map<String, dynamic> json) {
+    return ChildTodayRidesResponse(
+      success: json['success'] ?? false,
+      data: ChildTodayRidesData.fromJson(json['data'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.toJson(),
+    };
+  }
+}
+
+/// Data structure for single child today's rides
+class ChildTodayRidesData {
+  final ChildInfo child;
+  final String type; // "today"
+  final String date;
+  final List<RideOccurrence> morning;
+  final List<RideOccurrence> afternoon;
+  final int total;
+
+  ChildTodayRidesData({
+    required this.child,
+    required this.type,
+    required this.date,
+    required this.morning,
+    required this.afternoon,
+    required this.total,
+  });
+
+  factory ChildTodayRidesData.fromJson(Map<String, dynamic> json) {
+    return ChildTodayRidesData(
+      child: ChildInfo.fromJson(json['child'] ?? {}),
+      type: json['type'] ?? '',
+      date: json['date'] ?? '',
+      morning: (json['morning'] as List<dynamic>?)
+          ?.map((i) => RideOccurrence.fromJson(i))
+          .toList() ?? [],
+      afternoon: (json['afternoon'] as List<dynamic>?)
+          ?.map((i) => RideOccurrence.fromJson(i))
+          .toList() ?? [],
+      total: json['total'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'child': child.toJson(),
+      'type': type,
+      'date': date,
+      'morning': morning.map((i) => i.toJson()).toList(),
+      'afternoon': afternoon.map((i) => i.toJson()).toList(),
+      'total': total,
+    };
+  }
+}
+
+/// Response for GET /api/users/rides/children - Children with all rides
+class ChildrenWithAllRidesResponse {
+  final bool success;
+  final ChildrenWithAllRidesData data;
+
+  ChildrenWithAllRidesResponse({required this.success, required this.data});
+
+  factory ChildrenWithAllRidesResponse.fromJson(Map<String, dynamic> json) {
+    return ChildrenWithAllRidesResponse(
+      success: json['success'] ?? false,
+      data: ChildrenWithAllRidesData.fromJson(json['data'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.toJson(),
+    };
+  }
+}
+
+/// Data structure for children with all rides
+class ChildrenWithAllRidesData {
+  final List<ChildWithAllRides> children;
+  final List<OrganizationWithChildren> byOrganization;
+  final int totalChildren;
+
+  ChildrenWithAllRidesData({
+    required this.children,
+    required this.byOrganization,
+    required this.totalChildren,
+  });
+
+  factory ChildrenWithAllRidesData.fromJson(Map<String, dynamic> json) {
+    return ChildrenWithAllRidesData(
+      children: (json['children'] as List<dynamic>?)
+          ?.map((i) => ChildWithAllRides.fromJson(i))
+          .toList() ?? [],
+      byOrganization: (json['byOrganization'] as List<dynamic>?)
+          ?.map((i) => OrganizationWithChildren.fromJson(i))
+          .toList() ?? [],
+      totalChildren: json['totalChildren'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'children': children.map((i) => i.toJson()).toList(),
+      'byOrganization': byOrganization.map((i) => i.toJson()).toList(),
+      'totalChildren': totalChildren,
+    };
+  }
+}
+
+/// Child with complete ride information
+class ChildWithAllRides {
+  final String id;
+  final String name;
+  final String avatar;
+  final String grade;
+  final String classroom;
+  final String code;
+  final OrganizationInfo organization;
+  final List<ChildRide> rides;
+
+  ChildWithAllRides({
+    required this.id,
+    required this.name,
+    required this.avatar,
+    required this.grade,
+    required this.classroom,
+    required this.code,
+    required this.organization,
+    required this.rides,
+  });
+
+  factory ChildWithAllRides.fromJson(Map<String, dynamic> json) {
+    return ChildWithAllRides(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      avatar: json['avatar'] ?? '',
+      grade: json['grade'] ?? '',
+      classroom: json['classroom'] ?? '',
+      code: json['code'] ?? '',
+      organization: OrganizationInfo.fromJson(json['organization'] ?? {}),
+      rides: (json['rides'] as List<dynamic>?)
+          ?.map((i) => ChildRide.fromJson(i))
+          .toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      'grade': grade,
+      'classroom': classroom,
+      'code': code,
+      'organization': organization.toJson(),
+      'rides': rides.map((i) => i.toJson()).toList(),
+    };
+  }
+}
+
+/// Organization with children
+class OrganizationWithChildren {
+  final OrganizationInfo organization;
+  final List<ChildWithAllRides> children;
+
+  OrganizationWithChildren({
+    required this.organization,
+    required this.children,
+  });
+
+  factory OrganizationWithChildren.fromJson(Map<String, dynamic> json) {
+    return OrganizationWithChildren(
+      organization: OrganizationInfo.fromJson(json['organization'] ?? {}),
+      children: (json['children'] as List<dynamic>?)
+          ?.map((i) => ChildWithAllRides.fromJson(i))
+          .toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'organization': organization.toJson(),
+      'children': children.map((i) => i.toJson()).toList(),
+    };
+  }
+}
+
+/// Response for GET /api/users/rides/upcoming - Upcoming rides grouped by date
+class UpcomingRidesGroupedResponse {
+  final bool success;
+  final UpcomingRidesData data;
+
+  UpcomingRidesGroupedResponse({required this.success, required this.data});
+
+  factory UpcomingRidesGroupedResponse.fromJson(Map<String, dynamic> json) {
+    return UpcomingRidesGroupedResponse(
+      success: json['success'] ?? false,
+      data: UpcomingRidesData.fromJson(json['data'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.toJson(),
+    };
+  }
+}
+
+/// Data structure for upcoming rides
+class UpcomingRidesData {
+  final List<UpcomingDayRides> upcomingRides;
+  final int totalDays;
+  final int totalRides;
+
+  UpcomingRidesData({
+    required this.upcomingRides,
+    required this.totalDays,
+    required this.totalRides,
+  });
+
+  factory UpcomingRidesData.fromJson(Map<String, dynamic> json) {
+    return UpcomingRidesData(
+      upcomingRides: (json['upcomingRides'] as List<dynamic>?)
+          ?.map((i) => UpcomingDayRides.fromJson(i))
+          .toList() ?? [],
+      totalDays: json['totalDays'] ?? 0,
+      totalRides: json['totalRides'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'upcomingRides': upcomingRides.map((i) => i.toJson()).toList(),
+      'totalDays': totalDays,
+      'totalRides': totalRides,
+    };
+  }
+}
+
+/// Rides for a specific day
+class UpcomingDayRides {
+  final String date;
+  final String dayName;
+  final List<UpcomingRideInfo> rides;
+
+  UpcomingDayRides({
+    required this.date,
+    required this.dayName,
+    required this.rides,
+  });
+
+  factory UpcomingDayRides.fromJson(Map<String, dynamic> json) {
+    return UpcomingDayRides(
+      date: json['date'] ?? '',
+      dayName: json['dayName'] ?? '',
+      rides: (json['rides'] as List<dynamic>?)
+          ?.map((i) => UpcomingRideInfo.fromJson(i))
+          .toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'dayName': dayName,
+      'rides': rides.map((i) => i.toJson()).toList(),
+    };
+  }
+}
+
+/// Basic upcoming ride information
+class UpcomingRideInfo {
+  final String occurrenceId;
+  final RideBasicInfo ride;
+  final ChildBasicInfo child;
+  final String pickupTime;
+  final String pickupPointName;
+
+  UpcomingRideInfo({
+    required this.occurrenceId,
+    required this.ride,
+    required this.child,
+    required this.pickupTime,
+    required this.pickupPointName,
+  });
+
+  factory UpcomingRideInfo.fromJson(Map<String, dynamic> json) {
+    return UpcomingRideInfo(
+      occurrenceId: json['occurrenceId'] ?? '',
+      ride: RideBasicInfo.fromJson(json['ride'] ?? {}),
+      child: ChildBasicInfo.fromJson(json['child'] ?? {}),
+      pickupTime: json['pickupTime'] ?? '',
+      pickupPointName: json['pickupPointName'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'occurrenceId': occurrenceId,
+      'ride': ride.toJson(),
+      'child': child.toJson(),
+      'pickupTime': pickupTime,
+      'pickupPointName': pickupPointName,
+    };
+  }
+}
+
+/// Response for GET /api/users/rides/child/{childId}/summary - NEW API
+class NewRideSummaryResponse {
+  final bool success;
+  final RideSummaryData data;
+
+  NewRideSummaryResponse({required this.success, required this.data});
+
+  factory NewRideSummaryResponse.fromJson(Map<String, dynamic> json) {
+    return NewRideSummaryResponse(
+      success: json['success'] ?? false,
+      data: RideSummaryData.fromJson(json['data'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.toJson(),
+    };
+  }
+}
+
+/// Ride summary data
+class RideSummaryData {
+  final ChildBasicInfo child;
+  final NewSummaryPeriod period;
+  final RideSummaryStats summary;
+
+  RideSummaryData({
+    required this.child,
+    required this.period,
+    required this.summary,
+  });
+
+  factory RideSummaryData.fromJson(Map<String, dynamic> json) {
+    return RideSummaryData(
+      child: ChildBasicInfo.fromJson(json['child'] ?? {}),
+      period: NewSummaryPeriod.fromJson(json['period'] ?? {}),
+      summary: RideSummaryStats.fromJson(json['summary'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'child': child.toJson(),
+      'period': period.toJson(),
+      'summary': summary.toJson(),
+    };
+  }
+}
+
+/// Summary period information - NEW API
+class NewSummaryPeriod {
+  final int month;
+  final int year;
+  final String monthName;
+
+  NewSummaryPeriod({
+    required this.month,
+    required this.year,
+    required this.monthName,
+  });
+
+  factory NewSummaryPeriod.fromJson(Map<String, dynamic> json) {
+    return NewSummaryPeriod(
+      month: json['month'] ?? 0,
+      year: json['year'] ?? 0,
+      monthName: json['monthName'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'month': month,
+      'year': year,
+      'monthName': monthName,
+    };
+  }
+}
+
+/// Ride summary statistics
+class RideSummaryStats {
+  final int total;
+  final int morning;
+  final int afternoon;
+  final StatusBreakdown byStatus;
+  final int attendanceRate;
+
+  RideSummaryStats({
+    required this.total,
+    required this.morning,
+    required this.afternoon,
+    required this.byStatus,
+    required this.attendanceRate,
+  });
+
+  factory RideSummaryStats.fromJson(Map<String, dynamic> json) {
+    return RideSummaryStats(
+      total: json['total'] ?? 0,
+      morning: json['morning'] ?? 0,
+      afternoon: json['afternoon'] ?? 0,
+      byStatus: StatusBreakdown.fromJson(json['byStatus'] ?? {}),
+      attendanceRate: json['attendanceRate'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total': total,
+      'morning': morning,
+      'afternoon': afternoon,
+      'byStatus': byStatus.toJson(),
+      'attendanceRate': attendanceRate,
+    };
+  }
+}
+
+/// Status breakdown for rides
+class StatusBreakdown {
+  final int completed;
+  final int absent;
+  final int excused;
+  final int pending;
+
+  StatusBreakdown({
+    required this.completed,
+    required this.absent,
+    required this.excused,
+    required this.pending,
+  });
+
+  factory StatusBreakdown.fromJson(Map<String, dynamic> json) {
+    return StatusBreakdown(
+      completed: json['completed'] ?? 0,
+      absent: json['absent'] ?? 0,
+      excused: json['excused'] ?? 0,
+      pending: json['pending'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'completed': completed,
+      'absent': absent,
+      'excused': excused,
+      'pending': pending,
+    };
+  }
+}
+
+/// Response for GET /api/users/rides/tracking/{childId} - NEW API
+class NewRideTrackingResponse {
+  final bool success;
+  final RideTrackingData data;
+
+  NewRideTrackingResponse({required this.success, required this.data});
+
+  factory NewRideTrackingResponse.fromJson(Map<String, dynamic> json) {
+    return NewRideTrackingResponse(
+      success: json['success'] ?? false,
+      data: RideTrackingData.fromJson(json['data'] ?? {}),
+    );
+  }
+}
+
+/// Ride tracking data
+class RideTrackingData {
+  final RideOccurrence occurrence;
+  final RideBasicInfo ride;
+  final BusInfo bus;
+  final DriverInfo driver;
+  final NewRouteInfo route;
+  final List<TrackingChild> children;
+
+  RideTrackingData({
+    required this.occurrence,
+    required this.ride,
+    required this.bus,
+    required this.driver,
+    required this.route,
+    required this.children,
+  });
+
+  factory RideTrackingData.fromJson(Map<String, dynamic> json) {
+    return RideTrackingData(
+      occurrence: RideOccurrence.fromJson(json['occurrence'] ?? {}),
+      ride: RideBasicInfo.fromJson(json['ride'] ?? {}),
+      bus: BusInfo.fromJson(json['bus'] ?? {}),
+      driver: DriverInfo.fromJson(json['driver'] ?? {}),
+      route: NewRouteInfo.fromJson(json['route'] ?? {}),
+      children: (json['children'] as List<dynamic>?)
+          ?.map((i) => TrackingChild.fromJson(i))
+          .toList() ?? [],
+    );
+  }
+}
+
+/// ============================================================
+/// ENHANCED MODELS
+/// ============================================================
+
+/// Child information
+class ChildInfo {
+  final String id;
+  final String name;
+  final String avatar;
+  final String grade;
+  final String classroom;
+  final OrganizationInfo organization;
+
+  ChildInfo({
+    required this.id,
+    required this.name,
+    required this.avatar,
+    required this.grade,
+    required this.classroom,
+    required this.organization,
+  });
+
+  factory ChildInfo.fromJson(Map<String, dynamic> json) {
+    return ChildInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      avatar: json['avatar'] ?? '',
+      grade: json['grade'] ?? '',
+      classroom: json['classroom'] ?? '',
+      organization: OrganizationInfo.fromJson(json['organization'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      'grade': grade,
+      'classroom': classroom,
+      'organization': organization.toJson(),
+    };
+  }
+}
+
+/// Basic child information
+class ChildBasicInfo {
+  final String id;
+  final String name;
+  final String avatar;
+
+  ChildBasicInfo({
+    required this.id,
+    required this.name,
+    required this.avatar,
+  });
+
+  factory ChildBasicInfo.fromJson(Map<String, dynamic> json) {
+    return ChildBasicInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      avatar: json['avatar'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+    };
+  }
+}
+
+/// Organization information
+class OrganizationInfo {
+  final String id;
+  final String name;
+  final String? logo;
+
+  OrganizationInfo({
+    required this.id,
+    required this.name,
+    this.logo,
+  });
+
+  factory OrganizationInfo.fromJson(Map<String, dynamic> json) {
+    return OrganizationInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      logo: json['logo'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'logo': logo,
+    };
+  }
+}
+
+/// Ride occurrence (specific instance of a ride)
+class RideOccurrence {
+  final String occurrenceId;
+  final String date;
+  final String status;
+  final String? startedAt;
+  final String? completedAt;
+  final String? busLocation;
+  final RideBasicInfo ride;
+  final StudentStatus studentStatus;
+  final BusInfo bus;
+  final DriverInfo driver;
+  final PickupPoint pickupPoint;
+
+  RideOccurrence({
+    required this.occurrenceId,
+    required this.date,
+    required this.status,
+    this.startedAt,
+    this.completedAt,
+    this.busLocation,
+    required this.ride,
+    required this.studentStatus,
+    required this.bus,
+    required this.driver,
+    required this.pickupPoint,
+  });
+
+  factory RideOccurrence.fromJson(Map<String, dynamic> json) {
+    return RideOccurrence(
+      occurrenceId: json['occurrenceId'] ?? '',
+      date: json['date'] ?? '',
+      status: json['status'] ?? '',
+      startedAt: json['startedAt'],
+      completedAt: json['completedAt'],
+      busLocation: json['busLocation'],
+      ride: RideBasicInfo.fromJson(json['ride'] ?? {}),
+      studentStatus: StudentStatus.fromJson(json['studentStatus'] ?? {}),
+      bus: BusInfo.fromJson(json['bus'] ?? {}),
+      driver: DriverInfo.fromJson(json['driver'] ?? {}),
+      pickupPoint: PickupPoint.fromJson(json['pickupPoint'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'occurrenceId': occurrenceId,
+      'date': date,
+      'status': status,
+      'startedAt': startedAt,
+      'completedAt': completedAt,
+      'busLocation': busLocation,
+      'ride': ride.toJson(),
+      'studentStatus': studentStatus.toJson(),
+      'bus': bus.toJson(),
+      'driver': driver.toJson(),
+      'pickupPoint': pickupPoint.toJson(),
+    };
+  }
+}
+
+/// Student status for ride occurrence
+class StudentStatus {
+  final String id;
+  final String status;
+  final String? pickedUpAt;
+  final String? droppedOffAt;
+  final String pickupTime;
+  final String? excuseReason;
+
+  StudentStatus({
+    required this.id,
+    required this.status,
+    this.pickedUpAt,
+    this.droppedOffAt,
+    required this.pickupTime,
+    this.excuseReason,
+  });
+
+  factory StudentStatus.fromJson(Map<String, dynamic> json) {
+    return StudentStatus(
+      id: json['id'] ?? '',
+      status: json['status'] ?? '',
+      pickedUpAt: json['pickedUpAt'],
+      droppedOffAt: json['droppedOffAt'],
+      pickupTime: json['pickupTime'] ?? '',
+      excuseReason: json['excuseReason'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'pickedUpAt': pickedUpAt,
+      'droppedOffAt': droppedOffAt,
+      'pickupTime': pickupTime,
+      'excuseReason': excuseReason,
+    };
+  }
+}
+
+/// Basic ride information
+class RideBasicInfo {
+  final String id;
+  final String name;
+  final String type;
+
+  RideBasicInfo({
+    required this.id,
+    required this.name,
+    required this.type,
+  });
+
+  factory RideBasicInfo.fromJson(Map<String, dynamic> json) {
+    return RideBasicInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+    };
+  }
+}
+
+/// Child ride (from children with all rides)
+class ChildRide {
+  final String id;
+  final String name;
+  final String type;
+  final String frequency;
+  final String pickupTime;
+  final PickupPoint pickupPoint;
+  final BusInfo bus;
+  final DriverInfo driver;
+
+  ChildRide({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.frequency,
+    required this.pickupTime,
+    required this.pickupPoint,
+    required this.bus,
+    required this.driver,
+  });
+
+  factory ChildRide.fromJson(Map<String, dynamic> json) {
+    return ChildRide(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      frequency: json['frequency'] ?? '',
+      pickupTime: json['pickupTime'] ?? '',
+      pickupPoint: PickupPoint.fromJson(json['pickupPoint'] ?? {}),
+      bus: BusInfo.fromJson(json['bus'] ?? {}),
+      driver: DriverInfo.fromJson(json['driver'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'frequency': frequency,
+      'pickupTime': pickupTime,
+      'pickupPoint': pickupPoint.toJson(),
+      'bus': bus.toJson(),
+      'driver': driver.toJson(),
+    };
+  }
+}
+
+/// Pickup point information
+class PickupPoint {
+  final String id;
+  final String name;
+  final String address;
+  final double lat;
+  final double lng;
+
+  PickupPoint({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.lat,
+    required this.lng,
+  });
+
+  factory PickupPoint.fromJson(Map<String, dynamic> json) {
+    return PickupPoint(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      address: json['address'] ?? '',
+      lat: double.tryParse(json['lat']?.toString() ?? '0') ?? 0.0,
+      lng: double.tryParse(json['lng']?.toString() ?? '0') ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'address': address,
+      'lat': lat,
+      'lng': lng,
+    };
+  }
+}
+
+/// Route information for tracking - NEW API
+class NewRouteInfo {
+  final String id;
+  final String name;
+  final List<RouteStop> stops;
+
+  NewRouteInfo({
+    required this.id,
+    required this.name,
+    required this.stops,
+  });
+
+  factory NewRouteInfo.fromJson(Map<String, dynamic> json) {
+    return NewRouteInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      stops: (json['stops'] as List<dynamic>?)
+          ?.map((i) => RouteStop.fromJson(i))
+          .toList() ?? [],
+    );
+  }
+}
+
+/// Route stop
+class RouteStop {
+  final String id;
+  final String name;
+  final String address;
+  final double lat;
+  final double lng;
+  final int stopOrder;
+
+  RouteStop({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.lat,
+    required this.lng,
+    required this.stopOrder,
+  });
+
+  factory RouteStop.fromJson(Map<String, dynamic> json) {
+    return RouteStop(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      address: json['address'] ?? '',
+      lat: double.tryParse(json['lat']?.toString() ?? '0') ?? 0.0,
+      lng: double.tryParse(json['lng']?.toString() ?? '0') ?? 0.0,
+      stopOrder: json['stopOrder'] ?? 0,
+    );
+  }
+}
+
+/// Tracking child information
+class TrackingChild {
+  final String id;
+  final String status;
+  final String? pickedUpAt;
+  final String? droppedOffAt;
+  final String pickupTime;
+  final String? excuseReason;
+  final ChildBasicInfo child;
+  final PickupPoint pickupPoint;
+
+  TrackingChild({
+    required this.id,
+    required this.status,
+    this.pickedUpAt,
+    this.droppedOffAt,
+    required this.pickupTime,
+    this.excuseReason,
+    required this.child,
+    required this.pickupPoint,
+  });
+
+  factory TrackingChild.fromJson(Map<String, dynamic> json) {
+    return TrackingChild(
+      id: json['id'] ?? '',
+      status: json['status'] ?? '',
+      pickedUpAt: json['pickedUpAt'],
+      droppedOffAt: json['droppedOffAt'],
+      pickupTime: json['pickupTime'] ?? '',
+      excuseReason: json['excuseReason'],
+      child: ChildBasicInfo.fromJson(json['child'] ?? {}),
+      pickupPoint: PickupPoint.fromJson(json['pickupPoint'] ?? {}),
     );
   }
 }

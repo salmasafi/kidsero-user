@@ -2,13 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
-import 'package:kidsero_driver/features/plans/cubit/app_services_cubit.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/service_card.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
+import 'package:kidsero_parent/features/plans/cubit/app_services_cubit.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/service_card.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 class AppServicesTab extends StatelessWidget {
   const AppServicesTab({super.key});

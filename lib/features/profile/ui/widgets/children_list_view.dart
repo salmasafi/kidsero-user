@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/theme/app_text_styles.dart';
-import 'package:kidsero_driver/core/theme/app_sizes.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/theme/app_text_styles.dart';
+import 'package:kidsero_parent/core/theme/app_sizes.dart';
 
-import 'package:kidsero_driver/core/widgets/custom_loading.dart';
-import 'package:kidsero_driver/core/widgets/custom_error_widget.dart';
-import 'package:kidsero_driver/features/profile/logic/cubit/profile_cubit.dart';
-import 'package:kidsero_driver/features/profile/logic/cubit/profile_state.dart';
-import 'package:kidsero_driver/features/profile/data/models/children_response_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/widgets/custom_loading.dart';
+import 'package:kidsero_parent/core/widgets/custom_error_widget.dart';
+import 'package:kidsero_parent/features/profile/logic/cubit/profile_cubit.dart';
+import 'package:kidsero_parent/features/profile/logic/cubit/profile_state.dart';
+import 'package:kidsero_parent/features/profile/data/models/children_response_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/core/widgets/custom_text_field.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
+import 'package:kidsero_parent/core/widgets/custom_button.dart';
+import 'package:kidsero_parent/core/widgets/custom_text_field.dart';
+import 'package:kidsero_parent/core/widgets/custom_snackbar.dart';
 
 class ChildrenListView extends StatefulWidget {
   const ChildrenListView({super.key});

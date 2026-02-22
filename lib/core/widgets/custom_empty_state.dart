@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/widgets/custom_button.dart';
 
 class CustomEmptyState extends StatelessWidget {
   final IconData icon;

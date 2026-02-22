@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/core/widgets/custom_loading.dart';
-import 'package:kidsero_driver/features/rides/cubit/child_rides_cubit.dart';
-import 'package:kidsero_driver/features/rides/models/ride_models.dart';
-import 'package:kidsero_driver/features/rides/cubit/report_absence_cubit.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/core/widgets/custom_loading.dart';
+import 'package:kidsero_parent/features/rides/cubit/child_rides_cubit.dart';
+import 'package:kidsero_parent/features/rides/models/ride_models.dart';
+import 'package:kidsero_parent/features/rides/cubit/report_absence_cubit.dart';
 import 'package:intl/intl.dart';
 
 /// Screen to display comprehensive ride history for a specific child
@@ -188,7 +188,7 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
   Widget _buildSummaryCard(
     BuildContext context,
     AppLocalizations l10n,
-    RideSummary summary,
+    RideSummaryData summary,
   ) {
     return Card(
       elevation: 2,
@@ -212,7 +212,7 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
                 Expanded(
                   child: _buildSummaryItem(
                     l10n.totalScheduled,
-                    summary.stats.totalScheduled.toString(),
+                    summary.summary.total.toString(),
                     Icons.directions_bus,
                     AppColors.primary,
                   ),
@@ -220,7 +220,7 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
                 Expanded(
                   child: _buildSummaryItem(
                     l10n.attended,
-                    summary.stats.attended.toString(),
+                    summary.summary.byStatus.completed.toString(),
                     Icons.check_circle,
                     Colors.green,
                   ),
@@ -233,7 +233,7 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
                 Expanded(
                   child: _buildSummaryItem(
                     l10n.absent,
-                    summary.stats.absent.toString(),
+                    summary.summary.byStatus.absent.toString(),
                     Icons.cancel,
                     Colors.red,
                   ),
@@ -241,7 +241,7 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
                 Expanded(
                   child: _buildSummaryItem(
                     l10n.attendanceRate,
-                    _calculateAttendanceRate(summary.stats),
+                    _calculateAttendanceRate(summary.summary),
                     Icons.trending_up,
                     AppColors.accent,
                   ),
@@ -254,9 +254,9 @@ class _ChildRideHistoryScreenState extends State<ChildRideHistoryScreen> {
     );
   }
 
-  String _calculateAttendanceRate(SummaryStats stats) {
-    if (stats.totalScheduled == 0) return '0%';
-    final rate = (stats.attended / stats.totalScheduled) * 100;
+  String _calculateAttendanceRate(RideSummaryStats stats) {
+    if (stats.total == 0) return '0%';
+    final rate = (stats.byStatus.completed / stats.total) * 100;
     return '${rate.toStringAsFixed(1)}%';
   }
 

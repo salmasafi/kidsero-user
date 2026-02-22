@@ -12,6 +12,7 @@ import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_strings.dart';
 import 'core/logic/locale_cubit.dart';
+import 'core/services/auth_service.dart';
 import 'features/rides/data/rides_repository.dart';
 import 'features/rides/data/rides_service.dart';
 import 'features/payments/data/repositories/payment_repository.dart';
@@ -71,6 +72,12 @@ class _MainAppState extends State<MainApp> {
     );
     _paymentRepository = PaymentRepository(_apiService);
     _notesRepository = NotesRepository(_apiService);
+    
+    // Initialize AuthService with API instances
+    AuthService().initialize(
+      apiHelper: _apiHelper,
+      apiService: _apiService,
+    );
     
     // Ensure tokens are loaded before the app renders
     await _apiHelper.refreshToken();

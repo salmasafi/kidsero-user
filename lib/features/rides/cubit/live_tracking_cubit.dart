@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
+import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
 import '../../../core/network/socket_service.dart';
 import '../../../core/utils/app_preferences.dart';
 

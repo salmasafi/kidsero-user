@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_model.dart';
-import 'package:kidsero_driver/features/payments/data/models/service_payment_model.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/payment_status_badge.dart';
-import 'package:kidsero_driver/features/payments/services/payment_lookup_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_model.dart';
+import 'package:kidsero_parent/features/payments/data/models/service_payment_model.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/payment_status_badge.dart';
+import 'package:kidsero_parent/features/payments/services/payment_lookup_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 /// Widget that displays a payment item in a list
 /// Supports both PaymentModel (plan payments) and ServicePaymentModel (service payments)

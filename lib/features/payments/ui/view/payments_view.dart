@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
-import 'package:kidsero_driver/core/widgets/language_toggle.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/app_services_tab.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/school_services_tab.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
+import 'package:kidsero_parent/core/widgets/language_toggle.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/app_services_tab.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/school_services_tab.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 import '../../../../core/theme/app_colors.dart';
 

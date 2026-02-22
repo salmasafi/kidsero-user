@@ -11,6 +11,7 @@ import 'api_endpoints.dart';
 import '../utils/app_preferences.dart';
 import '../utils/app_strings.dart';
 import 'cache_helper.dart';
+import '../interceptors/auth_interceptor.dart';
 
 class ApiService {
   static const String baseUrl = 'https://Bcknd.Kidsero.com';
@@ -37,6 +38,9 @@ class ApiService {
         error: true,
       ),
     );
+
+    // Add auth interceptor to handle 401/403 responses
+    dio.interceptors.add(AuthInterceptor());
 
     dio.interceptors.add(
       InterceptorsWrapper(

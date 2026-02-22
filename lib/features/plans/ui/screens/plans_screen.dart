@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/plans/cubit/plans_cubit.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/plans/cubit/plans_cubit.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/utils/price_utils.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class PlansScreen extends StatelessWidget {
@@ -25,9 +25,12 @@ class PlansScreen extends StatelessWidget {
                 expandedHeight: 60,
                 floating: false,
                 pinned: true,
-        
+
                 flexibleSpace: FlexibleSpaceBar(
-                  title: Text(l10n.appServices, style: TextStyle(color: Colors.white, fontSize: 16)),
+                  title: Text(
+                    l10n.appServices,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                   background: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -48,12 +51,17 @@ class PlansScreen extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is PlansError) {
                 return Center(
-                    child: Text(state.message,
-                        style: const TextStyle(color: AppColors.error)));
+                  child: Text(
+                    state.message,
+                    style: const TextStyle(color: AppColors.error),
+                  ),
+                );
               } else if (state is PlansLoaded) {
                 return ListView.separated(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 24),
+                    horizontal: 20,
+                    vertical: 24,
+                  ),
                   itemCount: state.plans.length,
                   separatorBuilder: (c, i) => const SizedBox(height: 20),
                   itemBuilder: (context, index) {
@@ -69,7 +77,11 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlanCard(BuildContext context, PlanModel plan, AppLocalizations l10n) {
+  Widget _buildPlanCard(
+    BuildContext context,
+    PlanModel plan,
+    AppLocalizations l10n,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -108,32 +120,18 @@ class PlansScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // Price with RichText for emphasis
-                  RichText(
+                  Text(
+                    formatPrice(plan.price),
                     textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "${plan.price}",
-                          style: const TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const TextSpan(
-                          text: " EGP",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
                   const Divider(color: AppColors.border, thickness: 1),
                   const SizedBox(height: 24),
@@ -142,13 +140,13 @@ class PlansScreen extends StatelessWidget {
                   _infoRow(
                     icon: Icons.receipt_long_rounded,
                     label: l10n.subscriptionFees,
-                    value: "${plan.subscriptionFees} EGP",
+                    value: formatPrice(plan.subscriptionFees),
                   ),
                   const SizedBox(height: 16),
                   _infoRow(
                     icon: Icons.savings_outlined,
                     label: l10n.minPayment,
-                    value: "${plan.minSubscriptionFeesPay} EGP",
+                    value: formatPrice(plan.minSubscriptionFeesPay),
                   ),
 
                   const SizedBox(height: 32),
@@ -173,12 +171,12 @@ class PlansScreen extends StatelessWidget {
                       child: const Text(
                         "Choose Plan",
                         style: TextStyle(
-                          fontSize: 16, 
-                          fontWeight: FontWeight.bold
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -188,7 +186,11 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoRow({required IconData icon, required String label, required String value}) {
+  Widget _infoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
     return Row(
       children: [
         Container(

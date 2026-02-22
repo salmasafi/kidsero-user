@@ -1,11 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/api_helper.dart';
 import '../../../../core/network/api_service.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
-import 'package:kidsero_driver/core/utils/app_preferences.dart';
-import 'package:kidsero_driver/core/utils/l10n_utils.dart';
-import 'package:kidsero_driver/core/network/error_handler.dart';
+import 'package:kidsero_parent/core/utils/app_preferences.dart';
+import 'package:kidsero_parent/core/utils/l10n_utils.dart';
+import 'package:kidsero_parent/core/network/error_handler.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
@@ -63,6 +64,16 @@ class AuthCubit extends Cubit<AuthState> {
     if (_apiService != null) {
       await _apiService!.clearToken();
     }
+    
+    // Also use AuthService for consistent logout handling
+    await AuthService().handleForceLogout(reason: 'Manual logout');
+    
+    emit(AuthInitial());
+  }
+
+  /// Handle forced logout from API errors (401/403)
+  Future<void> handleForceLogout({String? reason}) async {
+    await AuthService().handleForceLogout(reason: reason);
     emit(AuthInitial());
   }
 }

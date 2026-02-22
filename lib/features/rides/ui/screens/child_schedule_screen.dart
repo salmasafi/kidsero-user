@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/widgets/gradient_header.dart';
-import 'package:kidsero_driver/core/widgets/tab_bar_widget.dart';
-import 'package:kidsero_driver/core/widgets/ride_card.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/features/rides/cubit/child_rides_cubit.dart';
-import 'package:kidsero_driver/features/rides/cubit/report_absence_cubit.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/widgets/gradient_header.dart';
+import 'package:kidsero_parent/core/widgets/tab_bar_widget.dart';
+import 'package:kidsero_parent/core/widgets/ride_card.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/features/rides/cubit/child_rides_cubit.dart';
+import 'package:kidsero_parent/features/rides/cubit/report_absence_cubit.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../data/rides_repository.dart';
@@ -252,7 +252,7 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -320,16 +320,11 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
         }
 
         if (state is ChildRidesLoaded) {
-          // Filter today's rides from upcoming rides
-          final today = DateTime.now();
-          final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+          // Get today rides from the cubit
+          final todayRides = state.todayRidesList;
           
-          final todayRides = state.upcomingRides.where((ride) {
-            return ride.date == todayStr;
-          }).toList();
-
           // Check if there's an active ride for this child
-          final hasActiveRide = state.activeRide != null;
+          final hasActiveRide = state.hasActiveRide;
 
           if (todayRides.isEmpty && !hasActiveRide) {
             return CustomEmptyState(
@@ -341,44 +336,39 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           }
 
           return RefreshIndicator(
-            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                // Active Ride Section (if exists)
-                if (hasActiveRide) ...[
-                  Text(
-                    'Active Ride', // TODO: Add to l10n
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
+            onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Active ride card (green) - if there's an active ride
+                  if (hasActiveRide) ...[
+                    _buildActiveRideCard(context, state.activeRide!, l10n),
+                    const SizedBox(height: 24),
+                  ],
+                  
+                  // Today's Scheduled Rides
+                  if (todayRides.isNotEmpty) ...[
+                    Text(
+                      hasActiveRide ? 'Other Rides Today' : l10n.today, // TODO: Add to l10n
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActiveRideCard(context, state.activeRide!, l10n),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 12),
+                    ...todayRides.map(
+                      (ride) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _buildTodayRideCard(context, ride, l10n),
+                      ),
+                    ),
+                  ],
                 ],
-                
-                // Today's Scheduled Rides
-                if (todayRides.isNotEmpty) ...[
-                  Text(
-                    hasActiveRide ? 'Other Rides Today' : l10n.today, // TODO: Add to l10n
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ...todayRides.map(
-                    (ride) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _buildUpcomingRideCard(context, ride, l10n),
-                    ),
-                  ),
-                ],
-              ],
+              ),
             ),
           );
         }
@@ -644,6 +634,47 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
     );
   }
 
+  Widget _buildTodayRideCard(
+    BuildContext context,
+    TodayRide ride,
+    AppLocalizations l10n,
+  ) {
+    // Determine the ride status based on the status field
+    RideStatus status;
+    switch (ride.status.toLowerCase()) {
+      case 'completed':
+        status = RideStatus.completed;
+        break;
+      case 'cancelled':
+      case 'excused':
+        status = RideStatus.cancelled;
+        break;
+      case 'in_progress':
+        status = RideStatus.live;
+        break;
+      default:
+        status = RideStatus.scheduled;
+    }
+
+    return RideCard(
+      time: ride.pickupTime ?? '--:--',
+      dateLabel: ride.period == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
+      rideName: ride.period == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
+      routeDescription: ride.period == 'morning'
+          ? 'Home → School'
+          : 'School → Home',
+      driverName: ride.driver?.name ?? 'Driver',
+      status: status,
+      onReportAbsence: status == RideStatus.scheduled 
+          ? () => _showReportAbsenceDialogForToday(context, ride, l10n)
+          : null, // Don't allow reporting absence for cancelled/completed rides
+    );
+  }
+
   Widget _buildUpcomingRideCard(
     BuildContext context,
     RideHistoryItem ride,
@@ -831,53 +862,112 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                   controller: reasonController,
                   decoration: InputDecoration(
                     labelText: l10n.reason,
-                    hintText: l10n.enterReasonHint,
                     border: const OutlineInputBorder(),
-                    errorText: state is ReportAbsenceValidationError
-                        ? state.message
-                        : null,
                   ),
                   maxLines: 3,
                 ),
-                if (state is ReportAbsenceError) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    state.message,
-                    style: const TextStyle(color: AppColors.error, fontSize: 12),
-                  ),
-                ],
               ],
             ),
             actions: [
               TextButton(
-                onPressed: () {
-                  context.read<ReportAbsenceCubit>().reset();
-                  Navigator.pop(dialogContext);
-                },
+                onPressed: () => Navigator.pop(dialogContext),
                 child: Text(l10n.cancel),
               ),
-              ElevatedButton(
-                onPressed: state is ReportAbsenceLoading
-                    ? null
-                    : () {
-                        context.read<ReportAbsenceCubit>().reportAbsence(
-                          occurrenceId: ride.rideId,
-                          studentId: widget.childId,
-                          reason: reasonController.text,
-                          pickedUpAt: ride.pickedUpAt,
-                        );
-                      },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                child: state is ReportAbsenceLoading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Text(l10n.submit),
+              BlocBuilder<ReportAbsenceCubit, ReportAbsenceState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: state is ReportAbsenceLoading
+                        ? null
+                        : () {
+                            if (reasonController.text.trim().isNotEmpty) {
+                              dialogContext.read<ReportAbsenceCubit>().reportAbsence(
+                                    occurrenceId: ride.rideId,
+                                    studentId: widget.childId,
+                                    reason: reasonController.text.trim(),
+                                  );
+                            }
+                          },
+                    child: state is ReportAbsenceLoading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(l10n.submit),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showReportAbsenceDialogForToday(
+    BuildContext context,
+    TodayRide ride,
+    AppLocalizations l10n,
+  ) {
+    final reasonController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => BlocConsumer<ReportAbsenceCubit, ReportAbsenceState>(
+        listener: (context, state) {
+          if (state is ReportAbsenceSuccess) {
+            Navigator.pop(dialogContext);
+          }
+        },
+        builder: (context, state) {
+          return AlertDialog(
+            title: Text(l10n.reportAbsence),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l10n.reportAbsenceDescription,
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: reasonController,
+                  decoration: InputDecoration(
+                    labelText: l10n.reason,
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(l10n.cancel),
+              ),
+              BlocBuilder<ReportAbsenceCubit, ReportAbsenceState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: state is ReportAbsenceLoading
+                        ? null
+                        : () {
+                            if (reasonController.text.trim().isNotEmpty) {
+                              dialogContext.read<ReportAbsenceCubit>().reportAbsence(
+                                    occurrenceId: ride.rideId,
+                                    studentId: widget.childId,
+                                    reason: reasonController.text.trim(),
+                                  );
+                            }
+                          },
+                    child: state is ReportAbsenceLoading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(l10n.submit),
+                  );
+                },
               ),
             ],
           );

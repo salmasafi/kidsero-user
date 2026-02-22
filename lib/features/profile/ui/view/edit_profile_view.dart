@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Commented out for App Store submission - image picking disabled
 // import 'package:image_picker/image_picker.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
 // Commented out for App Store submission - not needed without image display
 // import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_helper.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../auth/data/models/user_model.dart';
 import '../../logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/profile_state.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 // Commented out for App Store submission - image viewer disabled
 // import '../../../../core/widgets/image_viewer.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
 
 class EditProfileView extends StatefulWidget {
   final UserModel user;
@@ -332,7 +332,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     BuildContext context,
   ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
@@ -376,21 +376,21 @@ class _EditProfileViewState extends State<EditProfileView> {
         children: [
           Expanded(
             child: Text(
-              value,
-              textAlign: TextAlign.right,
+              '$label:',
               style: TextStyle(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.bold,
-                fontSize: AppSizes.bodySize(context),
+                color: AppColors.textTertiary,
+                fontSize: AppSizes.smallSize(context),
               ),
             ),
           ),
           const SizedBox(width: 10),
           Text(
-            '$label:',
+            value,
+            textAlign: TextAlign.right,
             style: TextStyle(
-              color: AppColors.textTertiary,
-              fontSize: AppSizes.smallSize(context),
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.bold,
+              fontSize: AppSizes.bodySize(context),
             ),
           ),
         ],

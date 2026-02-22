@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 /// Status enum for ride cards

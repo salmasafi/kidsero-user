@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/plans/model/parent_subscription_model.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/plans/model/parent_subscription_model.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart';
 
 // State
 abstract class AppServicesState extends Equatable {

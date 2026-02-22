@@ -90,6 +90,8 @@ class TodayRidesCubit extends Cubit<TodayRidesState> {
   }
 
   /// Start automatic refresh every 5 minutes
+  /// NOTE: Auto-refresh is disabled by default to reduce API calls
+  /// Use manual refresh instead with the refresh() method
   /// Call this method when the screen becomes active (e.g., in initState or onResume)
   /// Example usage:
   /// ```dart

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:kidsero_driver/features/home/ui/home_screen.dart';
-import 'package:kidsero_driver/features/auth/ui/view/login_view.dart';
-import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
-import 'package:kidsero_driver/features/profile/ui/view/edit_profile_view.dart';
-import 'package:kidsero_driver/features/profile/ui/view/change_password_view.dart';
-import 'package:kidsero_driver/features/payments/ui/view/payment_history_view.dart';
-import 'package:kidsero_driver/features/payments/ui/view/payment_detail_view.dart';
-import 'package:kidsero_driver/features/payments/ui/view/create_plan_payment_view.dart';
-import 'package:kidsero_driver/features/payments/ui/view/create_service_payment_view.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart';
-import 'package:kidsero_driver/features/plans/model/org_service_model.dart';
-import 'package:kidsero_driver/features/children/model/child_model.dart';
+import 'package:kidsero_parent/features/home/ui/home_screen.dart';
+import 'package:kidsero_parent/features/auth/ui/view/login_view.dart';
+import 'package:kidsero_parent/features/profile/ui/view/profile_view.dart';
+import 'package:kidsero_parent/features/profile/ui/view/edit_profile_view.dart';
+import 'package:kidsero_parent/features/profile/ui/view/change_password_view.dart';
+import 'package:kidsero_parent/features/payments/ui/view/payment_history_view.dart';
+import 'package:kidsero_parent/features/payments/ui/view/payment_detail_view.dart';
+import 'package:kidsero_parent/features/payments/ui/view/create_plan_payment_view.dart';
+import 'package:kidsero_parent/features/payments/ui/view/create_service_payment_view.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart';
+import 'package:kidsero_parent/features/plans/model/org_service_model.dart';
+import 'package:kidsero_parent/features/children/model/child_model.dart';
 
-import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
-import 'package:kidsero_driver/core/utils/app_preferences.dart';
+import 'package:kidsero_parent/features/auth/data/models/user_model.dart';
+import 'package:kidsero_parent/core/utils/app_preferences.dart';
 import '../../main.dart';
 import 'routes.dart';
 

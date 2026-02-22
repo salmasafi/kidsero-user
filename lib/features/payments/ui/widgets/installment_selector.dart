@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_type.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_type.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 /// Widget for selecting payment type (one-time or installment) and number of installments
 class InstallmentSelector extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/theme/app_sizes.dart';
-import 'package:kidsero_driver/features/payments/utils/image_utils.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/theme/app_sizes.dart';
+import 'package:kidsero_parent/features/payments/utils/image_utils.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 /// Widget for selecting and previewing receipt images
 /// 

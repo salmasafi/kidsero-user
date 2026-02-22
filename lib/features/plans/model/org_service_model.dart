@@ -6,6 +6,7 @@ class OrgService {
   final bool useZonePricing;
   final num studentZoneCost;
   final num finalPrice;
+  final bool supportsInstallments;
 
   OrgService({
     required this.id,
@@ -15,6 +16,7 @@ class OrgService {
     required this.useZonePricing,
     required this.studentZoneCost,
     required this.finalPrice,
+    required this.supportsInstallments,
   });
 
   factory OrgService.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,12 @@ class OrgService {
       useZonePricing: json['useZonePricing'] ?? false,
       studentZoneCost: json['studentZoneCost'] ?? 0,
       finalPrice: json['finalPrice'] ?? 0,
+      supportsInstallments:
+          json['supportsInstallments'] ??
+          json['supports_installments'] ??
+          json['allowInstallments'] ??
+          json['allow_installments'] ??
+          false,
     );
   }
 }

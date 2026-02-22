@@ -1,4 +1,4 @@
-name: kidsero_driver
+name: kidsero_parent
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -31,6 +31,7 @@ dependencies:
   socket_io_client: ^3.1.0
   flutter_map: ^7.0.0
   latlong2: ^0.9.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

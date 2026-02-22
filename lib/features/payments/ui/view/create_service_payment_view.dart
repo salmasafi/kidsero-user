@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/theme/app_sizes.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
-import 'package:kidsero_driver/features/children/model/child_model.dart';
-import 'package:kidsero_driver/features/payments/data/models/payment_type.dart';
-import 'package:kidsero_driver/features/payments/data/repositories/payment_repository.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/create_service_payment_cubit.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/create_service_payment_state.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/installment_selector.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/receipt_image_picker.dart';
-import 'package:kidsero_driver/features/plans/model/org_service_model.dart';
-import 'package:kidsero_driver/features/plans/model/payment_method_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/theme/app_sizes.dart';
+import 'package:kidsero_parent/core/widgets/custom_button.dart';
+import 'package:kidsero_parent/core/widgets/custom_snackbar.dart';
+import 'package:kidsero_parent/features/children/model/child_model.dart';
+import 'package:kidsero_parent/features/payments/data/models/payment_type.dart';
+import 'package:kidsero_parent/features/payments/data/repositories/payment_repository.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/create_service_payment_cubit.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/create_service_payment_state.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/installment_selector.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/receipt_image_picker.dart';
+import 'package:kidsero_parent/features/plans/model/org_service_model.dart';
+import 'package:kidsero_parent/features/plans/model/payment_method_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
 
 /// Screen for creating organization service payments
 ///

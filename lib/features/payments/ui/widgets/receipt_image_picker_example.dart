@@ -2,7 +2,7 @@
 // This file demonstrates how to integrate the ReceiptImagePicker in a form
 
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/receipt_image_picker.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/receipt_image_picker.dart';
 
 class ReceiptImagePickerExample extends StatefulWidget {
   const ReceiptImagePickerExample({super.key});

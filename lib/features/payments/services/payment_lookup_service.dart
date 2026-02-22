@@ -1,5 +1,5 @@
-import 'package:kidsero_driver/features/plans/model/payment_method_model.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart';
+import 'package:kidsero_parent/features/plans/model/payment_method_model.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart';
 
 /// Service for caching and looking up payment methods and plans by ID
 /// This service maintains in-memory caches of payment methods and plans

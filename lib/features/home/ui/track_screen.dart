@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/core/widgets/language_toggle.dart';
-import 'package:kidsero_driver/core/widgets/ride_card.dart';
-import 'package:kidsero_driver/features/rides/cubit/active_rides_cubit.dart';
-import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
-import 'package:kidsero_driver/features/rides/models/ride_models.dart';
-import 'package:kidsero_driver/features/rides/ui/screens/ride_tracking_screen.dart';
-import 'package:kidsero_driver/features/rides/ui/screens/live_tracking_screen.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/core/widgets/language_toggle.dart';
+import 'package:kidsero_parent/core/widgets/ride_card.dart';
+import 'package:kidsero_parent/features/rides/cubit/active_rides_cubit.dart';
+import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
+import 'package:kidsero_parent/features/rides/models/ride_models.dart';
+import 'package:kidsero_parent/features/rides/ui/screens/ride_tracking_screen.dart';
+import 'package:kidsero_parent/features/rides/ui/screens/live_tracking_screen.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -38,10 +38,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   @override
   void initState() {
     super.initState();
-    // Start auto-refresh when screen is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ActiveRidesCubit>().startAutoRefresh();
-    });
+    // Auto-refresh is disabled - only manual refresh available
   }
 
   @override
@@ -163,14 +160,30 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                   color: Colors.white,
                 ),
               ),
-              // Language button
-              IconButton(
-                onPressed: () => showLanguageDialog(context),
-                icon: const Icon(
-                  Icons.translate,
-                  color: Colors.white,
-                  size: 24,
-                ),
+              Row(
+                children: [
+                  // Refresh button
+                  IconButton(
+                    onPressed: () {
+                      context.read<ActiveRidesCubit>().refresh();
+                    },
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Language button
+                  IconButton(
+                    onPressed: () => showLanguageDialog(context),
+                    icon: const Icon(
+                      Icons.translate,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

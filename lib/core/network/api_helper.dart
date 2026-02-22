@@ -3,6 +3,7 @@ import 'api_endpoints.dart';
 import '../utils/app_strings.dart';
 import '../utils/app_preferences.dart';
 import 'cache_helper.dart';
+import '../interceptors/auth_interceptor.dart';
 
 class ApiHelper {
   final Dio _dio;
@@ -27,6 +28,9 @@ class ApiHelper {
         error: true,
       ),
     );
+
+    // Add auth interceptor to handle 401/403 responses
+    _dio.interceptors.add(AuthInterceptor());
 
     _dio.interceptors.add(
       InterceptorsWrapper(

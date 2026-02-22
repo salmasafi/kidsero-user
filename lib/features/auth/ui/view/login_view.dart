@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
 import '../../../../core/network/api_helper.dart';
 import '../../../../core/network/api_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import '../../logic/cubit/auth_state.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
+import 'package:kidsero_parent/core/widgets/custom_snackbar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-
-import 'package:kidsero_driver/core/widgets/language_toggle.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:kidsero_parent/core/widgets/language_toggle.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -22,6 +23,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final TapGestureRecognizer _contactTap = TapGestureRecognizer();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -30,20 +32,26 @@ class _LoginViewState extends State<LoginView> {
   String? _passwordError;
 
   @override
+  void initState() {
+    super.initState();
+    _contactTap.onTap = () async {
+      await launchUrlString('https://kidsero.com/support');
+    };
+  }
+
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    print(
+      '[LoginView] build: locale=${Localizations.localeOf(context).languageCode}',
+    );
     // Hardcoded to parent primary color which is now Teal
     final primaryColor = AppColors.primary;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
       create: (context) {
         // Get ApiService from the context if available
         final apiService = context.read<ApiService>();
-        return AuthCubit(
-          AuthRepository(ApiHelper()),
-          apiService: apiService,
-        );
+        return AuthCubit(AuthRepository(ApiHelper()), apiService: apiService);
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
@@ -66,6 +74,7 @@ class _LoginViewState extends State<LoginView> {
         ),
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
+            print('[LoginView] Auth state changed: ${state.runtimeType}');
             if (state is AuthSuccess) {
               CustomSnackbar.showSuccess(context, l10n.loginSuccessful);
               context.go(Routes.home);
@@ -293,7 +302,6 @@ class _LoginViewState extends State<LoginView> {
                     //     ),
                     //   ),
                     // ).animate().fade(delay: 600.ms),
-
                     const SizedBox(height: 32),
 
                     Container(
@@ -380,6 +388,7 @@ class _LoginViewState extends State<LoginView> {
                           TextSpan(text: "${l10n.dontHaveAccount} "),
                           TextSpan(
                             text: l10n.contactAdmin,
+                            recognizer: _contactTap,
                             style: const TextStyle(
                               color: AppColors.secondary,
                               fontWeight: FontWeight.bold,
@@ -405,5 +414,13 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _contactTap.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

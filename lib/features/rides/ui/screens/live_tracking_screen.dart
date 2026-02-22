@@ -5,9 +5,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/network/api_service.dart';
 import '../../cubit/live_tracking_cubit.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
-import 'package:kidsero_driver/features/rides/data/rides_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
+import 'package:kidsero_parent/features/rides/data/rides_service.dart';
 
 class LiveTrackingScreen extends StatefulWidget {
   final String rideId;

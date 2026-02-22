@@ -1,8 +1,8 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:kidsero_driver/core/network/api_service.dart';
-// import 'package:kidsero_driver/features/children/cubit/children_cubit.dart';
-// import 'package:kidsero_driver/features/children/model/child_model.dart'; // Import cubit
+// import 'package:kidsero_parent/core/network/api_service.dart';
+// import 'package:kidsero_parent/features/children/cubit/children_cubit.dart';
+// import 'package:kidsero_parent/features/children/model/child_model.dart'; // Import cubit
 
 // class ChildrenScreen extends StatelessWidget {
 //   const ChildrenScreen({Key? key}) : super(key: key);
@@ -217,10 +217,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/features/children/cubit/children_cubit.dart';
-import 'package:kidsero_driver/features/children/model/child_model.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/features/children/cubit/children_cubit.dart';
+import 'package:kidsero_parent/features/children/model/child_model.dart';
 
 class ChildrenScreen extends StatelessWidget {
   const ChildrenScreen({Key? key}) : super(key: key);

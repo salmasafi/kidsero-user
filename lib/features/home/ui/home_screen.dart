@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/features/home/ui/alerts_screen.dart';
-import 'package:kidsero_driver/features/home/ui/track_screen.dart';
-import 'package:kidsero_driver/features/payments/ui/view/payments_view.dart';
-import 'package:kidsero_driver/features/profile/ui/view/profile_view.dart';
-import 'package:kidsero_driver/features/rides/ui/screens/rides_screen.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
+import 'package:kidsero_parent/features/home/ui/alerts_screen.dart';
+import 'package:kidsero_parent/features/home/ui/track_screen.dart';
+import 'package:kidsero_parent/features/payments/ui/view/payments_view.dart';
+import 'package:kidsero_parent/features/profile/ui/view/profile_view.dart';
+import 'package:kidsero_parent/features/rides/ui/screens/rides_screen.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
 
 import '../../../core/theme/app_colors.dart';
 

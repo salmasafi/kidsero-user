@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/plans/cubit/payment_state.dart';
-import 'package:kidsero_driver/features/plans/model/payment_model.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/plans/cubit/payment_state.dart';
+import 'package:kidsero_parent/features/plans/model/payment_model.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
   final ApiService _apiService;

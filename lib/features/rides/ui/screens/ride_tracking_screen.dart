@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/rides/cubit/ride_tracking_cubit.dart';
-import 'package:kidsero_driver/features/rides/data/rides_repository.dart';
-import 'package:kidsero_driver/features/rides/data/rides_service.dart';
-import 'package:kidsero_driver/features/rides/models/ride_models.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/rides/cubit/ride_tracking_cubit.dart';
+import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
+import 'package:kidsero_parent/features/rides/data/rides_service.dart';
+import 'package:kidsero_parent/features/rides/models/ride_models.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
 
 // --- CONSTANTS & THEME COLORS ---
 const Color kPrimaryColor = AppColors.primary;

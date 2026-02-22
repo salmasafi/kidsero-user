@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/api_helper.dart';
 import '../../data/repositories/profile_repository.dart';
 import 'profile_state.dart';
-import 'package:kidsero_driver/core/utils/l10n_utils.dart';
-import 'package:kidsero_driver/core/network/error_handler.dart';
+import 'package:kidsero_parent/core/utils/l10n_utils.dart';
+import 'package:kidsero_parent/core/network/error_handler.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _profileRepository;

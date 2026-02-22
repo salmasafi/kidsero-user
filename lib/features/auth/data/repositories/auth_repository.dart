@@ -1,4 +1,4 @@
-import 'package:kidsero_driver/core/network/api_endpoints.dart';
+import 'package:kidsero_parent/core/network/api_endpoints.dart';
 import '../../../../core/network/api_helper.dart';
 import '../models/auth_response_model.dart';
 

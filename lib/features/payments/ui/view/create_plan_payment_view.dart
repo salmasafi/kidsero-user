@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/theme/app_sizes.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
-import 'package:kidsero_driver/features/payments/data/repositories/payment_repository.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/create_plan_payment_cubit.dart';
-import 'package:kidsero_driver/features/payments/logic/cubit/create_plan_payment_state.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/receipt_image_picker.dart';
-import 'package:kidsero_driver/features/plans/model/payment_method_model.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/theme/app_sizes.dart';
+import 'package:kidsero_parent/core/widgets/custom_button.dart';
+import 'package:kidsero_parent/core/widgets/custom_snackbar.dart';
+import 'package:kidsero_parent/features/payments/data/repositories/payment_repository.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/create_plan_payment_cubit.dart';
+import 'package:kidsero_parent/features/payments/logic/cubit/create_plan_payment_state.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/receipt_image_picker.dart';
+import 'package:kidsero_parent/features/plans/model/payment_method_model.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/utils/price_utils.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
 
 /// Screen for creating plan subscription payments
-/// 
+///
 /// Provides a form to create a new plan payment with:
 /// - Selected plan summary
 /// - Payment method selection
@@ -26,10 +27,7 @@ import 'package:kidsero_driver/core/routing/routes.dart';
 class CreatePlanPaymentScreen extends StatefulWidget {
   final PlanModel? preselectedPlan;
 
-  const CreatePlanPaymentScreen({
-    super.key,
-    this.preselectedPlan,
-  });
+  const CreatePlanPaymentScreen({super.key, this.preselectedPlan});
 
   @override
   State<CreatePlanPaymentScreen> createState() =>
@@ -113,7 +111,10 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
 
     // Validate payment method selection
     if (_selectedPaymentMethod == null) {
-      CustomSnackbar.showError(submitContext, localizations.selectPaymentMethod);
+      CustomSnackbar.showError(
+        submitContext,
+        localizations.selectPaymentMethod,
+      );
       return;
     }
 
@@ -125,22 +126,21 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
 
     // Create payment
     submitContext.read<CreatePlanPaymentCubit>().createPayment(
-          planId: _selectedPlan!.id,
-          paymentMethodId: _selectedPaymentMethod!.id,
-          amount: double.parse(_amountController.text),
-          receiptImageBase64: _receiptImageBase64!,
-          notes: _notesController.text.trim().isEmpty
-              ? null
-              : _notesController.text.trim(),
-        );
+      planId: _selectedPlan!.id,
+      paymentMethodId: _selectedPaymentMethod!.id,
+      amount: double.parse(_amountController.text),
+      receiptImageBase64: _receiptImageBase64!,
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CreatePlanPaymentCubit(
-        context.read<PaymentRepository>(),
-      ),
+      create: (context) =>
+          CreatePlanPaymentCubit(context.read<PaymentRepository>()),
       child: Builder(
         builder: (blocContext) {
           final localizations = AppLocalizations.of(blocContext)!;
@@ -187,15 +187,14 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
               child: _selectedPlan == null
                   ? _buildMissingPlanState(localizations)
                   : _isLoadingData
-                      ? const Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                          padding:
-                              EdgeInsets.all(AppSizes.padding(blocContext)),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      padding: EdgeInsets.all(AppSizes.padding(blocContext)),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             // Selected plan summary
                             _buildPlanSummary(localizations),
                             SizedBox(height: AppSizes.spacing(blocContext)),
@@ -232,24 +231,26 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
                             SizedBox(height: AppSizes.spacing(context) * 2),
 
                             // Submit button
-                                BlocBuilder<CreatePlanPaymentCubit,
-                                    CreatePlanPaymentState>(
-                                  builder: (context, state) {
-                                    final isLoading =
-                                        state is CreatePlanPaymentLoading;
-                                    return CustomButton(
-                                      text: localizations.submit,
-                                      onPressed: isLoading
-                                          ? () {}
-                                          : () => _submitForm(blocContext),
-                                      isLoading: isLoading,
-                                    );
-                                  },
-                                ),
-                              ],
+                            BlocBuilder<
+                              CreatePlanPaymentCubit,
+                              CreatePlanPaymentState
+                            >(
+                              builder: (context, state) {
+                                final isLoading =
+                                    state is CreatePlanPaymentLoading;
+                                return CustomButton(
+                                  text: localizations.submit,
+                                  onPressed: isLoading
+                                      ? () {}
+                                      : () => _submitForm(blocContext),
+                                  isLoading: isLoading,
+                                );
+                              },
                             ),
-                          ),
+                          ],
                         ),
+                      ),
+                    ),
             ),
           );
         },
@@ -318,7 +319,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${plan.price} AED',
+                  formatPrice(plan.price),
                   style: TextStyle(
                     fontSize: AppSizes.bodySize(context),
                     color: AppColors.primary,
@@ -327,7 +328,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -372,7 +373,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
             ],
           ),
           Text(
-            '${plan.price} AED',
+            formatPrice(plan.price),
             style: TextStyle(
               fontSize: AppSizes.headingSize(context),
               fontWeight: FontWeight.bold,
@@ -463,10 +464,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
             readOnly: true,
             enableInteractiveSelection: false,
             keyboardType: TextInputType.number,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textPrimary,
-            ),
+            style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
             decoration: InputDecoration(
               prefixIcon: const Icon(
                 Icons.attach_money,
@@ -520,10 +518,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
           child: TextFormField(
             controller: _notesController,
             maxLines: 3,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textPrimary,
-            ),
+            style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
             decoration: InputDecoration(
               prefixIcon: const Icon(
                 Icons.note,
@@ -550,11 +545,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.info_outline,
-              size: 48,
-              color: AppColors.primary,
-            ),
+            const Icon(Icons.info_outline, size: 48, color: AppColors.primary),
             const SizedBox(height: 16),
             Text(
               localizations.choosePlanToSubscribe,

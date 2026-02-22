@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/core/widgets/language_toggle.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/core/widgets/language_toggle.dart';
 
 import '../../../core/theme/app_colors.dart';
 

@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/plans/cubit/payment_cubit.dart';
-import 'package:kidsero_driver/features/plans/cubit/payment_state.dart';
-import 'package:kidsero_driver/features/plans/model/payment_method_model.dart';
-import 'package:kidsero_driver/features/plans/model/payment_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/core/widgets/custom_button.dart';
-import 'package:kidsero_driver/core/widgets/custom_snackbar.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/plans/cubit/payment_cubit.dart';
+import 'package:kidsero_parent/features/plans/cubit/payment_state.dart';
+import 'package:kidsero_parent/features/plans/model/payment_method_model.dart';
+import 'package:kidsero_parent/features/plans/model/payment_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/core/utils/price_utils.dart';
+import 'package:kidsero_parent/core/widgets/custom_button.dart';
+import 'package:kidsero_parent/core/widgets/custom_snackbar.dart';
 
 class SubscriptionDialog extends StatefulWidget {
   final String title;
@@ -45,14 +46,24 @@ class _SubscriptionDialogState extends State<SubscriptionDialog> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-    );
-    if (image != null) {
-      setState(() {
-        _imageFile = image;
-      });
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+      );
+      if (image != null) {
+        setState(() {
+          _imageFile = image;
+        });
+        if (mounted) {
+          CustomSnackbar.showSuccess(context, 'Image selected successfully');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      if (mounted) {
+        CustomSnackbar.showError(context, 'Failed to pick image: $e');
+      }
     }
   }
 
@@ -93,7 +104,7 @@ class _SubscriptionDialogState extends State<SubscriptionDialog> {
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
+                        loadingProgress.expectedTotalBytes!
                   : null,
               strokeWidth: 2,
             ),
@@ -174,7 +185,7 @@ class _SubscriptionDialogState extends State<SubscriptionDialog> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${l10n.amount}: ${widget.amount} AED',
+                    '${l10n.amount}: ${formatPrice(widget.amount)}',
                     style: TextStyle(
                       fontSize: 16,
                       color: theme.primaryColor,

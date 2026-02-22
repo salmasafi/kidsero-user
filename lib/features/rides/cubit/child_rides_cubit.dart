@@ -20,17 +20,19 @@ class ChildRidesLoading extends ChildRidesState {}
 
 class ChildRidesLoaded extends ChildRidesState {
   final ChildRideDetails childDetails;
-  final RideSummary? summary;
+  final RideSummaryData? summary;
   final ActiveRide? activeRide;
+  final List<TodayRide> todayRides;
 
   const ChildRidesLoaded({
     required this.childDetails,
     this.summary,
     this.activeRide,
+    this.todayRides = const [],
   });
 
   @override
-  List<Object?> get props => [childDetails, summary, activeRide];
+  List<Object?> get props => [childDetails, summary, activeRide, todayRides];
 
   /// Get child name
   String get childName => childDetails.name;
@@ -47,26 +49,32 @@ class ChildRidesLoaded extends ChildRidesState {
   /// Get ride history
   List<RideHistoryItem> get historyRides => childDetails.rides.history;
 
+  /// Get today rides
+  List<TodayRide> get todayRidesList => todayRides;
+
   /// Check if there are upcoming rides
   bool get hasUpcomingRides => upcomingRides.isNotEmpty;
 
   /// Check if there is history
   bool get hasHistory => historyRides.isNotEmpty;
 
+  /// Check if there are today rides
+  bool get hasTodayRides => todayRides.isNotEmpty;
+
   /// Check if there's an active ride
   bool get hasActiveRide => activeRide != null;
 
   /// Get total scheduled rides from summary
-  int get totalScheduled => summary?.stats.totalScheduled ?? 0;
+  int get totalScheduled => summary?.summary.total ?? 0;
 
   /// Get attended rides from summary
-  int get attended => summary?.stats.attended ?? 0;
+  int get attended => summary?.summary.byStatus.completed ?? 0;
 
   /// Get absent count from summary
-  int get absent => summary?.stats.absent ?? 0;
+  int get absent => summary?.summary.byStatus.absent ?? 0;
 
   /// Get late count from summary
-  int get late => summary?.stats.late ?? 0;
+  int get late => 0; // Not available in new structure
 
   /// Get attendance percentage
   double get attendancePercentage {
@@ -100,17 +108,39 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
 
   /// Load child rides and summary
   Future<void> loadRides() async {
+    print('ChildRidesCubit: Loading rides for child $childId...');
     emit(ChildRidesLoading());
     try {
       // Fetch child details
-      final childDetails = await _repository.getChildRides(childId);
+      print('ChildRidesCubit: Fetching child details...');
+      final childDetails = await _repository.getChildRides(childId, forceRefresh: true);
+      print('ChildRidesCubit: Child details loaded - ${childDetails.rides.upcoming.length} upcoming, ${childDetails.rides.history.length} history');
 
       // Try to fetch summary, but don't fail if it's not available
-      RideSummary? summary;
+      RideSummaryData? summary;
       try {
+        print('ChildRidesCubit: Fetching child summary...');
         summary = await _repository.getChildRideSummary(childId);
+        print('ChildRidesCubit: Summary loaded');
       } catch (_) {
+        print('ChildRidesCubit: Summary failed, continuing without it');
         // Summary is optional, ignore errors
+      }
+
+      // Fetch today rides for this child
+      List<TodayRide> todayRides = [];
+      try {
+        final todayResponse = await _repository.getTodayRides(forceRefresh: true);
+        print('ChildRidesCubit: Response type: ${todayResponse.runtimeType}');
+        print('ChildRidesCubit: Today rides response loaded: ${todayResponse.data.length} rides');
+        // Filter today rides for this specific child
+        final allTodayRides = todayResponse.data;
+        todayRides = allTodayRides.where((ride) => ride.childId == childId).toList();
+        print('ChildRidesCubit: Filtered ${todayRides.length} rides for child $childId');
+      } catch (e) {
+        print('ChildRidesCubit: Error loading today rides: $e');
+        // Today rides failed, continue without them
+        todayRides = [];
       }
 
       // Check for active rides for this child
@@ -129,16 +159,21 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
 
       if (childDetails.rides.upcoming.isEmpty &&
           childDetails.rides.history.isEmpty &&
+          todayRides.isEmpty &&
           activeRide == null) {
+        print('ChildRidesCubit: No rides found, emitting empty state');
         emit(ChildRidesEmpty());
       } else {
+        print('ChildRidesCubit: Emitting loaded state - ${childDetails.rides.upcoming.length} upcoming, ${childDetails.rides.history.length} history, ${todayRides.length} today');
         emit(ChildRidesLoaded(
           childDetails: childDetails,
           summary: summary,
           activeRide: activeRide,
+          todayRides: todayRides,
         ));
       }
     } catch (e) {
+      print('ChildRidesCubit: Error loading rides: $e');
       emit(ChildRidesError(e.toString()));
     }
   }

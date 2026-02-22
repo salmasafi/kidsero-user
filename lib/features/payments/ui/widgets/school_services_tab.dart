@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/core/routing/routes.dart';
-import 'package:kidsero_driver/core/theme/app_colors.dart';
-import 'package:kidsero_driver/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/child_filter_bar.dart';
-import 'package:kidsero_driver/features/payments/ui/widgets/service_card.dart';
-import 'package:kidsero_driver/features/plans/cubit/school_services_cubit.dart';
-import 'package:kidsero_driver/features/plans/model/org_service_model.dart';
-import 'package:kidsero_driver/features/plans/model/student_subscription_model.dart';
-import 'package:kidsero_driver/l10n/app_localizations.dart';
-import 'package:kidsero_driver/features/children/model/child_model.dart';
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/core/routing/routes.dart';
+import 'package:kidsero_parent/core/theme/app_colors.dart';
+import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/child_filter_bar.dart';
+import 'package:kidsero_parent/features/payments/ui/widgets/service_card.dart';
+import 'package:kidsero_parent/features/plans/cubit/school_services_cubit.dart';
+import 'package:kidsero_parent/features/plans/model/org_service_model.dart';
+import 'package:kidsero_parent/features/plans/model/student_subscription_model.dart';
+import 'package:kidsero_parent/l10n/app_localizations.dart';
+import 'package:kidsero_parent/features/children/model/child_model.dart';
+
+import '../../../../core/utils/price_utils.dart';
 
 class SchoolServicesTab extends StatelessWidget {
   const SchoolServicesTab({super.key});
@@ -84,7 +86,6 @@ class _SchoolServicesTabContent extends StatelessWidget {
                       context.read<SchoolServicesCubit>().selectChild(child);
                     }
                   },
-                  
                 ),
                 const SizedBox(height: 20),
                 _SubscribedServicesSection(
@@ -93,9 +94,7 @@ class _SchoolServicesTabContent extends StatelessWidget {
                   selectedChild: state.selectedChild,
                 ),
                 const SizedBox(height: 24),
-                _AvailableServicesSection(
-                  services: state.availableServices,
-                ),
+                _AvailableServicesSection(services: state.availableServices),
               ],
             ),
           );
@@ -124,8 +123,10 @@ class _SubscribedServicesSection extends StatelessWidget {
     final filteredSubscriptions = selectedChild == null
         ? subscriptions
         : subscriptions
-            .where((subscription) => subscription.studentId == selectedChild!.id)
-            .toList();
+              .where(
+                (subscription) => subscription.studentId == selectedChild!.id,
+              )
+              .toList();
 
     return SizedBox(
       width: double.infinity,
@@ -150,7 +151,8 @@ class _SubscribedServicesSection extends StatelessWidget {
           else
             ...filteredSubscriptions.map((subscription) {
               final service = _findService(subscription.serviceId);
-              final description = service?.serviceDescription ??
+              final description =
+                  service?.serviceDescription ??
                   '${l10n.schoolService} • ${subscription.serviceId}';
               final price = _formatPrice(service?.finalPrice);
 
@@ -181,7 +183,7 @@ class _SubscribedServicesSection extends StatelessWidget {
 
   String _formatPrice(num? value) {
     if (value == null) return '--';
-    return '${value.toStringAsFixed(2)} AED';
+    return formatPrice(value);
   }
 }
 
@@ -214,7 +216,7 @@ class _AvailableServicesSection extends StatelessWidget {
           )
         else
           ...services.map((service) {
-            final price = '${service.finalPrice.toStringAsFixed(2)} AED';
+            final price = formatPrice(service.finalPrice);
             return ServiceCard(
               title: service.serviceName,
               description: service.serviceDescription,
@@ -230,10 +232,7 @@ class _AvailableServicesSection extends StatelessWidget {
 
                 context.push(
                   Routes.createServicePayment,
-                  extra: {
-                    'service': service,
-                    'student': selectedChild,
-                  },
+                  extra: {'service': service, 'student': selectedChild},
                 );
               },
             );

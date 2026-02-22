@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:kidsero_driver/features/auth/data/models/user_model.dart';
+import 'package:kidsero_parent/features/auth/data/models/user_model.dart';
 import '../../data/models/children_response_model.dart';
 
 abstract class ProfileState extends Equatable {

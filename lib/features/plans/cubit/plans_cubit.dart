@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kidsero_driver/core/network/api_service.dart';
-import 'package:kidsero_driver/features/plans/model/plans_model.dart'; // Import your api helper
+import 'package:kidsero_parent/core/network/api_service.dart';
+import 'package:kidsero_parent/features/plans/model/plans_model.dart'; // Import your api helper
 // import your PlanModel
 
 // --- STATES ---
