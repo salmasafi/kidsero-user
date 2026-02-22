@@ -173,6 +173,7 @@
   "numberOfInstallments": "Number of Installments",
   "perInstallmentAmount": "Per Installment",
   "remainingAmount": "Remaining Amount",
+  "currency": "EGP",
   "installmentsRequired": "Number of installments is required",
   "installmentsMustBePositive": "Number of installments must be a positive number",
   "selectFromGallery": "Select from Gallery",

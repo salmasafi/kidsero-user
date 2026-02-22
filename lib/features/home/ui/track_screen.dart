@@ -19,9 +19,9 @@ class TrackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ActiveRidesCubit(
-        repository: context.read<RidesRepository>(),
-      )..loadActiveRides(),
+      create: (context) =>
+          ActiveRidesCubit(repository: context.read<RidesRepository>())
+            ..loadActiveRides(),
       child: const _TrackScreenContent(),
     );
   }
@@ -35,6 +35,7 @@ class _TrackScreenContent extends StatefulWidget {
 }
 
 class _TrackScreenContentState extends State<_TrackScreenContent> {
+  late ActiveRidesCubit _activeRidesCubit;
   @override
   void initState() {
     super.initState();
@@ -42,9 +43,16 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Cache the cubit instance so we don't lookup ancestors during dispose
+    _activeRidesCubit = context.read<ActiveRidesCubit>();
+  }
+
+  @override
   void dispose() {
     // Stop auto-refresh when screen is disposed
-    context.read<ActiveRidesCubit>().stopAutoRefresh();
+    _activeRidesCubit.stopAutoRefresh();
     super.dispose();
   }
 

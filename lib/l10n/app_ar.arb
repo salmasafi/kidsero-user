@@ -170,6 +170,7 @@
   "numberOfInstallments": "عدد الأقساط",
   "perInstallmentAmount": "قيمة كل قسط",
   "remainingAmount": "المبلغ المتبقي",
+  "currency": "EGP",
   "installmentsRequired": "عدد الأقساط مطلوب",
   "installmentsMustBePositive": "يجب أن يكون عدد الأقساط رقماً موجباً",
   "selectFromGallery": "اختر من المعرض",

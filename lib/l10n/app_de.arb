@@ -87,6 +87,7 @@
   "numberOfInstallments": "Anzahl der Raten",
   "perInstallmentAmount": "Pro Rate",
   "remainingAmount": "Verbleibender Betrag",
+  "currency": "EGP",
   "installmentsRequired": "Anzahl der Raten ist erforderlich",
   "installmentsMustBePositive": "Anzahl der Raten muss eine positive Zahl sein",
   "planPayments": "Planzahlungen",

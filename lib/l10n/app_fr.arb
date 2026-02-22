@@ -210,6 +210,7 @@
   "numberOfInstallments": "Nombre d'acomptes",
   "perInstallmentAmount": "Par acompte",
   "remainingAmount": "Montant restant",
+  "currency": "EGP",
   "installmentsRequired": "Le nombre d'acomptes est requis",
   "installmentsMustBePositive": "Le nombre d'acomptes doit être un nombre positif",
   "selectFromGallery": "Sélectionner dans la galerie",
