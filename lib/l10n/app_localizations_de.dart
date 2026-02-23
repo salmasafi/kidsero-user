@@ -311,6 +311,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scheduled => 'Geplant';
 
   @override
+  String get inProgress => 'In Bearbeitung';
+
+  @override
+  String get pending => 'Ausstehend';
+
+  @override
+  String get excused => 'Entschuldigt';
+
+  @override
   String get completed => 'Abgeschlossen';
 
   @override
@@ -524,6 +533,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get attendanceRate => 'Anwesenheitsrate';
 
   @override
+  String get absenceReportedSuccessfully => 'Abwesenheit erfolgreich gemeldet';
+
+  @override
+  String get reasonRequired => 'Grund ist erforderlich';
+
+  @override
+  String get noActiveRides => 'Keine aktiven Fahrten';
+
+  @override
+  String get noActiveRidesDesc => 'Es gibt derzeit keine aktiven Fahrten.';
+
+  @override
   String get close => 'Schließen';
 
   @override
@@ -672,4 +693,26 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get optional => 'Optional';
+
+  @override
+  String get errorNoInternet => 'Bitte überprüfen Sie Ihre Internetverbindung';
+
+  @override
+  String get errorSessionExpired =>
+      'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an';
+
+  @override
+  String get errorServerUnavailable =>
+      'Der Server ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut';
+
+  @override
+  String get errorDataProcessing =>
+      'Daten konnten nicht verarbeitet werden. Bitte versuchen Sie es erneut';
+
+  @override
+  String get errorNotFound => 'Die angeforderte Ressource wurde nicht gefunden';
+
+  @override
+  String get errorGeneric =>
+      'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut';
 }

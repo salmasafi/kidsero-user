@@ -3,12 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_parent/l10n/app_localizations.dart';
 import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_parent/core/widgets/language_toggle.dart';
-import 'package:kidsero_parent/core/widgets/ride_card.dart';
-import 'package:kidsero_parent/features/rides/cubit/active_rides_cubit.dart';
+import 'package:kidsero_parent/features/rides/cubit/rides_dashboard_cubit.dart';
 import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
-import 'package:kidsero_parent/features/rides/models/ride_models.dart';
-import 'package:kidsero_parent/features/rides/ui/screens/ride_tracking_screen.dart';
-import 'package:kidsero_parent/features/rides/ui/screens/live_tracking_screen.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -19,9 +15,9 @@ class TrackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ActiveRidesCubit(
+      create: (context) => RidesDashboardCubit(
         repository: context.read<RidesRepository>(),
-      )..loadActiveRides(),
+      )..loadDashboard(),
       child: const _TrackScreenContent(),
     );
   }
@@ -43,8 +39,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
 
   @override
   void dispose() {
-    // Stop auto-refresh when screen is disposed
-    context.read<ActiveRidesCubit>().stopAutoRefresh();
+    // No auto-refresh to stop
     super.dispose();
   }
 
@@ -53,15 +48,15 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: BlocBuilder<ActiveRidesCubit, ActiveRidesState>(
+      body: BlocBuilder<RidesDashboardCubit, RidesDashboardState>(
         builder: (context, state) {
-          if (state is ActiveRidesLoading) {
+          if (state is RidesDashboardLoading) {
             return const Center(
               child: CircularProgressIndicator(color: AppColors.primary),
             );
           }
 
-          if (state is ActiveRidesError) {
+          if (state is RidesDashboardError) {
             return Column(
               children: [
                 _buildHeader(context, l10n),
@@ -71,14 +66,14 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     title: l10n.errorLoadingRides,
                     message: state.message,
                     onRefresh: () =>
-                        context.read<ActiveRidesCubit>().loadActiveRides(),
+                        context.read<RidesDashboardCubit>().loadDashboard(),
                   ),
                 ),
               ],
             );
           }
 
-          if (state is ActiveRidesEmpty) {
+          if (state is RidesDashboardEmpty) {
             return Column(
               children: [
                 _buildHeader(context, l10n),
@@ -88,15 +83,15 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     title: l10n.noRidesToday,
                     message: l10n.noRidesTodayDesc,
                     onRefresh: () =>
-                        context.read<ActiveRidesCubit>().loadActiveRides(),
+                        context.read<RidesDashboardCubit>().loadDashboard(),
                   ),
                 ),
               ],
             );
           }
 
-          if (state is ActiveRidesLoaded) {
-            if (state.rides.isEmpty) {
+          if (state is RidesDashboardLoaded) {
+            if (state.activeRidesCount == 0) {
               return Column(
                 children: [
                   _buildHeader(context, l10n),
@@ -106,7 +101,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                       title: l10n.noRidesToday,
                       message: l10n.noRidesTodayDesc,
                       onRefresh: () =>
-                          context.read<ActiveRidesCubit>().loadActiveRides(),
+                          context.read<RidesDashboardCubit>().loadDashboard(),
                     ),
                   ),
                 ],
@@ -115,17 +110,18 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
 
             return RefreshIndicator(
               onRefresh: () =>
-                  context.read<ActiveRidesCubit>().loadActiveRides(),
+                  context.read<RidesDashboardCubit>().loadDashboard(),
               child: CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(child: _buildHeader(context, l10n)),
                   SliverPadding(
                     padding: const EdgeInsets.all(20),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final ride = state.rides[index];
-                        return _buildActiveRideCard(context, ride, l10n);
-                      }, childCount: state.rides.length),
+                    sliver: SliverToBoxAdapter(
+                      child: CustomEmptyState(
+                        icon: Icons.directions_bus,
+                        title: 'Active Rides',
+                        message: 'You have ${state.activeRidesCount} active ride(s). Tracking coming soon.',
+                      ),
                     ),
                   ),
                 ],
@@ -165,7 +161,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                   // Refresh button
                   IconButton(
                     onPressed: () {
-                      context.read<ActiveRidesCubit>().refresh();
+                      context.read<RidesDashboardCubit>().refreshActiveRides();
                     },
                     icon: const Icon(
                       Icons.refresh,
@@ -189,39 +185,6 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildActiveRideCard(
-    BuildContext context,
-    ActiveRide ride,
-    AppLocalizations l10n,
-  ) {
-    return RideCard(
-      time: '--:--',
-      dateLabel: l10n.today,
-      rideName: ride.childName,
-      routeDescription: ride.bus?.plateNumber ?? 'Bus',
-      driverName: ride.driver?.name ?? l10n.driver,
-      driverAvatar: ride.driver?.avatar,
-      status: RideStatus.live,
-      eta: ride.estimatedArrival,
-      onTrackLive: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LiveTrackingScreen(rideId: ride.rideId),
-          ),
-        );
-      },
-      onTrackTimeline: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RideTrackingScreen(rideId: ride.rideId),
-          ),
-        );
-      },
     );
   }
 }

@@ -312,6 +312,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduled => 'Programmé';
 
   @override
+  String get inProgress => 'En cours';
+
+  @override
+  String get pending => 'En attente';
+
+  @override
+  String get excused => 'Excusé';
+
+  @override
   String get completed => 'Terminé';
 
   @override
@@ -527,6 +536,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get attendanceRate => 'Taux de présence';
 
   @override
+  String get absenceReportedSuccessfully => 'Absence signalée avec succès';
+
+  @override
+  String get reasonRequired => 'La raison est requise';
+
+  @override
+  String get noActiveRides => 'Aucun trajet actif';
+
+  @override
+  String get noActiveRidesDesc =>
+      'Il n\'y a aucun trajet actif pour le moment.';
+
+  @override
   String get close => 'Fermer';
 
   @override
@@ -675,4 +697,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get optional => 'Optionnel';
+
+  @override
+  String get errorNoInternet => 'Veuillez vérifier votre connexion Internet';
+
+  @override
+  String get errorSessionExpired =>
+      'Votre session a expiré. Veuillez vous reconnecter';
+
+  @override
+  String get errorServerUnavailable =>
+      'Le serveur est temporairement indisponible. Veuillez réessayer plus tard';
+
+  @override
+  String get errorDataProcessing =>
+      'Impossible de traiter les données. Veuillez réessayer';
+
+  @override
+  String get errorNotFound => 'La ressource demandée n\'a pas été trouvée';
+
+  @override
+  String get errorGeneric => 'Une erreur s\'est produite. Veuillez réessayer';
 }

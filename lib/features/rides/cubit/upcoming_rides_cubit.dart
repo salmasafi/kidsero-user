@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../data/rides_repository.dart';
-import '../models/ride_models.dart';
+import '../models/api_models.dart';
 import 'package:flutter/foundation.dart';
 
 // ============================================================
@@ -28,7 +28,7 @@ class UpcomingRidesLoaded extends UpcomingRidesState {
   List<Object?> get props => [data];
 
   /// Get rides for a specific child
-  List<UpcomingRideInfo> getRidesForChild(String childId) {
+  List<UpcomingRide> getRidesForChild(String childId) {
     return data.upcomingRides
         .expand((day) => day.rides)
         .where((ride) => ride.child.id == childId)
@@ -36,7 +36,7 @@ class UpcomingRidesLoaded extends UpcomingRidesState {
   }
 
   /// Get rides for a specific date
-  List<UpcomingRideInfo> getRidesForDate(String date) {
+  List<UpcomingRide> getRidesForDate(String date) {
     final dayData = data.upcomingRides.firstWhere(
       (day) => day.date == date,
       orElse: () => UpcomingDayRides(date: date, dayName: '', rides: []),
@@ -45,7 +45,7 @@ class UpcomingRidesLoaded extends UpcomingRidesState {
   }
 
   /// Get all rides as flat list
-  List<UpcomingRideInfo> get allRides {
+  List<UpcomingRide> get allRides {
     return data.upcomingRides
         .expand((day) => day.rides)
         .toList();
@@ -87,7 +87,6 @@ class UpcomingRidesError extends UpcomingRidesState {
 
 class UpcomingRidesCubit extends Cubit<UpcomingRidesState> {
   final RidesRepository _repository;
-  UpcomingRidesData? _allData;
 
   UpcomingRidesCubit({required RidesRepository repository})
     : _repository = repository,
@@ -99,7 +98,6 @@ class UpcomingRidesCubit extends Cubit<UpcomingRidesState> {
     emit(UpcomingRidesLoading());
     try {
       final data = await _repository.getUpcomingRides();
-      _allData = data;
       debugPrint('UpcomingRidesCubit: Loaded ${data.totalRides} rides, ${data.totalDays} days');
 
       if (data.totalRides == 0) {

@@ -139,6 +139,9 @@
   "liveNow": "EN DIRECT",
   "trackLive": "Suivre en direct",
   "scheduled": "Programmé",
+  "inProgress": "En cours",
+  "pending": "En attente",
+  "excused": "Excusé",
   "completed": "Terminé",
   "cancelled": "Annulé",
   "driver": "Chauffeur",
@@ -202,6 +205,10 @@
   "absent": "Absent",
   "lateLabel": "En retard",
   "attendanceRate": "Taux de présence",
+  "absenceReportedSuccessfully": "Absence signalée avec succès",
+  "reasonRequired": "La raison est requise",
+  "noActiveRides": "Aucun trajet actif",
+  "noActiveRidesDesc": "Il n'y a aucun trajet actif pour le moment.",
   "close": "Fermer",
   "paymentType": "Type de paiement",
   "paymentMethod": "Méthode de paiement",
@@ -237,5 +244,11 @@
   "amountRequired": "Le montant est requis",
   "amountMustBePositive": "Le montant doit être supérieur à zéro",
   "receiptRequired": "L'image du reçu est requise",
-  "optional": "Optionnel"
+  "optional": "Optionnel",
+  "errorNoInternet": "Veuillez vérifier votre connexion Internet",
+  "errorSessionExpired": "Votre session a expiré. Veuillez vous reconnecter",
+  "errorServerUnavailable": "Le serveur est temporairement indisponible. Veuillez réessayer plus tard",
+  "errorDataProcessing": "Impossible de traiter les données. Veuillez réessayer",
+  "errorNotFound": "La ressource demandée n'a pas été trouvée",
+  "errorGeneric": "Une erreur s'est produite. Veuillez réessayer"
 }

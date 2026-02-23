@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'dart:developer' as dev;
+import '../../../core/network/error_handler.dart';
 import '../data/rides_repository.dart';
-import '../models/ride_models.dart';
 
 // ============================================================
 // STATES
@@ -22,16 +23,14 @@ class ReportAbsenceLoading extends ReportAbsenceState {}
 
 /// State when absence report is successfully submitted
 class ReportAbsenceSuccess extends ReportAbsenceState {
-  final AbsenceData absenceData;
   final String message;
 
   const ReportAbsenceSuccess({
-    required this.absenceData,
     this.message = 'Absence reported successfully',
   });
 
   @override
-  List<Object?> get props => [absenceData, message];
+  List<Object?> get props => [message];
 }
 
 /// State when absence report fails
@@ -71,7 +70,6 @@ class ReportAbsenceCubit extends Cubit<ReportAbsenceState> {
   /// - [occurrenceId]: The unique identifier for the ride occurrence
   /// - [studentId]: The unique identifier for the student
   /// - [reason]: The reason for the absence (must not be empty)
-  /// - [pickedUpAt]: Optional timestamp when the child was picked up (if ride has started)
   /// 
   /// Emits:
   /// - [ReportAbsenceValidationError] if validation fails
@@ -82,7 +80,6 @@ class ReportAbsenceCubit extends Cubit<ReportAbsenceState> {
     required String occurrenceId,
     required String studentId,
     required String reason,
-    String? pickedUpAt,
   }) async {
     // Validate reason is not empty
     if (reason.trim().isEmpty) {
@@ -92,29 +89,41 @@ class ReportAbsenceCubit extends Cubit<ReportAbsenceState> {
       return;
     }
 
-    // Check if ride has already started (pickup has occurred)
-    if (pickedUpAt != null && pickedUpAt.isNotEmpty) {
-      emit(const ReportAbsenceValidationError(
-        'Cannot report absence for a ride that has already started',
-      ));
-      return;
-    }
-
     emit(ReportAbsenceLoading());
     
     try {
-      final absenceData = await _repository.reportAbsence(
+      dev.log('Reporting absence for occurrence: $occurrenceId, student: $studentId', 
+              name: 'ReportAbsenceCubit');
+      
+      final response = await _repository.reportAbsence(
         occurrenceId: occurrenceId,
         studentId: studentId,
         reason: reason.trim(),
       );
 
-      emit(ReportAbsenceSuccess(
-        absenceData: absenceData,
-        message: 'Absence reported successfully',
-      ));
-    } catch (e) {
-      emit(ReportAbsenceError(e.toString()));
+      if (response.success) {
+        dev.log('Absence reported successfully', name: 'ReportAbsenceCubit');
+        emit(ReportAbsenceSuccess(
+          message: response.message.isNotEmpty 
+              ? response.message 
+              : 'Absence reported successfully',
+        ));
+      } else {
+        dev.log('Absence report failed: ${response.message}', 
+                name: 'ReportAbsenceCubit');
+        emit(ReportAbsenceError(
+          response.message.isNotEmpty 
+              ? response.message 
+              : 'Failed to report absence',
+        ));
+      }
+    } catch (e, stackTrace) {
+      dev.log('Error reporting absence', 
+              name: 'ReportAbsenceCubit', 
+              error: e, 
+              stackTrace: stackTrace);
+      final errorMessage = ErrorHandler.handle(e);
+      emit(ReportAbsenceError(errorMessage));
     }
   }
 

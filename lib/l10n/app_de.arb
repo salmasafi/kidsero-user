@@ -141,6 +141,9 @@
   "liveNow": "JETZT LIVE",
   "trackLive": "Live verfolgen",
   "scheduled": "Geplant",
+  "inProgress": "In Bearbeitung",
+  "pending": "Ausstehend",
+  "excused": "Entschuldigt",
   "completed": "Abgeschlossen",
   "cancelled": "Storniert",
   "driver": "Fahrer",
@@ -206,6 +209,10 @@
   "absent": "Abwesend",
   "lateLabel": "Verspätet",
   "attendanceRate": "Anwesenheitsrate",
+  "absenceReportedSuccessfully": "Abwesenheit erfolgreich gemeldet",
+  "reasonRequired": "Grund ist erforderlich",
+  "noActiveRides": "Keine aktiven Fahrten",
+  "noActiveRidesDesc": "Es gibt derzeit keine aktiven Fahrten.",
   "close": "Schließen",
   "paymentType": "Zahlungsart",
   "paymentMethod": "Zahlungsmethode",
@@ -239,5 +246,11 @@
   "amountRequired": "Betrag ist erforderlich",
   "amountMustBePositive": "Betrag muss größer als null sein",
   "receiptRequired": "Belegbild ist erforderlich",
-  "optional": "Optional"
+  "optional": "Optional",
+  "errorNoInternet": "Bitte überprüfen Sie Ihre Internetverbindung",
+  "errorSessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an",
+  "errorServerUnavailable": "Der Server ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut",
+  "errorDataProcessing": "Daten konnten nicht verarbeitet werden. Bitte versuchen Sie es erneut",
+  "errorNotFound": "Die angeforderte Ressource wurde nicht gefunden",
+  "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut"
 }

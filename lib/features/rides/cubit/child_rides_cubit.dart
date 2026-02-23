@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'dart:developer' as dev;
+import '../../../core/network/error_handler.dart';
 import '../data/rides_repository.dart';
-import '../models/ride_models.dart';
+import '../models/api_models.dart';
 
 // ============================================================
 // STATES
@@ -19,67 +21,26 @@ class ChildRidesInitial extends ChildRidesState {}
 class ChildRidesLoading extends ChildRidesState {}
 
 class ChildRidesLoaded extends ChildRidesState {
-  final ChildRideDetails childDetails;
+  final String childId;
+  final List<TodayRideOccurrence> todayRides;
+  final List<UpcomingRide> upcomingRides;
+  final List<TodayRideOccurrence> historyRides;
   final RideSummaryData? summary;
-  final ActiveRide? activeRide;
-  final List<TodayRide> todayRides;
 
   const ChildRidesLoaded({
-    required this.childDetails,
+    required this.childId,
+    required this.todayRides,
+    this.upcomingRides = const [],
+    this.historyRides = const [],
     this.summary,
-    this.activeRide,
-    this.todayRides = const [],
   });
 
   @override
-  List<Object?> get props => [childDetails, summary, activeRide, todayRides];
+  List<Object?> get props => [childId, todayRides, upcomingRides, historyRides, summary];
 
-  /// Get child name
-  String get childName => childDetails.name;
-
-  /// Get child grade
-  String? get grade => childDetails.grade;
-
-  /// Get school name
-  String? get schoolName => childDetails.schoolName;
-
-  /// Get upcoming rides
-  List<RideHistoryItem> get upcomingRides => childDetails.rides.upcoming;
-
-  /// Get ride history
-  List<RideHistoryItem> get historyRides => childDetails.rides.history;
-
-  /// Get today rides
-  List<TodayRide> get todayRidesList => todayRides;
-
-  /// Check if there are upcoming rides
-  bool get hasUpcomingRides => upcomingRides.isNotEmpty;
-
-  /// Check if there is history
-  bool get hasHistory => historyRides.isNotEmpty;
-
-  /// Check if there are today rides
-  bool get hasTodayRides => todayRides.isNotEmpty;
-
-  /// Check if there's an active ride
-  bool get hasActiveRide => activeRide != null;
-
-  /// Get total scheduled rides from summary
-  int get totalScheduled => summary?.summary.total ?? 0;
-
-  /// Get attended rides from summary
-  int get attended => summary?.summary.byStatus.completed ?? 0;
-
-  /// Get absent count from summary
-  int get absent => summary?.summary.byStatus.absent ?? 0;
-
-  /// Get late count from summary
-  int get late => 0; // Not available in new structure
-
-  /// Get attendance percentage
-  double get attendancePercentage {
-    if (totalScheduled == 0) return 0;
-    return (attended / totalScheduled) * 100;
+  /// Check if child has an active ride
+  bool get hasActiveRide {
+    return todayRides.any((ride) => ride.isActive);
   }
 }
 
@@ -100,86 +61,161 @@ class ChildRidesError extends ChildRidesState {
 
 class ChildRidesCubit extends Cubit<ChildRidesState> {
   final RidesRepository _repository;
-  final String childId;
+  final String _childId;
 
-  ChildRidesCubit({required RidesRepository repository, required this.childId})
-    : _repository = repository,
-      super(ChildRidesInitial());
+  ChildRidesCubit({
+    required RidesRepository repository,
+    required String childId,
+  })  : _repository = repository,
+        _childId = childId,
+        super(ChildRidesInitial());
 
-  /// Load child rides and summary
+  /// Load child's rides (today's rides, upcoming, and history)
   Future<void> loadRides() async {
-    print('ChildRidesCubit: Loading rides for child $childId...');
     emit(ChildRidesLoading());
     try {
-      // Fetch child details
-      print('ChildRidesCubit: Fetching child details...');
-      final childDetails = await _repository.getChildRides(childId, forceRefresh: true);
-      print('ChildRidesCubit: Child details loaded - ${childDetails.rides.upcoming.length} upcoming, ${childDetails.rides.history.length} history');
+      dev.log('Loading rides for child: $_childId', name: 'ChildRidesCubit');
+      
+      // Load today's rides
+      final todayRidesData = await _repository.getChildTodayRides(_childId);
+      final allTodayRides = todayRidesData.allRides;
 
-      // Try to fetch summary, but don't fail if it's not available
-      RideSummaryData? summary;
-      try {
-        print('ChildRidesCubit: Fetching child summary...');
-        summary = await _repository.getChildRideSummary(childId);
-        print('ChildRidesCubit: Summary loaded');
-      } catch (_) {
-        print('ChildRidesCubit: Summary failed, continuing without it');
-        // Summary is optional, ignore errors
-      }
+      dev.log('Loaded ${allTodayRides.length} today rides for child $_childId', 
+              name: 'ChildRidesCubit');
 
-      // Fetch today rides for this child
-      List<TodayRide> todayRides = [];
+      // Load upcoming rides for this child
+      List<UpcomingRide> childUpcomingRides = [];
       try {
-        final todayResponse = await _repository.getTodayRides(forceRefresh: true);
-        print('ChildRidesCubit: Response type: ${todayResponse.runtimeType}');
-        print('ChildRidesCubit: Today rides response loaded: ${todayResponse.data.length} rides');
-        // Filter today rides for this specific child
-        final allTodayRides = todayResponse.data;
-        todayRides = allTodayRides.where((ride) => ride.childId == childId).toList();
-        print('ChildRidesCubit: Filtered ${todayRides.length} rides for child $childId');
+        final upcomingData = await _repository.getUpcomingRides();
+        // Filter upcoming rides for this specific child
+        for (final dayRides in upcomingData.upcomingRides) {
+          final childRides = dayRides.rides.where((ride) => ride.child.id == _childId).toList();
+          childUpcomingRides.addAll(childRides);
+        }
+        dev.log('Loaded ${childUpcomingRides.length} upcoming rides for child $_childId', 
+                name: 'ChildRidesCubit');
       } catch (e) {
-        print('ChildRidesCubit: Error loading today rides: $e');
-        // Today rides failed, continue without them
-        todayRides = [];
+        dev.log('Error loading upcoming rides: $e', name: 'ChildRidesCubit');
+        // Continue without upcoming rides
       }
 
-      // Check for active rides for this child
-      ActiveRide? activeRide;
-      try {
-        final activeRides = await _repository.getActiveRides();
-        // Find active ride for this specific child
-        activeRide = activeRides.firstWhere(
-          (ride) => ride.childId == childId,
-          orElse: () => throw Exception('No active ride'),
-        );
-      } catch (_) {
-        // No active ride for this child, that's okay
-        activeRide = null;
-      }
+      // For history, we'll use completed rides from today as a placeholder
+      // TODO: Implement proper history API endpoint when available
+      final historyRides = allTodayRides.where((ride) => ride.isCompleted).toList();
 
-      if (childDetails.rides.upcoming.isEmpty &&
-          childDetails.rides.history.isEmpty &&
-          todayRides.isEmpty &&
-          activeRide == null) {
-        print('ChildRidesCubit: No rides found, emitting empty state');
+      if (allTodayRides.isEmpty && childUpcomingRides.isEmpty && historyRides.isEmpty) {
         emit(ChildRidesEmpty());
       } else {
-        print('ChildRidesCubit: Emitting loaded state - ${childDetails.rides.upcoming.length} upcoming, ${childDetails.rides.history.length} history, ${todayRides.length} today');
-        emit(ChildRidesLoaded(
-          childDetails: childDetails,
-          summary: summary,
-          activeRide: activeRide,
-          todayRides: todayRides,
-        ));
+        emit(
+          ChildRidesLoaded(
+            childId: _childId,
+            todayRides: allTodayRides,
+            upcomingRides: childUpcomingRides,
+            historyRides: historyRides,
+            summary: null,
+          ),
+        );
       }
-    } catch (e) {
-      print('ChildRidesCubit: Error loading rides: $e');
-      emit(ChildRidesError(e.toString()));
+    } catch (e, stackTrace) {
+      dev.log('Error loading child rides', 
+              name: 'ChildRidesCubit', 
+              error: e, 
+              stackTrace: stackTrace);
+      final errorMessage = ErrorHandler.handle(e);
+      emit(ChildRidesError(errorMessage));
     }
   }
 
-  /// Refresh rides
+  /// Refresh child's rides with force refresh
   Future<void> refresh() async {
-    await loadRides();
+    try {
+      dev.log('Refreshing rides for child: $_childId', name: 'ChildRidesCubit');
+      
+      // Load today's rides
+      final todayRidesData = await _repository.getChildTodayRides(
+        _childId,
+        forceRefresh: true,
+      );
+      final allTodayRides = todayRidesData.allRides;
+
+      dev.log('Refreshed ${allTodayRides.length} today rides for child $_childId', 
+              name: 'ChildRidesCubit');
+
+      // Load upcoming rides for this child
+      List<UpcomingRide> childUpcomingRides = [];
+      try {
+        final upcomingData = await _repository.getUpcomingRides(forceRefresh: true);
+        // Filter upcoming rides for this specific child
+        for (final dayRides in upcomingData.upcomingRides) {
+          final childRides = dayRides.rides.where((ride) => ride.child.id == _childId).toList();
+          childUpcomingRides.addAll(childRides);
+        }
+        dev.log('Refreshed ${childUpcomingRides.length} upcoming rides for child $_childId', 
+                name: 'ChildRidesCubit');
+      } catch (e) {
+        dev.log('Error refreshing upcoming rides: $e', name: 'ChildRidesCubit');
+        // Continue without upcoming rides
+      }
+
+      // For history, we'll use completed rides from today as a placeholder
+      final historyRides = allTodayRides.where((ride) => ride.isCompleted).toList();
+
+      if (allTodayRides.isEmpty && childUpcomingRides.isEmpty && historyRides.isEmpty) {
+        emit(ChildRidesEmpty());
+      } else {
+        // Preserve summary if it exists
+        final currentSummary = state is ChildRidesLoaded 
+            ? (state as ChildRidesLoaded).summary 
+            : null;
+        
+        emit(
+          ChildRidesLoaded(
+            childId: _childId,
+            todayRides: allTodayRides,
+            upcomingRides: childUpcomingRides,
+            historyRides: historyRides,
+            summary: currentSummary,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      dev.log('Error refreshing child rides', 
+              name: 'ChildRidesCubit', 
+              error: e, 
+              stackTrace: stackTrace);
+      final errorMessage = ErrorHandler.handle(e);
+      emit(ChildRidesError(errorMessage));
+    }
+  }
+
+  /// Load ride summary for the child
+  Future<void> loadSummary() async {
+    try {
+      dev.log('Loading summary for child: $_childId', name: 'ChildRidesCubit');
+      
+      final summaryData = await _repository.getChildRideSummary(_childId);
+      
+      dev.log('Loaded summary for child $_childId', name: 'ChildRidesCubit');
+
+      // Update state with summary if currently loaded
+      if (state is ChildRidesLoaded) {
+        final currentState = state as ChildRidesLoaded;
+        emit(
+          ChildRidesLoaded(
+            childId: currentState.childId,
+            todayRides: currentState.todayRides,
+            upcomingRides: currentState.upcomingRides,
+            historyRides: currentState.historyRides,
+            summary: summaryData,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      dev.log('Error loading summary', 
+              name: 'ChildRidesCubit', 
+              error: e, 
+              stackTrace: stackTrace);
+      // Don't emit error state for summary failure - keep current state
+    }
   }
 }

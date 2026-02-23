@@ -8,11 +8,12 @@ import 'package:kidsero_parent/core/widgets/ride_card.dart';
 import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_parent/features/rides/cubit/child_rides_cubit.dart';
 import 'package:kidsero_parent/features/rides/cubit/report_absence_cubit.dart';
+import 'package:kidsero_parent/features/rides/ui/widgets/report_absence_dialog.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../data/rides_repository.dart';
 import '../../data/rides_service.dart';
-import '../../models/ride_models.dart';
+import 'package:kidsero_parent/features/rides/models/api_models.dart';
 
 /// Screen to display a child's ride schedule with Today/Upcoming/History tabs
 class ChildScheduleScreen extends StatelessWidget {
@@ -48,7 +49,8 @@ class ChildScheduleScreen extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               ChildRidesCubit(repository: ridesRepository, childId: childId)
-                ..loadRides(),
+                ..loadRides()
+                ..loadSummary(),
         ),
         BlocProvider(
           create: (context) => ReportAbsenceCubit(repository: ridesRepository),
@@ -79,7 +81,6 @@ class _ChildScheduleView extends StatefulWidget {
   final Color avatarColor;
 
   const _ChildScheduleView({
-    Key? key,
     required this.childId,
     required this.childName,
     this.childAvatar,
@@ -88,7 +89,7 @@ class _ChildScheduleView extends StatefulWidget {
     this.classroom,
     this.schoolName,
     required this.avatarColor,
-  }) : super(key: key);
+  });
 
   @override
   State<_ChildScheduleView> createState() => _ChildScheduleViewState();
@@ -321,12 +322,18 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
 
         if (state is ChildRidesLoaded) {
           // Get today rides from the cubit
-          final todayRides = state.todayRidesList;
+          final todayRides = state.todayRides;
           
           // Check if there's an active ride for this child
           final hasActiveRide = state.hasActiveRide;
+          
+          // Find active ride if any
+          final activeRide = todayRides.firstWhere(
+            (ride) => ride.isActive,
+            orElse: () => todayRides.first,
+          );
 
-          if (todayRides.isEmpty && !hasActiveRide) {
+          if (todayRides.isEmpty) {
             return CustomEmptyState(
               icon: Icons.today,
               title: l10n.noRidesToday,
@@ -345,7 +352,7 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                 children: [
                   // Active ride card (green) - if there's an active ride
                   if (hasActiveRide) ...[
-                    _buildActiveRideCard(context, state.activeRide!, l10n),
+                    _buildActiveRideCard(context, activeRide, l10n),
                     const SizedBox(height: 24),
                   ],
                   
@@ -380,7 +387,7 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
 
   Widget _buildActiveRideCard(
     BuildContext context,
-    ActiveRide ride,
+    TodayRideOccurrence ride,
     AppLocalizations l10n,
   ) {
     return Container(
@@ -441,7 +448,7 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            ride.status == 'in_progress' 
+                            ride.status == 'in_progress' || ride.status == 'started'
                                 ? 'On the way' // TODO: Add to l10n
                                 : ride.status,
                             style: TextStyle(
@@ -501,22 +508,23 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                         fontSize: 13,
                       ),
                     ),
-                    if (ride.estimatedArrival != null) ...[
-                      const SizedBox(width: 16),
-                      Icon(
-                        Icons.schedule,
-                        color: Colors.white.withValues(alpha: 0.8),
-                        size: 16,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'ETA: ${_formatTime(ride.estimatedArrival!)}',
+                    const SizedBox(width: 16),
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.white.withValues(alpha: 0.8),
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        ride.pickupPoint.name,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 13,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -583,60 +591,53 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           );
         }
 
-        if (state is ChildRidesEmpty) {
-          return CustomEmptyState(
-            icon: Icons.event,
-            title: l10n.noUpcomingRides,
-            message: l10n.noUpcomingRidesDesc,
-            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
-          );
-        }
-
         if (state is ChildRidesLoaded) {
           final upcomingRides = state.upcomingRides;
 
           if (upcomingRides.isEmpty) {
-            return CustomEmptyState(
-              icon: Icons.event,
-              title: l10n.noUpcomingRides,
-              message: l10n.noUpcomingRidesDesc,
-              onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+            return RefreshIndicator(
+              onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+              child: CustomEmptyState(
+                icon: Icons.event,
+                title: l10n.noUpcomingRides,
+                message: l10n.noUpcomingRidesDesc,
+                onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+              ),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  l10n.upcoming,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ...upcomingRides.map(
-                  (ride) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildUpcomingRideCard(context, ride, l10n),
-                  ),
-                ),
-              ],
+            onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: upcomingRides.length,
+              itemBuilder: (context, index) {
+                final ride = upcomingRides[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildUpcomingRideCard(context, ride, l10n),
+                );
+              },
             ),
           );
         }
 
-        return const SizedBox();
+        return RefreshIndicator(
+          onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+          child: CustomEmptyState(
+            icon: Icons.event,
+            title: l10n.noUpcomingRides,
+            message: l10n.noUpcomingRidesDesc,
+            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+          ),
+        );
       },
     );
   }
 
   Widget _buildTodayRideCard(
     BuildContext context,
-    TodayRide ride,
+    TodayRideOccurrence ride,
     AppLocalizations l10n,
   ) {
     // Determine the ride status based on the status field
@@ -650,67 +651,28 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
         status = RideStatus.cancelled;
         break;
       case 'in_progress':
+      case 'started':
         status = RideStatus.live;
         break;
+      case 'scheduled':
       default:
         status = RideStatus.scheduled;
     }
 
     return RideCard(
-      time: ride.pickupTime ?? '--:--',
-      dateLabel: ride.period == 'morning'
+      time: ride.pickupTime,
+      dateLabel: ride.ride.type == 'morning'
           ? l10n.morningRide
           : l10n.afternoonRide,
-      rideName: ride.period == 'morning'
-          ? l10n.morningRide
-          : l10n.afternoonRide,
-      routeDescription: ride.period == 'morning'
+      rideName: ride.ride.name,
+      routeDescription: ride.ride.type == 'morning'
           ? 'Home → School'
           : 'School → Home',
-      driverName: ride.driver?.name ?? 'Driver',
+      driverName: ride.driver.name,
       status: status,
-      onReportAbsence: status == RideStatus.scheduled 
+      onReportAbsence: ride.canReportAbsence
           ? () => _showReportAbsenceDialogForToday(context, ride, l10n)
-          : null, // Don't allow reporting absence for cancelled/completed rides
-    );
-  }
-
-  Widget _buildUpcomingRideCard(
-    BuildContext context,
-    RideHistoryItem ride,
-    AppLocalizations l10n,
-  ) {
-    // Determine the ride status based on the status field
-    RideStatus status;
-    switch (ride.status.toLowerCase()) {
-      case 'completed':
-        status = RideStatus.completed;
-        break;
-      case 'cancelled':
-      case 'excused':
-        status = RideStatus.cancelled;
-        break;
-      case 'in_progress':
-        status = RideStatus.live;
-        break;
-      default:
-        status = RideStatus.scheduled;
-    }
-
-    return RideCard(
-      time: '--:--',
-      dateLabel: ride.date,
-      rideName: ride.period == 'morning'
-          ? l10n.morningRide
-          : l10n.afternoonRide,
-      routeDescription: ride.period == 'morning'
-          ? 'Home → School'
-          : 'School → Home',
-      driverName: 'Driver',
-      status: status,
-      onReportAbsence: status == RideStatus.scheduled 
-          ? () => _showReportAbsenceDialog(context, ride, l10n)
-          : null, // Don't allow reporting absence for cancelled/completed rides
+          : null,
     );
   }
 
@@ -737,242 +699,63 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           );
         }
 
-        if (state is ChildRidesEmpty) {
-          return CustomEmptyState(
-            icon: Icons.history,
-            title: l10n.noRideHistory,
-            message: l10n.noRideHistoryDesc,
-            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
-          );
-        }
-
         if (state is ChildRidesLoaded) {
           final historyRides = state.historyRides;
 
           if (historyRides.isEmpty) {
-            return CustomEmptyState(
-              icon: Icons.history,
-              title: l10n.noRideHistory,
-              message: l10n.noRideHistoryDesc,
-              onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+            return RefreshIndicator(
+              onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+              child: CustomEmptyState(
+                icon: Icons.history,
+                title: l10n.noRideHistory,
+                message: l10n.noRideHistoryDesc,
+                onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+              ),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  l10n.history,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ...historyRides.map(
-                  (ride) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildHistoryRideCard(context, ride, l10n),
-                  ),
-                ),
-              ],
+            onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: historyRides.length,
+              itemBuilder: (context, index) {
+                final ride = historyRides[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildHistoryRideCard(context, ride, l10n),
+                );
+              },
             ),
           );
         }
 
-        return const SizedBox();
+        return RefreshIndicator(
+          onRefresh: () => context.read<ChildRidesCubit>().refresh(),
+          child: CustomEmptyState(
+            icon: Icons.history,
+            title: l10n.noRideHistory,
+            message: l10n.noRideHistoryDesc,
+            onRefresh: () => context.read<ChildRidesCubit>().loadRides(),
+          ),
+        );
       },
-    );
-  }
-
-  Widget _buildHistoryRideCard(
-    BuildContext context,
-    RideHistoryItem ride,
-    AppLocalizations l10n,
-  ) {
-    RideStatus status;
-    switch (ride.status.toLowerCase()) {
-      case 'completed':
-        status = RideStatus.completed;
-        break;
-      case 'cancelled':
-      case 'excused':
-        status = RideStatus.cancelled;
-        break;
-      default:
-        status = RideStatus.completed;
-    }
-
-    return RideCard(
-      time: ride.pickedUpAt != null ? _formatTime(ride.pickedUpAt!) : '--:--',
-      dateLabel: ride.date,
-      rideName: ride.period == 'morning'
-          ? l10n.morningRide
-          : l10n.afternoonRide,
-      routeDescription: ride.period == 'morning'
-          ? 'Home → School'
-          : 'School → Home',
-      driverName: 'Driver',
-      status: status,
-    );
-  }
-
-  String _formatTime(String isoDate) {
-    try {
-      final date = DateTime.parse(isoDate);
-      final hour = date.hour > 12 ? date.hour - 12 : date.hour;
-      final minute = date.minute.toString().padLeft(2, '0');
-      final period = date.hour >= 12 ? 'PM' : 'AM';
-      return '$hour:$minute $period';
-    } catch (_) {
-      return '--:--';
-    }
-  }
-
-  void _showReportAbsenceDialog(
-    BuildContext context,
-    RideHistoryItem ride,
-    AppLocalizations l10n,
-  ) {
-    final reasonController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => BlocConsumer<ReportAbsenceCubit, ReportAbsenceState>(
-        listener: (context, state) {
-          if (state is ReportAbsenceSuccess) {
-            Navigator.pop(dialogContext);
-          }
-        },
-        builder: (context, state) {
-          return AlertDialog(
-            title: Text(l10n.reportAbsence),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.reportAbsenceDescription,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: reasonController,
-                  decoration: InputDecoration(
-                    labelText: l10n.reason,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(l10n.cancel),
-              ),
-              BlocBuilder<ReportAbsenceCubit, ReportAbsenceState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: state is ReportAbsenceLoading
-                        ? null
-                        : () {
-                            if (reasonController.text.trim().isNotEmpty) {
-                              dialogContext.read<ReportAbsenceCubit>().reportAbsence(
-                                    occurrenceId: ride.rideId,
-                                    studentId: widget.childId,
-                                    reason: reasonController.text.trim(),
-                                  );
-                            }
-                          },
-                    child: state is ReportAbsenceLoading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(l10n.submit),
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      ),
     );
   }
 
   void _showReportAbsenceDialogForToday(
     BuildContext context,
-    TodayRide ride,
+    TodayRideOccurrence ride,
     AppLocalizations l10n,
   ) {
-    final reasonController = TextEditingController();
-
-    showDialog(
+    showReportAbsenceDialog(
       context: context,
-      builder: (dialogContext) => BlocConsumer<ReportAbsenceCubit, ReportAbsenceState>(
-        listener: (context, state) {
-          if (state is ReportAbsenceSuccess) {
-            Navigator.pop(dialogContext);
-          }
-        },
-        builder: (context, state) {
-          return AlertDialog(
-            title: Text(l10n.reportAbsence),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.reportAbsenceDescription,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: reasonController,
-                  decoration: InputDecoration(
-                    labelText: l10n.reason,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(l10n.cancel),
-              ),
-              BlocBuilder<ReportAbsenceCubit, ReportAbsenceState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: state is ReportAbsenceLoading
-                        ? null
-                        : () {
-                            if (reasonController.text.trim().isNotEmpty) {
-                              dialogContext.read<ReportAbsenceCubit>().reportAbsence(
-                                    occurrenceId: ride.rideId,
-                                    studentId: widget.childId,
-                                    reason: reasonController.text.trim(),
-                                  );
-                            }
-                          },
-                    child: state is ReportAbsenceLoading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(l10n.submit),
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      ),
+      occurrenceId: ride.occurrenceId,
+      studentId: widget.childId,
+      onSuccess: () {
+        // Refresh rides after reporting absence
+        context.read<ChildRidesCubit>().loadRides();
+      },
     );
   }
 
@@ -981,6 +764,9 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
     ChildRidesLoaded state,
     AppLocalizations l10n,
   ) {
+    final summary = state.summary;
+    if (summary == null) return;
+
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -990,27 +776,27 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           children: [
             _buildSummaryRow(
               l10n.totalScheduled,
-              state.totalScheduled.toString(),
+              summary.summary.total.toString(),
             ),
             _buildSummaryRow(
               l10n.attended,
-              state.attended.toString(),
+              summary.summary.byStatus.completed.toString(),
               color: AppColors.success,
             ),
             _buildSummaryRow(
               l10n.absent,
-              state.absent.toString(),
+              summary.summary.byStatus.absent.toString(),
               color: AppColors.error,
             ),
             _buildSummaryRow(
-              l10n.lateLabel,
-              state.late.toString(),
+              'Excused', // TODO: Add to l10n
+              summary.summary.byStatus.excused.toString(),
               color: Colors.orange,
             ),
             const Divider(),
             _buildSummaryRow(
               l10n.attendanceRate,
-              '${state.attendancePercentage.toStringAsFixed(1)}%',
+              '${summary.summary.attendanceRate}%',
               color: AppColors.primary,
               isBold: true,
             ),
@@ -1024,6 +810,91 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
         ],
       ),
     );
+  }
+
+  Widget _buildUpcomingRideCard(
+    BuildContext context,
+    UpcomingRide ride,
+    AppLocalizations l10n,
+  ) {
+    return RideCard(
+      time: ride.pickupTime,
+      dateLabel: ride.ride.type == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
+      rideName: ride.ride.name,
+      routeDescription: ride.ride.type == 'morning'
+          ? 'Home → School'
+          : 'School → Home',
+      driverName: '', // Driver info not available in upcoming rides
+      status: RideStatus.scheduled,
+      onReportAbsence: () => _showReportAbsenceDialogForUpcoming(context, ride, l10n),
+    );
+  }
+
+  Widget _buildHistoryRideCard(
+    BuildContext context,
+    TodayRideOccurrence ride,
+    AppLocalizations l10n,
+  ) {
+    // Determine the ride status
+    RideStatus status;
+    switch (ride.status.toLowerCase()) {
+      case 'completed':
+        status = RideStatus.completed;
+        break;
+      case 'cancelled':
+      case 'excused':
+        status = RideStatus.cancelled;
+        break;
+      case 'absent':
+        status = RideStatus.cancelled;
+        break;
+      default:
+        status = RideStatus.completed;
+    }
+
+    return RideCard(
+      time: ride.pickupTime,
+      dateLabel: ride.ride.type == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
+      rideName: ride.ride.name,
+      routeDescription: ride.ride.type == 'morning'
+          ? 'Home → School'
+          : 'School → Home',
+      driverName: ride.driver.name,
+      status: status,
+      onReportAbsence: null, // Cannot report absence for past rides
+    );
+  }
+
+  void _showReportAbsenceDialogForUpcoming(
+    BuildContext context,
+    UpcomingRide ride,
+    AppLocalizations l10n,
+  ) {
+    showReportAbsenceDialog(
+      context: context,
+      occurrenceId: ride.occurrenceId,
+      studentId: widget.childId,
+      onSuccess: () {
+        // Refresh rides after reporting absence
+        context.read<ChildRidesCubit>().loadRides();
+      },
+    );
+  }
+
+  String _formatTime(String? isoTime) {
+    if (isoTime == null) return '--:--';
+    try {
+      final dateTime = DateTime.parse(isoTime);
+      final hour = dateTime.hour.toString().padLeft(2, '0');
+      final minute = dateTime.minute.toString().padLeft(2, '0');
+      return '$hour:$minute';
+    } catch (e) {
+      return '--:--';
+    }
   }
 
   Widget _buildSummaryRow(

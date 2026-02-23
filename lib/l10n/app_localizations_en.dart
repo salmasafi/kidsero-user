@@ -310,6 +310,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduled => 'Scheduled';
 
   @override
+  String get inProgress => 'In Progress';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get excused => 'Excused';
+
+  @override
   String get completed => 'Completed';
 
   @override
@@ -520,6 +529,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attendanceRate => 'Attendance Rate';
 
   @override
+  String get absenceReportedSuccessfully => 'Absence reported successfully';
+
+  @override
+  String get reasonRequired => 'Reason is required';
+
+  @override
+  String get noActiveRides => 'No Active Rides';
+
+  @override
+  String get noActiveRidesDesc => 'There are no active rides at the moment.';
+
+  @override
   String get close => 'Close';
 
   @override
@@ -666,4 +687,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get optional => 'Optional';
+
+  @override
+  String get errorNoInternet => 'Please check your internet connection';
+
+  @override
+  String get errorSessionExpired =>
+      'Your session has expired. Please log in again';
+
+  @override
+  String get errorServerUnavailable =>
+      'The server is temporarily unavailable. Please try again later';
+
+  @override
+  String get errorDataProcessing => 'Unable to process data. Please try again';
+
+  @override
+  String get errorNotFound => 'The requested resource was not found';
+
+  @override
+  String get errorGeneric => 'An error occurred. Please try again';
 }

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
-import '../models/ride_models.dart';
+import 'package:kidsero_parent/core/network/cache_helper.dart';
+import '../models/api_models.dart';
 import 'rides_service.dart';
-import '../../../core/network/cache_helper.dart';
 
 /// Repository for rides feature that wraps the service layer
 /// and provides business logic abstraction with caching
@@ -10,27 +10,24 @@ class RidesRepository {
   final RidesService _ridesService;
 
   // Cache keys
-  static const String _todayRidesCacheKey = 'rides_today';
-  static const String _activeRidesCacheKey = 'rides_active';
-  static const String _upcomingRidesCacheKey = 'rides_upcoming';
   static const String _childrenWithRidesCacheKey = 'children_with_rides';
-  static const String _childRidesCachePrefix = 'child_rides_';
+  static const String _childTodayRidesCachePrefix = 'child_today_rides_';
+  static const String _activeRidesCacheKey = 'active_rides';
+  static const String _upcomingRidesCacheKey = 'upcoming_rides';
   static const String _childSummaryCachePrefix = 'child_summary_';
   
   // Cache timestamp keys
-  static const String _todayRidesCacheTimeKey = 'rides_today_time';
-  static const String _activeRidesCacheTimeKey = 'rides_active_time';
-  static const String _upcomingRidesCacheTimeKey = 'rides_upcoming_time';
   static const String _childrenWithRidesCacheTimeKey = 'children_with_rides_time';
-  static const String _childRidesCacheTimePrefix = 'child_rides_time_';
+  static const String _childTodayRidesCacheTimePrefix = 'child_today_rides_time_';
+  static const String _activeRidesCacheTimeKey = 'active_rides_time';
+  static const String _upcomingRidesCacheTimeKey = 'upcoming_rides_time';
   static const String _childSummaryCacheTimePrefix = 'child_summary_time_';
   
   // Cache TTL (time-to-live) in seconds
-  static const int _todayRidesCacheTTL = 300; // 5 minutes
-  static const int _activeRidesCacheTTL = 30; // 30 seconds (frequently changing)
-  static const int _upcomingRidesCacheTTL = 600; // 10 minutes
   static const int _childrenWithRidesCacheTTL = 300; // 5 minutes
-  static const int _childRidesCacheTTL = 600; // 10 minutes
+  static const int _childTodayRidesCacheTTL = 300; // 5 minutes
+  static const int _activeRidesCacheTTL = 30; // 30 seconds (very frequent)
+  static const int _upcomingRidesCacheTTL = 600; // 10 minutes
   static const int _childSummaryCacheTTL = 1800; // 30 minutes (rarely changes)
 
   RidesRepository({required RidesService ridesService})
@@ -71,24 +68,22 @@ class RidesRepository {
 
   /// Clear all rides-related cache
   Future<void> clearAllCache() async {
-    await _clearCache(_todayRidesCacheKey, _todayRidesCacheTimeKey);
+    await _clearCache(_childrenWithRidesCacheKey, _childrenWithRidesCacheTimeKey);
     await _clearCache(_activeRidesCacheKey, _activeRidesCacheTimeKey);
     await _clearCache(_upcomingRidesCacheKey, _upcomingRidesCacheTimeKey);
-    await _clearCache(_childrenWithRidesCacheKey, _childrenWithRidesCacheTimeKey);
     dev.log('Cleared all rides cache', name: 'RidesRepository');
   }
 
-
   /// Get all children with their complete ride information
-  Future<ChildrenWithAllRidesData> getChildrenWithAllRides({bool forceRefresh = false}) async {
+  Future<ChildrenWithRidesData> getChildrenWithRides({bool forceRefresh = false}) async {
     // Check cache first if not forcing refresh
     if (!forceRefresh && _isCacheValid(_childrenWithRidesCacheTimeKey, _childrenWithRidesCacheTTL)) {
       final cachedData = _getFromCache(_childrenWithRidesCacheKey);
       if (cachedData != null) {
         try {
           final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
-          final response = ChildrenWithAllRidesResponse.fromJson(jsonData);
-          dev.log('Returning cached children with all rides', name: 'RidesRepository');
+          final response = ChildrenWithRidesResponse.fromJson(jsonData);
+          dev.log('Returning cached children with rides', name: 'RidesRepository');
           return response.data;
         } catch (e) {
           dev.log('Error parsing cached data: $e', name: 'RidesRepository');
@@ -98,23 +93,23 @@ class RidesRepository {
     }
 
     // Fetch from API
-    final response = await _ridesService.getChildrenWithAllRides();
+    final response = await _ridesService.getChildrenWithRides();
     if (response.success) {
       // Cache the response
       final jsonData = jsonEncode(response.toJson());
       await _saveToCache(_childrenWithRidesCacheKey, _childrenWithRidesCacheTimeKey, jsonData);
       return response.data;
     }
-    throw Exception('Failed to fetch children with all rides');
+    throw Exception('Failed to fetch children with rides');
   }
 
-  /// Get single child's today's rides with detailed information
+  /// Get single child's today's rides
   Future<ChildTodayRidesData> getChildTodayRides(String childId, {bool forceRefresh = false}) async {
-    final cacheKey = '$_childRidesCachePrefix$childId';
-    final cacheTimeKey = '$_childRidesCacheTimePrefix$childId';
+    final cacheKey = '$_childTodayRidesCachePrefix$childId';
+    final cacheTimeKey = '$_childTodayRidesCacheTimePrefix$childId';
 
     // Check cache first if not forcing refresh
-    if (!forceRefresh && _isCacheValid(cacheTimeKey, _childRidesCacheTTL)) {
+    if (!forceRefresh && _isCacheValid(cacheTimeKey, _childTodayRidesCacheTTL)) {
       final cachedData = _getFromCache(cacheKey);
       if (cachedData != null) {
         try {
@@ -124,79 +119,28 @@ class RidesRepository {
           return response.data;
         } catch (e) {
           dev.log('Error parsing cached data: $e', name: 'RidesRepository');
-          // Continue to fetch from API if cache parsing fails
         }
       }
     }
 
-    // Fetch from API
-    final response = await _ridesService.getChildTodayRides(childId);
-    if (response.success) {
+    try {
+      dev.log('Fetching child today rides for $childId from API', name: 'RidesRepository');
+      final response = await _ridesService.getChildTodayRides(childId);
+      
       // Cache the response
       final jsonData = jsonEncode(response.toJson());
       await _saveToCache(cacheKey, cacheTimeKey, jsonData);
+      
+      dev.log('Successfully fetched and cached child today rides for $childId', name: 'RidesRepository');
       return response.data;
+    } catch (e) {
+      dev.log('Error fetching child today rides: $e', name: 'RidesRepository');
+      rethrow;
     }
-    throw Exception('Failed to fetch child today rides');
-  }
-
-  /// Get today's rides for all children
-  Future<TodayRidesResponse> getTodayRides({bool forceRefresh = false}) async {
-    // Check cache first if not forcing refresh
-    if (!forceRefresh && _isCacheValid(_todayRidesCacheTimeKey, _todayRidesCacheTTL)) {
-      final cachedData = _getFromCache(_todayRidesCacheKey);
-      if (cachedData != null) {
-        try {
-          final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
-          final response = TodayRidesResponse.fromJson(jsonData);
-          dev.log('Returning cached today rides', name: 'RidesRepository');
-          return response;
-        } catch (e) {
-          dev.log('Error parsing cached data: $e', name: 'RidesRepository');
-          // Continue to fetch from API if cache parsing fails
-        }
-      }
-    }
-
-    // Fetch from API
-    final response = await _ridesService.getTodayRides();
-    if (response.success) {
-      // Cache the response - store the raw JSON
-      final jsonData = jsonEncode({
-        'success': response.success,
-        'date': response.date,
-        'data': response.data.map((ride) => {
-          'childId': ride.childId,
-          'childName': ride.childName,
-          'period': ride.period,
-          'rideId': ride.rideId,
-          'pickupTime': ride.pickupTime,
-          'dropoffTime': ride.dropoffTime,
-          'status': ride.status,
-          'bus': ride.bus != null ? {
-            'id': ride.bus!.id,
-            'plateNumber': ride.bus!.plateNumber,
-            'capacity': ride.bus!.capacity,
-          } : null,
-          'driver': ride.driver != null ? {
-            'id': ride.driver!.id,
-            'name': ride.driver!.name,
-            'phone': ride.driver!.phone,
-            'avatar': ride.driver!.avatar,
-          } : null,
-        }).toList(),
-      });
-      await _saveToCache(_todayRidesCacheKey, _todayRidesCacheTimeKey, jsonData);
-      return response;
-    }
-    throw Exception('Failed to fetch today rides');
   }
 
   /// Get active (in-progress) rides
-  Future<List<ActiveRide>> getActiveRides({bool forceRefresh = false}) async {
-    // Always force refresh for debugging - remove this later
-    forceRefresh = true;
-    
+  Future<ActiveRidesData> getActiveRides({bool forceRefresh = false}) async {
     // Check cache first if not forcing refresh
     if (!forceRefresh && _isCacheValid(_activeRidesCacheTimeKey, _activeRidesCacheTTL)) {
       final cachedData = _getFromCache(_activeRidesCacheKey);
@@ -204,11 +148,10 @@ class RidesRepository {
         try {
           final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
           final response = ActiveRidesResponse.fromJson(jsonData);
-          dev.log('Returning cached active rides: ${response.data.length}', name: 'RidesRepository');
+          dev.log('Returning cached active rides: ${response.data.count}', name: 'RidesRepository');
           return response.data;
         } catch (e) {
           dev.log('Error parsing cached data: $e', name: 'RidesRepository');
-          // Continue to fetch from API if cache parsing fails
         }
       }
     }
@@ -216,37 +159,11 @@ class RidesRepository {
     // Fetch from API
     dev.log('Fetching active rides from API', name: 'RidesRepository');
     final response = await _ridesService.getActiveRides();
-    dev.log('API response success: ${response.success}, data length: ${response.data.length}', name: 'RidesRepository');
+    dev.log('API response success: ${response.success}, count: ${response.data.count}', name: 'RidesRepository');
     
     if (response.success) {
       // Cache the response
-      final jsonData = jsonEncode({
-        'success': response.success,
-        'data': response.data.map((ride) => {
-          'rideId': ride.rideId,
-          'childId': ride.childId,
-          'childName': ride.childName,
-          'status': ride.status,
-          'startedAt': ride.startedAt,
-          'estimatedArrival': ride.estimatedArrival,
-          'bus': ride.bus != null ? {
-            'id': ride.bus!.id,
-            'plateNumber': ride.bus!.plateNumber,
-            'capacity': ride.bus!.capacity,
-          } : null,
-          'driver': ride.driver != null ? {
-            'id': ride.driver!.id,
-            'name': ride.driver!.name,
-            'phone': ride.driver!.phone,
-            'avatar': ride.driver!.avatar,
-          } : null,
-          'lastLocation': ride.lastLocation != null ? {
-            'lat': ride.lastLocation!.lat,
-            'lng': ride.lastLocation!.lng,
-            'recordedAt': ride.lastLocation!.recordedAt,
-          } : null,
-        }).toList(),
-      });
+      final jsonData = jsonEncode(response.toJson());
       await _saveToCache(_activeRidesCacheKey, _activeRidesCacheTimeKey, jsonData);
       return response.data;
     }
@@ -261,12 +178,11 @@ class RidesRepository {
       if (cachedData != null) {
         try {
           final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
-          final response = UpcomingRidesGroupedResponse.fromJson(jsonData);
+          final response = UpcomingRidesResponse.fromJson(jsonData);
           dev.log('Returning cached upcoming rides', name: 'RidesRepository');
           return response.data;
         } catch (e) {
           dev.log('Error parsing cached data: $e', name: 'RidesRepository');
-          // Continue to fetch from API if cache parsing fails
         }
       }
     }
@@ -279,70 +195,10 @@ class RidesRepository {
       // Cache the response
       final jsonData = jsonEncode(response.toJson());
       await _saveToCache(_upcomingRidesCacheKey, _upcomingRidesCacheTimeKey, jsonData);
-      dev.log('Returning upcoming rides data: ${response.data.upcomingRides.length} days', name: 'RidesRepository');
+      dev.log('Returning upcoming rides data: ${response.data.totalDays} days', name: 'RidesRepository');
       return response.data;
     }
     throw Exception('Failed to fetch upcoming rides');
-  }
-
-  /// Get ride details for a specific child
-  Future<ChildRideDetails> getChildRides(String childId, {bool forceRefresh = false}) async {
-    print('RidesRepository: Getting rides for child $childId, forceRefresh: $forceRefresh');
-    final cacheKey = '$_childRidesCachePrefix$childId';
-    final cacheTimeKey = '$_childRidesCacheTimePrefix$childId';
-
-    // Check cache first if not forcing refresh
-    if (!forceRefresh && _isCacheValid(cacheTimeKey, _childRidesCacheTTL)) {
-      final cachedData = _getFromCache(cacheKey);
-      if (cachedData != null) {
-        try {
-          final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
-          final response = SingleChildRidesResponse.fromJson(jsonData);
-          print('RidesRepository: Returning cached child rides for $childId');
-          return response.data;
-        } catch (e) {
-          print('RidesRepository: Error parsing cached data: $e');
-          // Continue to fetch from API if cache parsing fails
-        }
-      }
-    }
-
-    // Fetch from API
-    print('RidesRepository: Fetching child rides from API for $childId');
-    final response = await _ridesService.getChildRides(childId);
-    if (response.success) {
-      // Cache the response
-      final jsonData = jsonEncode({
-        'success': response.success,
-        'data': {
-          'id': response.data.id,
-          'name': response.data.name,
-          'grade': response.data.grade,
-          'schoolName': response.data.schoolName,
-          'rides': {
-            'upcoming': response.data.rides.upcoming.map((ride) => {
-              'rideId': ride.rideId,
-              'date': ride.date,
-              'period': ride.period,
-              'status': ride.status,
-              'pickedUpAt': ride.pickedUpAt,
-              'droppedOffAt': ride.droppedOffAt,
-            }).toList(),
-            'history': response.data.rides.history.map((ride) => {
-              'rideId': ride.rideId,
-              'date': ride.date,
-              'period': ride.period,
-              'status': ride.status,
-              'pickedUpAt': ride.pickedUpAt,
-              'droppedOffAt': ride.droppedOffAt,
-            }).toList(),
-          }
-        }
-      });
-      await _saveToCache(cacheKey, cacheTimeKey, jsonData);
-      return response.data;
-    }
-    throw Exception('Failed to fetch child rides');
   }
 
   /// Get ride summary statistics for a specific child
@@ -356,12 +212,11 @@ class RidesRepository {
       if (cachedData != null) {
         try {
           final jsonData = jsonDecode(cachedData) as Map<String, dynamic>;
-          final response = NewRideSummaryResponse.fromJson(jsonData);
+          final response = RideSummaryResponse.fromJson(jsonData);
           dev.log('Returning cached child summary for $childId', name: 'RidesRepository');
           return response.data;
         } catch (e) {
           dev.log('Error parsing cached data: $e', name: 'RidesRepository');
-          // Continue to fetch from API if cache parsing fails
         }
       }
     }
@@ -378,40 +233,52 @@ class RidesRepository {
   }
 
   /// Get real-time tracking data for a ride
-  /// Note: Tracking data is not cached as it's real-time information
-  Future<RideTracking> getRideTracking(String rideId) async {
-    final response = await _ridesService.getRideTracking(rideId);
-    if (response.success) {
-      return response.data;
+  /// Note: Tracking data is NOT cached as it's real-time information
+  Future<RideTrackingData?> getRideTracking(String childId) async {
+    // Always fetch from API - no caching for real-time data
+    try {
+      final response = await _ridesService.getRideTrackingByChild(childId);
+      if (response.success && response.data != null) {
+        dev.log('Fetched ride tracking for $childId', name: 'RidesRepository');
+        return response.data;
+      } else {
+        // No active ride tracking
+        dev.log('No active ride tracking for $childId', name: 'RidesRepository');
+        return null;
+      }
+    } catch (e) {
+      dev.log('Error fetching ride tracking: $e', name: 'RidesRepository');
+      return null;
     }
-    throw Exception('Failed to fetch ride tracking');
   }
 
-  /// Report absence for a specific ride occurrence
-  /// Note: This is a write operation, so it clears relevant caches
-  Future<AbsenceData> reportAbsence({
+  /// Report absence for a ride occurrence
+  Future<ReportAbsenceResponse> reportAbsence({
     required String occurrenceId,
     required String studentId,
     required String reason,
   }) async {
-    final response = await _ridesService.reportAbsence(
-      occurrenceId: occurrenceId,
-      studentId: studentId,
-      reason: reason,
-    );
-    if (response.success && response.data != null) {
-      // Clear caches that might be affected by this absence report
-      await _clearCache(_todayRidesCacheKey, _todayRidesCacheTimeKey);
-      await _clearCache(_upcomingRidesCacheKey, _upcomingRidesCacheTimeKey);
-      await _clearCache('$_childRidesCachePrefix$studentId', '$_childRidesCacheTimePrefix$studentId');
-      await _clearCache('$_childSummaryCachePrefix$studentId', '$_childSummaryCacheTimePrefix$studentId');
+    try {
+      dev.log('Reporting absence for occurrence: $occurrenceId, student: $studentId', name: 'RidesRepository');
+      final response = await _ridesService.reportAbsence(
+        occurrenceId: occurrenceId,
+        studentId: studentId,
+        reason: reason,
+      );
       
-      return response.data!;
+      if (response.success) {
+        // Clear relevant caches after reporting absence
+        await _clearCache('$_childTodayRidesCachePrefix$studentId', '$_childTodayRidesCacheTimePrefix$studentId');
+        await _clearCache('$_childSummaryCachePrefix$studentId', '$_childSummaryCacheTimePrefix$studentId');
+        await _clearCache(_upcomingRidesCacheKey, _upcomingRidesCacheTimeKey);
+        await _clearCache(_childrenWithRidesCacheKey, _childrenWithRidesCacheTimeKey);
+        dev.log('Absence reported successfully, cleared relevant caches', name: 'RidesRepository');
+      }
+      
+      return response;
+    } catch (e) {
+      dev.log('Error reporting absence: $e', name: 'RidesRepository');
+      rethrow;
     }
-    throw Exception(
-      response.message.isNotEmpty
-          ? response.message
-          : 'Failed to report absence',
-    );
   }
 }

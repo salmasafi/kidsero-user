@@ -309,6 +309,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scheduled => 'مجدولة';
 
   @override
+  String get inProgress => 'قيد التنفيذ';
+
+  @override
+  String get pending => 'قيد الانتظار';
+
+  @override
+  String get excused => 'معذور';
+
+  @override
   String get completed => 'مكتملة';
 
   @override
@@ -514,6 +523,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get attendanceRate => 'نسبة الحضور';
 
   @override
+  String get absenceReportedSuccessfully => 'تم الإبلاغ عن الغياب بنجاح';
+
+  @override
+  String get reasonRequired => 'السبب مطلوب';
+
+  @override
+  String get noActiveRides => 'لا رحلات نشطة';
+
+  @override
+  String get noActiveRidesDesc => 'لا توجد رحلات نشطة في الوقت الحالي.';
+
+  @override
   String get close => 'إغلاق';
 
   @override
@@ -659,4 +680,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get optional => 'اختياري';
+
+  @override
+  String get errorNoInternet => 'يرجى التحقق من اتصالك بالإنترنت';
+
+  @override
+  String get errorSessionExpired =>
+      'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى';
+
+  @override
+  String get errorServerUnavailable =>
+      'الخادم غير متاح مؤقتاً. يرجى المحاولة لاحقاً';
+
+  @override
+  String get errorDataProcessing =>
+      'تعذر معالجة البيانات. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get errorNotFound => 'المورد المطلوب غير موجود';
+
+  @override
+  String get errorGeneric => 'حدث خطأ. يرجى المحاولة مرة أخرى';
 }

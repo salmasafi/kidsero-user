@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'dart:developer' as dev;
+import '../../../core/network/error_handler.dart';
 import '../data/rides_repository.dart';
-import '../models/ride_models.dart';
+import '../models/api_models.dart';
 
 // ============================================================
 // STATES
@@ -19,51 +22,12 @@ class RideTrackingInitial extends RideTrackingState {}
 class RideTrackingLoading extends RideTrackingState {}
 
 class RideTrackingLoaded extends RideTrackingState {
-  final RideTracking tracking;
+  final RideTrackingData trackingData;
 
-  const RideTrackingLoaded(this.tracking);
+  const RideTrackingLoaded({required this.trackingData});
 
   @override
-  List<Object?> get props => [tracking];
-
-  /// Get ride ID
-  String get rideId => tracking.rideId;
-
-  /// Get child ID
-  String get childId => tracking.childId;
-
-  /// Get ride status
-  String get status => tracking.status;
-
-  /// Check if ride is in progress
-  bool get isInProgress => status.toLowerCase() == 'in_progress';
-
-  /// Get bus info
-  BusInfo? get bus => tracking.bus;
-
-  /// Get driver info
-  DriverInfo? get driver => tracking.driver;
-
-  /// Get current location
-  CurrentLocation? get currentLocation => tracking.currentLocation;
-
-  /// Check if location is available
-  bool get hasLocation =>
-      currentLocation != null &&
-      currentLocation!.lat != 0 &&
-      currentLocation!.lng != 0;
-
-  /// Get route info
-  RouteInfo? get route => tracking.route;
-
-  /// Get pickup location
-  String? get pickupLocation => route?.pickupLocation;
-
-  /// Get dropoff location
-  String? get dropoffLocation => route?.dropoffLocation;
-
-  /// Get next stop ETA
-  String? get nextStopEta => route?.nextStopEta;
+  List<Object?> get props => [trackingData];
 }
 
 class RideTrackingError extends RideTrackingState {
@@ -81,55 +45,89 @@ class RideTrackingError extends RideTrackingState {
 
 class RideTrackingCubit extends Cubit<RideTrackingState> {
   final RidesRepository _repository;
-  final String rideId;
+  final String _childId;
+  Timer? _refreshTimer;
 
-  RideTrackingCubit({required RidesRepository repository, required this.rideId})
-    : _repository = repository,
-      super(RideTrackingInitial());
+  RideTrackingCubit({
+    required RidesRepository repository,
+    required String childId,
+  })  : _repository = repository,
+        _childId = childId,
+        super(RideTrackingInitial());
 
-  /// Load tracking data for the ride
+  /// Load tracking data for the child's active ride
   Future<void> loadTracking() async {
     emit(RideTrackingLoading());
     try {
-      final tracking = await _repository.getRideTracking(rideId);
-      emit(RideTrackingLoaded(tracking));
-    } catch (e) {
-      emit(RideTrackingError(e.toString()));
-    }
-  }
-
-  /// Refresh tracking data
-  Future<void> refresh() async {
-    // Don't show loading state on refresh to avoid UI flicker
-    try {
-      final tracking = await _repository.getRideTracking(rideId);
-      emit(RideTrackingLoaded(tracking));
-    } catch (e) {
-      // Keep current state if refresh fails
-      if (state is! RideTrackingLoaded) {
-        emit(RideTrackingError(e.toString()));
+      dev.log('Loading tracking data for child: $_childId', name: 'RideTrackingCubit');
+      
+      final trackingData = await _repository.getRideTracking(_childId);
+      
+      if (trackingData != null) {
+        dev.log('Loaded tracking data for child $_childId', name: 'RideTrackingCubit');
+        emit(RideTrackingLoaded(trackingData: trackingData));
+      } else {
+        dev.log('No active ride tracking for child $_childId', name: 'RideTrackingCubit');
+        emit(const RideTrackingError('No active ride found'));
       }
+    } catch (e, stackTrace) {
+      dev.log('Error loading tracking data', 
+              name: 'RideTrackingCubit', 
+              error: e, 
+              stackTrace: stackTrace);
+      final errorMessage = ErrorHandler.handle(e);
+      emit(RideTrackingError(errorMessage));
     }
   }
 
-  /// Update location from WebSocket data
-  void updateLocation(double lat, double lng) {
-    if (state is RideTrackingLoaded) {
-      final currentState = state as RideTrackingLoaded;
-      final updatedTracking = RideTracking(
-        rideId: currentState.tracking.rideId,
-        childId: currentState.tracking.childId,
-        status: currentState.tracking.status,
-        bus: currentState.tracking.bus,
-        driver: currentState.tracking.driver,
-        currentLocation: CurrentLocation(
-          lat: lat,
-          lng: lng,
-          recordedAt: DateTime.now().toIso8601String(),
-        ),
-        route: currentState.tracking.route,
-      );
-      emit(RideTrackingLoaded(updatedTracking));
+  /// Start auto-refresh timer to update tracking data every 10 seconds
+  void startAutoRefresh() {
+    // Cancel any existing timer
+    stopAutoRefresh();
+    
+    dev.log('Starting auto-refresh for child $_childId', name: 'RideTrackingCubit');
+    
+    // Create a periodic timer that refreshes every 10 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+      // Only refresh if we're in a loaded state
+      if (state is RideTrackingLoaded) {
+        try {
+          dev.log('Auto-refreshing tracking data for child $_childId', 
+                  name: 'RideTrackingCubit');
+          
+          final trackingData = await _repository.getRideTracking(_childId);
+          
+          if (trackingData != null) {
+            emit(RideTrackingLoaded(trackingData: trackingData));
+          } else {
+            // Ride has ended or is no longer active
+            dev.log('Ride no longer active for child $_childId', 
+                    name: 'RideTrackingCubit');
+            stopAutoRefresh();
+            emit(const RideTrackingError('Ride is no longer active'));
+          }
+        } catch (e) {
+          dev.log('Error during auto-refresh', 
+                  name: 'RideTrackingCubit', 
+                  error: e);
+          // Don't emit error state during auto-refresh, keep current state
+        }
+      }
+    });
+  }
+
+  /// Stop auto-refresh timer
+  void stopAutoRefresh() {
+    if (_refreshTimer != null) {
+      dev.log('Stopping auto-refresh for child $_childId', name: 'RideTrackingCubit');
+      _refreshTimer?.cancel();
+      _refreshTimer = null;
     }
+  }
+
+  @override
+  Future<void> close() {
+    stopAutoRefresh();
+    return super.close();
   }
 }

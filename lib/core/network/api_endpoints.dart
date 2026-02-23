@@ -6,7 +6,6 @@ class ApiEndpoints {
 
   // Rides - Children
   static const String ridesChildren = '/api/users/rides/children';
-  static const String ridesChildrenToday = '/api/users/rides/children/today';
   static String rideChild(String childId) => '/api/users/rides/child/$childId';
   static String rideChildSummary(String childId) =>
       '/api/users/rides/child/$childId/summary';

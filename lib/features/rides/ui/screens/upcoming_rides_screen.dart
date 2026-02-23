@@ -7,7 +7,7 @@ import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_parent/features/rides/cubit/upcoming_rides_cubit.dart';
 import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
 import 'package:kidsero_parent/core/theme/app_colors.dart';
-import '../../models/ride_models.dart';
+import 'package:kidsero_parent/features/rides/models/api_models.dart';
 
 /// Screen to display all upcoming rides sorted by date and time
 class UpcomingRidesScreen extends StatelessWidget {
@@ -197,7 +197,7 @@ class _UpcomingRidesView extends StatelessWidget {
   Widget _buildDayRidesCard(
     BuildContext context,
     UpcomingDayRides dayRide,
-    List<UpcomingRideInfo> rides,
+    List<UpcomingRide> rides,
     AppLocalizations l10n,
   ) {
     return Card(
@@ -247,43 +247,33 @@ class _UpcomingRidesView extends StatelessWidget {
 
   Widget _buildRideCard(
     BuildContext context,
-    UpcomingRideInfo ride,
+    UpcomingRide ride,
     AppLocalizations l10n,
   ) {
-    // Determine the ride status
-    RideStatus status;
-    switch (ride.ride.type.toLowerCase()) {
-      case 'morning':
-        status = RideStatus.scheduled;
-        break;
-      case 'afternoon':
-        status = RideStatus.scheduled;
-        break;
-      default:
-        status = RideStatus.scheduled;
-    }
+    // Determine the ride status - all upcoming rides are scheduled
+    const status = RideStatus.scheduled;
 
     // Format pickup time
     final time = ride.pickupTime;
 
-    // Determine ride name
+    // Determine ride name (period)
     final rideName = ride.ride.type.toLowerCase() == 'morning'
         ? l10n.morningRide
         : l10n.afternoonRide;
 
+    // Pickup location
     final routeDescription = ride.pickupPointName;
+
+    // Child name
+    final childName = ride.child.name;
 
     return RideCard(
       time: time,
-      dateLabel: ride.child.name,
+      dateLabel: childName,
       rideName: rideName,
       routeDescription: routeDescription,
-      driverName: 'Driver', // TODO: Add driver info to UpcomingRideInfo model
+      driverName: 'Driver',
       status: status,
-      onTap: () {
-        // Navigate to ride details
-        // TODO: Implement navigation
-      },
     );
   }
 

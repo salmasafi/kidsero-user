@@ -690,6 +690,24 @@ abstract class AppLocalizations {
   /// **'Scheduled'**
   String get scheduled;
 
+  /// No description provided for @inProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get inProgress;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @excused.
+  ///
+  /// In en, this message translates to:
+  /// **'Excused'**
+  String get excused;
+
   /// No description provided for @completed.
   ///
   /// In en, this message translates to:
@@ -1098,6 +1116,30 @@ abstract class AppLocalizations {
   /// **'Attendance Rate'**
   String get attendanceRate;
 
+  /// No description provided for @absenceReportedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Absence reported successfully'**
+  String get absenceReportedSuccessfully;
+
+  /// No description provided for @reasonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason is required'**
+  String get reasonRequired;
+
+  /// No description provided for @noActiveRides.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active Rides'**
+  String get noActiveRides;
+
+  /// No description provided for @noActiveRidesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no active rides at the moment.'**
+  String get noActiveRidesDesc;
+
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -1379,6 +1421,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional'**
   String get optional;
+
+  /// No description provided for @errorNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection'**
+  String get errorNoInternet;
+
+  /// No description provided for @errorSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please log in again'**
+  String get errorSessionExpired;
+
+  /// No description provided for @errorServerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is temporarily unavailable. Please try again later'**
+  String get errorServerUnavailable;
+
+  /// No description provided for @errorDataProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to process data. Please try again'**
+  String get errorDataProcessing;
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The requested resource was not found'**
+  String get errorNotFound;
+
+  /// No description provided for @errorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again'**
+  String get errorGeneric;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
-import '../models/ride_models.dart';
+import '../models/api_models.dart';
 
 /// Service class for handling all rides-related API calls
 class RidesService {
@@ -10,26 +10,29 @@ class RidesService {
 
   /// GET /api/users/rides/children
   /// Get all children for the logged-in parent, with ride info.
-  Future<ChildrenWithAllRidesResponse> getChildrenWithAllRides() async {
+  Future<ChildrenWithRidesResponse> getChildrenWithRides() async {
     try {
       dev.log('GET /api/users/rides/children', name: 'RidesService');
       final response = await dio.get('/api/users/rides/children');
       dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return ChildrenWithAllRidesResponse.fromJson(response.data);
+      return ChildrenWithRidesResponse.fromJson(response.data);
     } catch (e) {
-      dev.log('Error getting children with all rides: $e', name: 'RidesService');
+      dev.log('Error getting children with rides: $e', name: 'RidesService');
       rethrow;
     }
   }
 
   /// GET /api/users/rides/child/{childId}
-  /// Get single child's today's rides with detailed information.
+  /// Get today's rides for a specific child
   Future<ChildTodayRidesResponse> getChildTodayRides(String childId) async {
     try {
       dev.log('GET /api/users/rides/child/$childId', name: 'RidesService');
       final response = await dio.get('/api/users/rides/child/$childId');
-      dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return ChildTodayRidesResponse.fromJson(response.data);
+      dev.log('Response status: ${response.statusCode}', name: 'RidesService');
+      dev.log('Response data: ${response.data}', name: 'RidesService');
+      final parsedResponse = ChildTodayRidesResponse.fromJson(response.data);
+      dev.log('Parsed child today rides: ${parsedResponse.data.total} rides', name: 'RidesService');
+      return parsedResponse;
     } catch (e) {
       dev.log('Error getting child today rides: $e', name: 'RidesService');
       rethrow;
@@ -46,7 +49,7 @@ class RidesService {
       dev.log('Response data: ${response.data}', name: 'RidesService');
       
       final result = ActiveRidesResponse.fromJson(response.data);
-      dev.log('Parsed ${result.data.length} active rides', name: 'RidesService');
+      dev.log('Parsed ${result.data.count} active rides', name: 'RidesService');
       
       return result;
     } catch (e) {
@@ -57,15 +60,15 @@ class RidesService {
 
   /// GET /api/users/rides/upcoming
   /// Get next scheduled rides (future) grouped by date.
-  Future<UpcomingRidesGroupedResponse> getUpcomingRides() async {
+  Future<UpcomingRidesResponse> getUpcomingRides() async {
     try {
       dev.log('GET /api/users/rides/upcoming', name: 'RidesService');
       final response = await dio.get('/api/users/rides/upcoming');
       dev.log('Response status: ${response.statusCode}', name: 'RidesService');
       dev.log('Response data: ${response.data}', name: 'RidesService');
       
-      final parsedResponse = UpcomingRidesGroupedResponse.fromJson(response.data);
-      dev.log('Parsed upcoming rides: ${parsedResponse.data.upcomingRides.length} days', name: 'RidesService');
+      final parsedResponse = UpcomingRidesResponse.fromJson(response.data);
+      dev.log('Parsed upcoming rides: ${parsedResponse.data.totalDays} days, ${parsedResponse.data.totalRides} rides', name: 'RidesService');
       return parsedResponse;
     } catch (e) {
       dev.log('Error getting upcoming rides: $e', name: 'RidesService');
@@ -75,7 +78,7 @@ class RidesService {
 
   /// GET /api/users/rides/child/{childId}/summary
   /// Get attendance/usage summary for a child.
-  Future<NewRideSummaryResponse> getChildRideSummary(String childId) async {
+  Future<RideSummaryResponse> getChildRideSummary(String childId) async {
     try {
       dev.log(
         'GET /api/users/rides/child/$childId/summary',
@@ -83,7 +86,7 @@ class RidesService {
       );
       final response = await dio.get('/api/users/rides/child/$childId/summary');
       dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return NewRideSummaryResponse.fromJson(response.data);
+      return RideSummaryResponse.fromJson(response.data);
     } catch (e) {
       dev.log('Error getting child ride summary: $e', name: 'RidesService');
       rethrow;
@@ -92,12 +95,12 @@ class RidesService {
 
   /// GET /api/users/rides/tracking/{childId}
   /// Get real-time tracking for a specific child's ride.
-  Future<NewRideTrackingResponse> getRideTrackingByChild(String childId) async {
+  Future<RideTrackingResponse> getRideTrackingByChild(String childId) async {
     try {
       dev.log('GET /api/users/rides/tracking/$childId', name: 'RidesService');
       final response = await dio.get('/api/users/rides/tracking/$childId');
       dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return NewRideTrackingResponse.fromJson(response.data);
+      return RideTrackingResponse.fromJson(response.data);
     } catch (e) {
       dev.log('Error getting ride tracking: $e', name: 'RidesService');
       rethrow;
@@ -124,55 +127,6 @@ class RidesService {
       return ReportAbsenceResponse.fromJson(response.data);
     } catch (e) {
       dev.log('Error reporting absence: $e', name: 'RidesService');
-      rethrow;
-    }
-  }
-
-  // Legacy methods for backward compatibility
-  /// GET /api/users/rides/children/today (LEGACY)
-  /// Get rides scheduled for today for all children of the parent.
-  @deprecated
-  Future<TodayRidesResponse> getTodayRides() async {
-    try {
-      dev.log('GET /api/users/rides/children/today (LEGACY)', name: 'RidesService');
-      final response = await dio.get('/api/users/rides/children/today');
-      dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return TodayRidesResponse.fromJson(response.data);
-    } catch (e) {
-      dev.log('Error getting today rides: $e', name: 'RidesService');
-      rethrow;
-    }
-  }
-
-  /// GET /api/users/rides/child/:childId (LEGACY)
-  /// Get details of one child, plus ride history.
-  @deprecated
-  Future<SingleChildRidesResponse> getChildRides(String childId) async {
-    try {
-      dev.log('GET /api/users/rides/child/$childId (LEGACY)', name: 'RidesService');
-      final response = await dio.get('/api/users/rides/child/$childId');
-      dev.log('Response status: ${response.statusCode}', name: 'RidesService');
-      dev.log('Response data: ${response.data}', name: 'RidesService');
-      final parsedResponse = SingleChildRidesResponse.fromJson(response.data);
-      dev.log('Parsed child rides: ${parsedResponse.data.rides.upcoming.length} upcoming, ${parsedResponse.data.rides.history.length} history', name: 'RidesService');
-      return parsedResponse;
-    } catch (e) {
-      dev.log('Error getting child rides: $e', name: 'RidesService');
-      rethrow;
-    }
-  }
-
-  /// GET /api/users/rides/tracking/:rideId (LEGACY)
-  /// Get real-time tracking for one ride.
-  @deprecated
-  Future<RideTrackingResponse> getRideTracking(String rideId) async {
-    try {
-      dev.log('GET /api/users/rides/tracking/$rideId (LEGACY)', name: 'RidesService');
-      final response = await dio.get('/api/users/rides/tracking/$rideId');
-      dev.log('Response: ${response.statusCode}', name: 'RidesService');
-      return RideTrackingResponse.fromJson(response.data);
-    } catch (e) {
-      dev.log('Error getting ride tracking: $e', name: 'RidesService');
       rethrow;
     }
   }

@@ -97,6 +97,9 @@
   "liveNow": "LIVE NOW",
   "trackLive": "Track Live",
   "scheduled": "Scheduled",
+  "inProgress": "In Progress",
+  "pending": "Pending",
+  "excused": "Excused",
   "completed": "Completed",
   "cancelled": "Cancelled",
   "driver": "Driver",
@@ -165,6 +168,10 @@
   "absent": "Absent",
   "lateLabel": "Late",
   "attendanceRate": "Attendance Rate",
+  "absenceReportedSuccessfully": "Absence reported successfully",
+  "reasonRequired": "Reason is required",
+  "noActiveRides": "No Active Rides",
+  "noActiveRidesDesc": "There are no active rides at the moment.",
   "close": "Close",
   "paymentType": "Payment Type",
   "paymentMethod": "Payment Method",
@@ -228,6 +235,12 @@
   "amountRequired": "Amount is required",
   "amountMustBePositive": "Amount must be greater than zero",
   "receiptRequired": "Receipt image is required",
-  "optional": "Optional"
+  "optional": "Optional",
+  "errorNoInternet": "Please check your internet connection",
+  "errorSessionExpired": "Your session has expired. Please log in again",
+  "errorServerUnavailable": "The server is temporarily unavailable. Please try again later",
+  "errorDataProcessing": "Unable to process data. Please try again",
+  "errorNotFound": "The requested resource was not found",
+  "errorGeneric": "An error occurred. Please try again"
 }
 

@@ -7,14 +7,13 @@ import 'package:kidsero_parent/features/notes/logic/cubit/upcoming_notes_cubit.d
 import 'package:kidsero_parent/features/notes/ui/widgets/upcoming_notices_section.dart';
 import 'package:kidsero_parent/l10n/app_localizations.dart';
 import 'package:kidsero_parent/core/widgets/language_toggle.dart';
-import '../../../../core/network/api_service.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'ride_tracking_screen.dart';
-import 'live_tracking_screen.dart';
 import '../../cubit/rides_dashboard_cubit.dart';
 import '../../data/rides_repository.dart';
+import '../../models/api_models.dart';
 import '../../../notes/data/notes_repository.dart';
 import 'child_schedule_screen.dart';
+import 'ride_tracking_screen.dart';
 
 /// Main Rides Dashboard Screen matching the new UI design
 class RidesScreen extends StatefulWidget {
@@ -33,11 +32,9 @@ class _RidesScreenState extends State<RidesScreen> {
     super.initState();
     final ridesRepository = context.read<RidesRepository>();
     final notesRepository = context.read<NotesRepository>();
-    final apiService = context.read<ApiService>();
 
     _ridesDashboardCubit = RidesDashboardCubit(
       repository: ridesRepository,
-      apiService: apiService,
     )..loadDashboard();
 
     _upcomingNotesCubit = UpcomingNotesCubit(notesRepository)
@@ -184,15 +181,13 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                   int childrenCount = 0;
                   int liveCount = 0;
                   bool hasActiveRides = false;
-                  String? firstActiveRideId;
+                  List<ChildWithRides> children = [];
 
                   if (state is RidesDashboardLoaded) {
                     childrenCount = state.childrenCount;
                     liveCount = state.activeRidesCount;
                     hasActiveRides = state.hasActiveRides;
-                    firstActiveRideId = state.activeRides.isNotEmpty
-                        ? state.activeRides.first.rideId
-                        : null;
+                    children = state.children;
                   }
 
                   return Row(
@@ -202,7 +197,7 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                         icon: Icons.people_outline,
                         value: childrenCount.toString(),
                         label: l10n.children,
-                        backgroundColor: Colors.white.withOpacity(0.15),
+                        backgroundColor: Colors.white.withValues(alpha: 0.15),
                       ),
 
                       const SizedBox(width: 12),
@@ -247,19 +242,16 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                                       context: context,
                                       label: l10n.liveTracking,
                                       icon: Icons.map_outlined,
+                                      enabled: hasActiveRides,
                                       onTap: () {
-                                        if (hasActiveRides &&
-                                            firstActiveRideId != null) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LiveTrackingScreen(
-                                                    rideId: firstActiveRideId!,
-                                                  ),
-                                            ),
-                                          );
-                                        }
+                                        // TODO: Navigate to live tracking once LiveTrackingScreen is updated to use childId (Task 12.1)
+                                        // For now, show a message
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Live tracking will be available soon'),
+                                            duration: Duration(seconds: 2),
+                                          ),
+                                        );
                                       },
                                     ),
                                   ),
@@ -269,16 +261,16 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                                       context: context,
                                       label: l10n.timelineTracking,
                                       icon: Icons.timeline,
+                                      enabled: hasActiveRides,
                                       onTap: () {
-                                        if (hasActiveRides &&
-                                            firstActiveRideId != null) {
+                                        if (hasActiveRides && children.isNotEmpty) {
+                                          // Navigate to timeline tracking with first child's ID
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RideTrackingScreen(
-                                                    rideId: firstActiveRideId!,
-                                                  ),
+                                              builder: (context) => RideTrackingScreen(
+                                                childId: children.first.id,
+                                              ),
                                             ),
                                           );
                                         }
@@ -370,11 +362,11 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                         ),
                         child: ChildCard(
                           name: child.name,
-                          avatarUrl: child.photoUrl,
+                          avatarUrl: child.avatar,
                           initials: _getInitials(child.name),
-                          grade: child.displayGrade.isNotEmpty ? child.displayGrade : null,
-                          classroom: child.displayClassroom.isNotEmpty ? child.displayClassroom : null,
-                          schoolName: child.displaySchoolName.isNotEmpty ? child.displaySchoolName : null,
+                          grade: child.grade.isNotEmpty ? child.grade : null,
+                          classroom: child.classroom.isNotEmpty ? child.classroom : null,
+                          schoolName: child.organization.name.isNotEmpty ? child.organization.name : null,
                           isOnline: state.hasActiveRideForChild(child.id),
                           avatarColor: colors[index % colors.length],
                           onViewSchedule: () {
@@ -384,11 +376,11 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                                 builder: (ctx) => ChildScheduleScreen(
                                   childId: child.id,
                                   childName: child.name,
-                                  childAvatar: child.photoUrl,
+                                  childAvatar: child.avatar,
                                   initials: _getInitials(child.name),
-                                  grade: child.displayGrade.isNotEmpty ? child.displayGrade : null,
-                                  classroom: child.displayClassroom.isNotEmpty ? child.displayClassroom : null,
-                                  schoolName: child.displaySchoolName.isNotEmpty ? child.displaySchoolName : null,
+                                  grade: child.grade.isNotEmpty ? child.grade : null,
+                                  classroom: child.classroom.isNotEmpty ? child.classroom : null,
+                                  schoolName: child.organization.name.isNotEmpty ? child.organization.name : null,
                                   avatarColor: colors[index % colors.length],
                                 ),
                               ),
@@ -434,24 +426,31 @@ class _RidesDashboardState extends State<_RidesDashboard> {
     required BuildContext context,
     required String label,
     required IconData icon,
+    required bool enabled,
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: enabled 
+              ? Colors.white.withValues(alpha: 0.2)
+              : Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           children: [
-            Icon(icon, color: Colors.white, size: 20),
+            Icon(
+              icon, 
+              color: enabled ? Colors.white : Colors.white.withValues(alpha: 0.5), 
+              size: 20,
+            ),
             const SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: enabled ? Colors.white : Colors.white.withValues(alpha: 0.5),
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),

@@ -96,6 +96,9 @@
   "liveNow": "مباشر الآن",
   "trackLive": "تتبع مباشر",
   "scheduled": "مجدولة",
+  "inProgress": "قيد التنفيذ",
+  "pending": "قيد الانتظار",
+  "excused": "معذور",
   "completed": "مكتملة",
   "cancelled": "ملغاة",
   "driver": "السائق",
@@ -162,6 +165,10 @@
   "absent": "غياب",
   "lateLabel": "متأخر",
   "attendanceRate": "نسبة الحضور",
+  "absenceReportedSuccessfully": "تم الإبلاغ عن الغياب بنجاح",
+  "reasonRequired": "السبب مطلوب",
+  "noActiveRides": "لا رحلات نشطة",
+  "noActiveRidesDesc": "لا توجد رحلات نشطة في الوقت الحالي.",
   "close": "إغلاق",
   "paymentType": "نوع الدفع",
   "paymentMethod": "طريقة الدفع",
@@ -198,6 +205,12 @@
   "amountRequired": "المبلغ مطلوب",
   "amountMustBePositive": "يجب أن يكون المبلغ أكبر من الصفر",
   "receiptRequired": "صورة الإيصال مطلوبة",
-  "optional": "اختياري"
+  "optional": "اختياري",
+  "errorNoInternet": "يرجى التحقق من اتصالك بالإنترنت",
+  "errorSessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى",
+  "errorServerUnavailable": "الخادم غير متاح مؤقتاً. يرجى المحاولة لاحقاً",
+  "errorDataProcessing": "تعذر معالجة البيانات. يرجى المحاولة مرة أخرى",
+  "errorNotFound": "المورد المطلوب غير موجود",
+  "errorGeneric": "حدث خطأ. يرجى المحاولة مرة أخرى"
 }
 
