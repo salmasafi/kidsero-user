@@ -65,6 +65,10 @@ class _CreateServicePaymentScreenState
     super.initState();
     _selectedService = widget.preselectedService;
     _selectedStudent = widget.preselectedStudent;
+    // If the selected service doesn't support installments, force one-time
+    if (_selectedService != null && !_selectedService!.supportsInstallments) {
+      _selectedPaymentType = PaymentType.onetime;
+    }
     _installmentController.addListener(_handleInstallmentChange);
     _updateAmountForPaymentType();
     _loadInitialData();
@@ -288,22 +292,25 @@ class _CreateServicePaymentScreenState
                                 _buildAmountInput(localizations),
                                 SizedBox(height: AppSizes.spacing(context)),
 
-                                // Installment selector
-                                InstallmentSelector(
-                                  selectedPaymentType: _selectedPaymentType,
-                                  onPaymentTypeChanged: (type) {
-                                    setState(() {
-                                      _selectedPaymentType = type;
-                                      _installmentError = null;
-                                      if (type == PaymentType.onetime) {
-                                        _installmentController.clear();
-                                      }
-                                      _updateAmountForPaymentType();
-                                    });
-                                  },
-                                  installmentController: _installmentController,
-                                  errorMessage: _installmentError,
-                                ),
+                                // Installment selector (only if service allows it)
+                                if (_selectedService?.supportsInstallments ==
+                                    true)
+                                  InstallmentSelector(
+                                    selectedPaymentType: _selectedPaymentType,
+                                    onPaymentTypeChanged: (type) {
+                                      setState(() {
+                                        _selectedPaymentType = type;
+                                        _installmentError = null;
+                                        if (type == PaymentType.onetime) {
+                                          _installmentController.clear();
+                                        }
+                                        _updateAmountForPaymentType();
+                                      });
+                                    },
+                                    installmentController:
+                                        _installmentController,
+                                    errorMessage: _installmentError,
+                                  ),
                                 SizedBox(height: AppSizes.spacing(context)),
 
                                 // Installment preview
@@ -474,10 +481,10 @@ class _CreateServicePaymentScreenState
               }
               if (isInstallment) {
                 if (minInstallmentAmount > 0 && amount < minInstallmentAmount) {
-                  return '${localizations.minPayment}: ${minInstallmentAmount.toStringAsFixed(2)} AED';
+                  return '${localizations.minPayment}: ${minInstallmentAmount.toStringAsFixed(2)} ${localizations.currency}';
                 }
                 if (amount > _totalAmount) {
-                  return '${localizations.totalAmount}: ${_totalAmount.toStringAsFixed(2)} AED';
+                  return '${localizations.totalAmount}: ${_totalAmount.toStringAsFixed(2)} ${localizations.currency}';
                 }
               }
               return null;
@@ -488,7 +495,7 @@ class _CreateServicePaymentScreenState
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              '${localizations.minPayment}: ${minInstallmentAmount.toStringAsFixed(2)} AED',
+              '${localizations.minPayment}: ${minInstallmentAmount.toStringAsFixed(2)} ${localizations.currency}',
               style: TextStyle(
                 fontSize: AppSizes.smallSize(context),
                 color: AppColors.textSecondary,
@@ -499,7 +506,7 @@ class _CreateServicePaymentScreenState
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
-              '${localizations.remainingAmount}: ${remainingAmount.toStringAsFixed(2)} AED',
+              '${localizations.remainingAmount}: ${remainingAmount.toStringAsFixed(2)} ${localizations.currency}',
               style: TextStyle(
                 fontSize: AppSizes.smallSize(context),
                 fontWeight: FontWeight.w600,
@@ -646,7 +653,7 @@ class _CreateServicePaymentScreenState
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '${service.finalPrice.toStringAsFixed(2)} AED',
+                  '${service.finalPrice.toStringAsFixed(2)} ${localizations.currency}',
                   style: TextStyle(
                     fontSize: AppSizes.bodySize(context),
                     color: AppColors.primary,
@@ -785,7 +792,7 @@ class _CreateServicePaymentScreenState
             ],
           ),
           Text(
-            '${total.toStringAsFixed(2)} AED',
+            '${total.toStringAsFixed(2)} ${localizations.currency}',
             style: TextStyle(
               fontSize: AppSizes.headingSize(context),
               fontWeight: FontWeight.bold,
@@ -842,7 +849,7 @@ class _CreateServicePaymentScreenState
           ),
           const SizedBox(height: 12),
           Text(
-            '${remaining.toStringAsFixed(2)} AED',
+            '${remaining.toStringAsFixed(2)} ${localizations.currency}',
             style: TextStyle(
               fontSize: AppSizes.headingSize(context),
               fontWeight: FontWeight.bold,

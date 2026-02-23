@@ -177,6 +177,7 @@
   "numberOfInstallments": "عدد الأقساط",
   "perInstallmentAmount": "قيمة كل قسط",
   "remainingAmount": "المبلغ المتبقي",
+  "currency": "EGP",
   "installmentsRequired": "عدد الأقساط مطلوب",
   "installmentsMustBePositive": "يجب أن يكون عدد الأقساط رقماً موجباً",
   "selectFromGallery": "اختر من المعرض",
@@ -206,11 +207,25 @@
   "amountMustBePositive": "يجب أن يكون المبلغ أكبر من الصفر",
   "receiptRequired": "صورة الإيصال مطلوبة",
   "optional": "اختياري",
-  "errorNoInternet": "يرجى التحقق من اتصالك بالإنترنت",
-  "errorSessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى",
-  "errorServerUnavailable": "الخادم غير متاح مؤقتاً. يرجى المحاولة لاحقاً",
-  "errorDataProcessing": "تعذر معالجة البيانات. يرجى المحاولة مرة أخرى",
-  "errorNotFound": "المورد المطلوب غير موجود",
-  "errorGeneric": "حدث خطأ. يرجى المحاولة مرة أخرى"
+  "tomorrow": "Tomorrow",
+  "subscriptionFees": "Service Fees",
+  "minPayment": "Min. Payment",
+  "upcomingNotices": "Upcoming Notices",
+  "upcomingNoticesSubtitle": "Stay informed about school events.",
+  "noUpcomingNotices": "No Upcoming Notices",
+  "noUpcomingNoticesDesc": "There are no events or holidays in the next few days.",
+  "noticeTypeHoliday": "Holiday",
+  "noticeTypeEvent": "Event",
+  "noticeTypeOther": "Notice",
+  "ridesAffected": "Rides affected",
+  "ridesNotAffected": "Rides not affected",
+  "inDays": "in {days} days",
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }
 

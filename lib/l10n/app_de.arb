@@ -87,6 +87,7 @@
   "numberOfInstallments": "Anzahl der Raten",
   "perInstallmentAmount": "Pro Rate",
   "remainingAmount": "Verbleibender Betrag",
+  "currency": "EGP",
   "installmentsRequired": "Anzahl der Raten ist erforderlich",
   "installmentsMustBePositive": "Anzahl der Raten muss eine positive Zahl sein",
   "planPayments": "Planzahlungen",
@@ -247,10 +248,25 @@
   "amountMustBePositive": "Betrag muss größer als null sein",
   "receiptRequired": "Belegbild ist erforderlich",
   "optional": "Optional",
-  "errorNoInternet": "Bitte überprüfen Sie Ihre Internetverbindung",
-  "errorSessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an",
-  "errorServerUnavailable": "Der Server ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut",
-  "errorDataProcessing": "Daten konnten nicht verarbeitet werden. Bitte versuchen Sie es erneut",
-  "errorNotFound": "Die angeforderte Ressource wurde nicht gefunden",
-  "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut"
+  "tomorrow": "Tomorrow",
+  "all": "All",
+  "subscriptionFees": "Service Fees",
+  "minPayment": "Min. Payment",
+  "upcomingNotices": "Upcoming Notices",
+  "upcomingNoticesSubtitle": "Stay informed about school events.",
+  "noUpcomingNotices": "No Upcoming Notices",
+  "noUpcomingNoticesDesc": "There are no events or holidays in the next few days.",
+  "noticeTypeHoliday": "Holiday",
+  "noticeTypeEvent": "Event",
+  "noticeTypeOther": "Notice",
+  "ridesAffected": "Rides affected",
+  "ridesNotAffected": "Rides not affected",
+  "inDays": "in {days} days",
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

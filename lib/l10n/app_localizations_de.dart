@@ -569,6 +569,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remainingAmount => 'Verbleibender Betrag';
 
   @override
+  String get currency => 'EGP';
+
+  @override
   String get installmentsRequired => 'Anzahl der Raten ist erforderlich';
 
   @override

@@ -16,6 +16,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/widgets/image_viewer.dart';
 import 'package:kidsero_parent/l10n/app_localizations.dart';
 import '../widgets/children_list_view.dart';
+import 'package:kidsero_parent/core/services/auth_service.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -31,10 +32,10 @@ class ProfileView extends StatelessWidget {
           buildWhen: (previous, current) {
             // Only rebuild for profile-related states, ignore children states
             return current is ProfileLoading ||
-                   current is ProfileLoaded ||
-                   current is ProfileError ||
-                   current is ProfileUpdateSuccess ||
-                   current is PasswordChangeSuccess;
+                current is ProfileLoaded ||
+                current is ProfileError ||
+                current is ProfileUpdateSuccess ||
+                current is PasswordChangeSuccess;
           },
           builder: (context, state) {
             if (state is ProfileLoading) {
@@ -109,7 +110,9 @@ class ProfileView extends StatelessWidget {
                                     ).copyWith(color: Colors.white),
                                   ),
                                   // Removed back button - profile is a main tab, no screen to pop to
-                                  const SizedBox(width: 48), // Spacer to balance the layout
+                                  const SizedBox(
+                                    width: 48,
+                                  ), // Spacer to balance the layout
                                 ],
                               ),
                             ),
@@ -397,7 +400,9 @@ class ProfileView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: InkWell(
-                        onTap: () => context.go(Routes.login),
+                        onTap: () async {
+                          await AuthService().handleForceLogout();
+                        },
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 15),

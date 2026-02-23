@@ -217,6 +217,7 @@
   "numberOfInstallments": "Nombre d'acomptes",
   "perInstallmentAmount": "Par acompte",
   "remainingAmount": "Montant restant",
+  "currency": "EGP",
   "installmentsRequired": "Le nombre d'acomptes est requis",
   "installmentsMustBePositive": "Le nombre d'acomptes doit être un nombre positif",
   "selectFromGallery": "Sélectionner dans la galerie",
@@ -245,10 +246,27 @@
   "amountMustBePositive": "Le montant doit être supérieur à zéro",
   "receiptRequired": "L'image du reçu est requise",
   "optional": "Optionnel",
-  "errorNoInternet": "Veuillez vérifier votre connexion Internet",
-  "errorSessionExpired": "Votre session a expiré. Veuillez vous reconnecter",
-  "errorServerUnavailable": "Le serveur est temporairement indisponible. Veuillez réessayer plus tard",
-  "errorDataProcessing": "Impossible de traiter les données. Veuillez réessayer",
-  "errorNotFound": "La ressource demandée n'a pas été trouvée",
-  "errorGeneric": "Une erreur s'est produite. Veuillez réessayer"
+  "tomorrow": "Tomorrow",
+  "noSchoolSubscriptions": "You have no school service subscriptions yet.",
+  "browseSchoolServices": "Browse the available school services below.",
+  "all": "All",
+  "subscriptionFees": "Service Fees",
+  "minPayment": "Min. Payment",
+  "upcomingNotices": "Upcoming Notices",
+  "upcomingNoticesSubtitle": "Stay informed about school events.",
+  "noUpcomingNotices": "No Upcoming Notices",
+  "noUpcomingNoticesDesc": "There are no events or holidays in the next few days.",
+  "noticeTypeHoliday": "Holiday",
+  "noticeTypeEvent": "Event",
+  "noticeTypeOther": "Notice",
+  "ridesAffected": "Rides affected",
+  "ridesNotAffected": "Rides not affected",
+  "inDays": "in {days} days",
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

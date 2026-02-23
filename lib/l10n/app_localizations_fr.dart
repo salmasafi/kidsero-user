@@ -573,6 +573,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get remainingAmount => 'Montant restant';
 
   @override
+  String get currency => 'EGP';
+
+  @override
   String get installmentsRequired => 'Le nombre d\'acomptes est requis';
 
   @override

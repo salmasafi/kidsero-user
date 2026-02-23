@@ -1188,6 +1188,12 @@ abstract class AppLocalizations {
   /// **'Remaining Amount'**
   String get remainingAmount;
 
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get currency;
+
   /// No description provided for @installmentsRequired.
   ///
   /// In en, this message translates to:

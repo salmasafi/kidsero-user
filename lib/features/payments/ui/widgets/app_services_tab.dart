@@ -82,11 +82,16 @@ class _AppServicesTabContent extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.secondary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+                      border: Border.all(
+                        color: AppColors.secondary.withOpacity(0.3),
+                      ),
                     ),
                     child: Column(
                       children: [
-                        const Icon(Icons.info_outline, color: AppColors.secondary),
+                        const Icon(
+                          Icons.info_outline,
+                          color: AppColors.secondary,
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           l10n.noAppSubscriptions,
@@ -107,26 +112,27 @@ class _AppServicesTabContent extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ...state.activeSubscriptions.map((sub) {
-                    // Find the corresponding plan to get the price
-                    final matchingPlan = state.availablePlans
-                        .where((plan) => plan.id == sub.parentPlanId)
-                        .firstOrNull;
-                    final price = matchingPlan?.price ?? 0;
-                    
-                    return ServiceCard(
-                      title: matchingPlan?.name ?? l10n.servicePlan,
-                      description: matchingPlan?.name != null 
-                          ? '${l10n.active} ${l10n.date} ${sub.endDate}'
-                          : '${l10n.active} ${l10n.date} ${sub.endDate}',
-                      priceLabel: '${price} AED',
-                      isSubscribed: true,
-                      subscriptionStatus: sub.isActive
-                          ? l10n.active.toUpperCase()
-                          : l10n.inactive.toUpperCase(),
-                      accentColor: AppColors.primary,
-                    );
-                  }),
+                ...state.activeSubscriptions.map((sub) {
+                  // Find the corresponding plan to get the price
+                  final matchingPlan = state.availablePlans
+                      .where((plan) => plan.id == sub.parentPlanId)
+                      .firstOrNull;
+                  final price = matchingPlan?.price ?? 0;
+
+                  return ServiceCard(
+                    title: matchingPlan?.name ?? l10n.servicePlan,
+                    description: matchingPlan?.name != null
+                        ? '${l10n.active} ${l10n.date} ${sub.endDate}'
+                        : '${l10n.active} ${l10n.date} ${sub.endDate}',
+                    priceLabel:
+                        '${(price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
+                    isSubscribed: true,
+                    subscriptionStatus: sub.isActive
+                        ? l10n.active.toUpperCase()
+                        : l10n.inactive.toUpperCase(),
+                    accentColor: AppColors.primary,
+                  );
+                }),
                 const SizedBox(height: 24),
 
                 if (hasPlans) ...[
@@ -143,15 +149,13 @@ class _AppServicesTabContent extends StatelessWidget {
                     return ServiceCard(
                       title: plan.name,
                       description: 'Premium service plan',
-                      priceLabel: '${plan.price} AED',
+                      priceLabel:
+                          '${(plan.price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
                       isSubscribed: false,
                       accentColor: AppColors.primary,
                       buttonText: l10n.subscribeNow,
                       onTap: () {
-                        context.push(
-                          Routes.createPlanPayment,
-                          extra: plan,
-                        );
+                        context.push(Routes.createPlanPayment, extra: plan);
                       },
                     );
                   }),
