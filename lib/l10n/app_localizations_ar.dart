@@ -538,6 +538,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remainingAmount => 'المبلغ المتبقي';
 
   @override
+  String get currency => 'EGP';
+
+  @override
   String get installmentsRequired => 'عدد الأقساط مطلوب';
 
   @override

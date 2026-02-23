@@ -240,5 +240,26 @@
   "amountRequired": "Betrag ist erforderlich",
   "amountMustBePositive": "Betrag muss größer als null sein",
   "receiptRequired": "Belegbild ist erforderlich",
-  "optional": "Optional"
+  "optional": "Optional",
+  "tomorrow": "Tomorrow",
+  "all": "All",
+  "subscriptionFees": "Service Fees",
+  "minPayment": "Min. Payment",
+  "upcomingNotices": "Upcoming Notices",
+  "upcomingNoticesSubtitle": "Stay informed about school events.",
+  "noUpcomingNotices": "No Upcoming Notices",
+  "noUpcomingNoticesDesc": "There are no events or holidays in the next few days.",
+  "noticeTypeHoliday": "Holiday",
+  "noticeTypeEvent": "Event",
+  "noticeTypeOther": "Notice",
+  "ridesAffected": "Rides affected",
+  "ridesNotAffected": "Rides not affected",
+  "inDays": "in {days} days",
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

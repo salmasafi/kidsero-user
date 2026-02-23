@@ -124,7 +124,8 @@ class _AppServicesTabContent extends StatelessWidget {
                     description: matchingPlan?.name != null
                         ? '${l10n.active} ${l10n.date} ${sub.endDate}'
                         : '${l10n.active} ${l10n.date} ${sub.endDate}',
-                    priceLabel: '\$${price.toString()} ${l10n.currency}',
+                    priceLabel:
+                        '${(price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
                     isSubscribed: true,
                     subscriptionStatus: sub.isActive
                         ? l10n.active.toUpperCase()
@@ -148,7 +149,8 @@ class _AppServicesTabContent extends StatelessWidget {
                     return ServiceCard(
                       title: plan.name,
                       description: 'Premium service plan',
-                      priceLabel: '\$${plan.price.toString()} ${l10n.currency}',
+                      priceLabel:
+                          '${(plan.price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
                       isSubscribed: false,
                       accentColor: AppColors.primary,
                       buttonText: l10n.subscribeNow,

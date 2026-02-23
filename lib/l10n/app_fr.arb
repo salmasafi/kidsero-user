@@ -238,5 +238,28 @@
   "amountRequired": "Le montant est requis",
   "amountMustBePositive": "Le montant doit être supérieur à zéro",
   "receiptRequired": "L'image du reçu est requise",
-  "optional": "Optionnel"
+  "optional": "Optionnel",
+  "tomorrow": "Tomorrow",
+  "noSchoolSubscriptions": "You have no school service subscriptions yet.",
+  "browseSchoolServices": "Browse the available school services below.",
+  "all": "All",
+  "subscriptionFees": "Service Fees",
+  "minPayment": "Min. Payment",
+  "upcomingNotices": "Upcoming Notices",
+  "upcomingNoticesSubtitle": "Stay informed about school events.",
+  "noUpcomingNotices": "No Upcoming Notices",
+  "noUpcomingNoticesDesc": "There are no events or holidays in the next few days.",
+  "noticeTypeHoliday": "Holiday",
+  "noticeTypeEvent": "Event",
+  "noticeTypeOther": "Notice",
+  "ridesAffected": "Rides affected",
+  "ridesNotAffected": "Rides not affected",
+  "inDays": "in {days} days",
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }
