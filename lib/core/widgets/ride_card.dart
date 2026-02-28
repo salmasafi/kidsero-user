@@ -59,7 +59,7 @@ class RideCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.success.withOpacity(0.3),
+            color: AppColors.success.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -79,7 +79,7 @@ class RideCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -125,7 +125,7 @@ class RideCard extends StatelessWidget {
                 routeDescription,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white.withValues(alpha: 0.85),
                 ),
               ),
             ),
@@ -141,7 +141,7 @@ class RideCard extends StatelessWidget {
                       l10n.driver,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                       ),
                     ),
                     Text(
@@ -162,7 +162,7 @@ class RideCard extends StatelessWidget {
                         l10n.eta,
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white.withValues(alpha: 0.7),
                         ),
                       ),
                       Text(
@@ -178,57 +178,35 @@ class RideCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // Track buttons - Live and Timeline
-            Row(
-              children: [
-                // Live Tracking button
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onTrackLive,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.success,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                    ),
-                    icon: const Icon(Icons.navigation_rounded, size: 18),
-                    label: Text(
-                      l10n.liveTracking,
+            // Track Live button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onTrackLive,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: AppColors.success,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.navigation_rounded, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.trackLive,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                // Timeline Tracking button
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onTrackTimeline,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                    ),
-                    icon: const Icon(Icons.timeline, size: 18),
-                    label: Text(
-                      l10n.timelineTracking,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -249,7 +227,7 @@ class RideCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -344,41 +322,43 @@ class RideCard extends StatelessWidget {
                 style: TextStyle(fontSize: 13, color: Colors.grey[600]),
               ),
             ),
-            const SizedBox(height: 12),
-            // Driver info
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 14,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
-                  backgroundImage:
-                      driverAvatar != null && driverAvatar!.isNotEmpty
-                      ? NetworkImage(driverAvatar!)
-                      : null,
-                  child: driverAvatar == null || driverAvatar!.isEmpty
-                      ? Icon(Icons.person, size: 16, color: AppColors.primary)
-                      : null,
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      driverName,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+            if (driverName.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              // Driver info
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 14,
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    backgroundImage:
+                        driverAvatar != null && driverAvatar!.isNotEmpty
+                        ? NetworkImage(driverAvatar!)
+                        : null,
+                    child: driverAvatar == null || driverAvatar!.isEmpty
+                        ? Icon(Icons.person, size: 16, color: AppColors.primary)
+                        : null,
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        driverName,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                    Text(
-                      l10n.driver,
-                      style: TextStyle(fontSize: 11, color: AppColors.primary),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      Text(
+                        l10n.driver,
+                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -391,28 +371,28 @@ class RideCard extends StatelessWidget {
         return {
           'label': l10n.liveNow,
           'color': AppColors.success,
-          'bgColor': AppColors.success.withOpacity(0.1),
+          'bgColor': AppColors.success.withValues(alpha: 0.1),
           'icon': Icons.sensors,
         };
       case RideStatus.scheduled:
         return {
           'label': l10n.scheduled,
-          'color': AppColors.success,
-          'bgColor': AppColors.success.withOpacity(0.1),
+          'color': const Color(0xFF4A90E2), // Blue color for scheduled
+          'bgColor': const Color(0xFF4A90E2).withValues(alpha: 0.1),
           'icon': null,
         };
       case RideStatus.completed:
         return {
           'label': l10n.completed,
-          'color': AppColors.success,
-          'bgColor': AppColors.success.withOpacity(0.1),
+          'color': Colors.grey[600],
+          'bgColor': Colors.grey.withValues(alpha: 0.1),
           'icon': Icons.check,
         };
       case RideStatus.cancelled:
         return {
           'label': l10n.cancelled,
           'color': AppColors.error,
-          'bgColor': AppColors.error.withOpacity(0.1),
+          'bgColor': AppColors.error.withValues(alpha: 0.1),
           'icon': Icons.close,
         };
     }

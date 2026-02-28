@@ -45,7 +45,7 @@ class ChildFilterBar<T> extends StatelessWidget {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 12),
@@ -84,6 +84,7 @@ class ChildFilterBar<T> extends StatelessWidget {
                   labelStyle: TextStyle(
                     color: isSelected ? Colors.white : AppColors.textPrimary,
                   ),
+                  checkmarkColor: Colors.white,
                 );
               }),
             ],

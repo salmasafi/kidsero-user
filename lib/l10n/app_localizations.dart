@@ -396,6 +396,126 @@ abstract class AppLocalizations {
   /// **'Control your data'**
   String get controlYourData;
 
+  /// No description provided for @liveTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Tracking'**
+  String get liveTracking;
+
+  /// No description provided for @busOnTheMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus is on the move'**
+  String get busOnTheMove;
+
+  /// No description provided for @receivingLiveUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving live updates...'**
+  String get receivingLiveUpdates;
+
+  /// No description provided for @rideStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride Status'**
+  String get rideStatus;
+
+  /// No description provided for @busNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus Number'**
+  String get busNumber;
+
+  /// No description provided for @plateNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate Number'**
+  String get plateNumber;
+
+  /// No description provided for @driverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get driverName;
+
+  /// No description provided for @driverPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Phone'**
+  String get driverPhone;
+
+  /// No description provided for @connectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get connectionStatus;
+
+  /// No description provided for @realTimeConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time'**
+  String get realTimeConnection;
+
+  /// No description provided for @pollingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Polling'**
+  String get pollingMode;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @loadingTrackingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading tracking data...'**
+  String get loadingTrackingData;
+
+  /// No description provided for @noTrackingData.
+  ///
+  /// In en, this message translates to:
+  /// **'No tracking data available'**
+  String get noTrackingData;
+
+  /// No description provided for @trackingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load tracking data'**
+  String get trackingError;
+
+  /// No description provided for @retryTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryTracking;
+
+  /// No description provided for @noActiveRide.
+  ///
+  /// In en, this message translates to:
+  /// **'No active ride found'**
+  String get noActiveRide;
+
+  /// No description provided for @missingRouteData.
+  ///
+  /// In en, this message translates to:
+  /// **'Route data is not available'**
+  String get missingRouteData;
+
+  /// No description provided for @recenterOnBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Recenter on bus'**
+  String get recenterOnBus;
+
+  /// No description provided for @fitAllMarkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit all markers'**
+  String get fitAllMarkers;
+
   /// No description provided for @helpSupport.
   ///
   /// In en, this message translates to:
@@ -600,6 +720,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home;
 
+  /// No description provided for @school.
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get school;
+
   /// No description provided for @track.
   ///
   /// In en, this message translates to:
@@ -767,6 +893,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No past rides found.'**
   String get noRideHistoryDesc;
+
+  /// No description provided for @trackingNotAvailableForPastRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking is not available for past rides'**
+  String get trackingNotAvailableForPastRides;
 
   /// No description provided for @scheduledRides.
   ///
@@ -1013,12 +1145,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Min. Payment'**
   String get minPayment;
-
-  /// No description provided for @liveTracking.
-  ///
-  /// In en, this message translates to:
-  /// **'Live Tracking'**
-  String get liveTracking;
 
   /// No description provided for @timelineTracking.
   ///
@@ -1463,6 +1589,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again'**
   String get errorGeneric;
+
+  /// No description provided for @yourChildPickupPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Child\'s Pickup Point'**
+  String get yourChildPickupPoint;
+
+  /// No description provided for @childrenAtThisStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Children at this stop'**
+  String get childrenAtThisStop;
 }
 
 class _AppLocalizationsDelegate

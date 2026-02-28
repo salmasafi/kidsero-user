@@ -82,20 +82,45 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
 
       dev.log('Loaded ${allTodayRides.length} today rides for child $_childId', 
               name: 'ChildRidesCubit');
+      
+      // Print all rides details
+      for (int i = 0; i < allTodayRides.length; i++) {
+        final ride = allTodayRides[i];
+        dev.log('Ride $i: ID=${ride.occurrenceId}, Name=${ride.ride.name}, Status=${ride.status}, Type=${ride.ride.type}, Time=${ride.pickupTime}', 
+                name: 'ChildRidesCubit');
+      }
 
       // Load upcoming rides for this child
       List<UpcomingRide> childUpcomingRides = [];
       try {
         final upcomingData = await _repository.getUpcomingRides();
+        dev.log('Total upcoming days: ${upcomingData.upcomingRides.length}', 
+                name: 'ChildRidesCubit');
+        
         // Filter upcoming rides for this specific child
         for (final dayRides in upcomingData.upcomingRides) {
+          dev.log('Day ${dayRides.date} (${dayRides.dayName}): ${dayRides.rides.length} total rides', 
+                  name: 'ChildRidesCubit');
           final childRides = dayRides.rides.where((ride) => ride.child.id == _childId).toList();
+          dev.log('  Filtered for child $_childId: ${childRides.length} rides', 
+                  name: 'ChildRidesCubit');
+          
+          // Print details of filtered rides for this day
+          for (int j = 0; j < childRides.length; j++) {
+            final ride = childRides[j];
+            dev.log('    Ride $j: OccurrenceID=${ride.occurrenceId}, Name=${ride.ride.name}, Type=${ride.ride.type}, Time=${ride.pickupTime}, ChildID=${ride.child.id}', 
+                    name: 'ChildRidesCubit');
+          }
+          
           childUpcomingRides.addAll(childRides);
         }
-        dev.log('Loaded ${childUpcomingRides.length} upcoming rides for child $_childId', 
+        dev.log('Total loaded upcoming rides for child $_childId: ${childUpcomingRides.length}', 
                 name: 'ChildRidesCubit');
-      } catch (e) {
-        dev.log('Error loading upcoming rides: $e', name: 'ChildRidesCubit');
+      } catch (e, stackTrace) {
+        dev.log('Error loading upcoming rides: $e', 
+                name: 'ChildRidesCubit',
+                error: e,
+                stackTrace: stackTrace);
         // Continue without upcoming rides
       }
 
@@ -104,8 +129,11 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
       final historyRides = allTodayRides.where((ride) => ride.isCompleted).toList();
 
       if (allTodayRides.isEmpty && childUpcomingRides.isEmpty && historyRides.isEmpty) {
+        dev.log('No rides found, emitting ChildRidesEmpty', name: 'ChildRidesCubit');
         emit(ChildRidesEmpty());
       } else {
+        dev.log('Emitting ChildRidesLoaded with ${allTodayRides.length} today rides', 
+                name: 'ChildRidesCubit');
         emit(
           ChildRidesLoaded(
             childId: _childId,
@@ -115,6 +143,7 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
             summary: null,
           ),
         );
+        dev.log('State emitted: ${state.runtimeType}', name: 'ChildRidesCubit');
       }
     } catch (e, stackTrace) {
       dev.log('Error loading child rides', 
@@ -140,20 +169,45 @@ class ChildRidesCubit extends Cubit<ChildRidesState> {
 
       dev.log('Refreshed ${allTodayRides.length} today rides for child $_childId', 
               name: 'ChildRidesCubit');
+      
+      // Print all rides details
+      for (int i = 0; i < allTodayRides.length; i++) {
+        final ride = allTodayRides[i];
+        dev.log('Ride $i: ID=${ride.occurrenceId}, Name=${ride.ride.name}, Status=${ride.status}, Type=${ride.ride.type}, Time=${ride.pickupTime}', 
+                name: 'ChildRidesCubit');
+      }
 
       // Load upcoming rides for this child
       List<UpcomingRide> childUpcomingRides = [];
       try {
         final upcomingData = await _repository.getUpcomingRides(forceRefresh: true);
+        dev.log('Total upcoming days: ${upcomingData.upcomingRides.length}', 
+                name: 'ChildRidesCubit');
+        
         // Filter upcoming rides for this specific child
         for (final dayRides in upcomingData.upcomingRides) {
+          dev.log('Day ${dayRides.date} (${dayRides.dayName}): ${dayRides.rides.length} total rides', 
+                  name: 'ChildRidesCubit');
           final childRides = dayRides.rides.where((ride) => ride.child.id == _childId).toList();
+          dev.log('  Filtered for child $_childId: ${childRides.length} rides', 
+                  name: 'ChildRidesCubit');
+          
+          // Print details of filtered rides for this day
+          for (int j = 0; j < childRides.length; j++) {
+            final ride = childRides[j];
+            dev.log('    Ride $j: OccurrenceID=${ride.occurrenceId}, Name=${ride.ride.name}, Type=${ride.ride.type}, Time=${ride.pickupTime}, ChildID=${ride.child.id}', 
+                    name: 'ChildRidesCubit');
+          }
+          
           childUpcomingRides.addAll(childRides);
         }
-        dev.log('Refreshed ${childUpcomingRides.length} upcoming rides for child $_childId', 
+        dev.log('Total refreshed upcoming rides for child $_childId: ${childUpcomingRides.length}', 
                 name: 'ChildRidesCubit');
-      } catch (e) {
-        dev.log('Error refreshing upcoming rides: $e', name: 'ChildRidesCubit');
+      } catch (e, stackTrace) {
+        dev.log('Error refreshing upcoming rides: $e', 
+                name: 'ChildRidesCubit',
+                error: e,
+                stackTrace: stackTrace);
         // Continue without upcoming rides
       }
 

@@ -13,6 +13,7 @@ import 'package:kidsero_parent/features/payments/ui/view/create_service_payment_
 import 'package:kidsero_parent/features/plans/model/plans_model.dart';
 import 'package:kidsero_parent/features/plans/model/org_service_model.dart';
 import 'package:kidsero_parent/features/children/model/child_model.dart';
+import 'package:kidsero_parent/features/live_tracking_ride/ui/live_tracking_screen.dart';
 
 import 'package:kidsero_parent/features/auth/data/models/user_model.dart';
 import 'package:kidsero_parent/core/utils/app_preferences.dart';
@@ -54,7 +55,10 @@ class AppRouter {
       GoRoute(
         path: Routes.home,
         pageBuilder: (context, state) =>
-            _buildPageWithTransition(child: const HomeScreen(), state: state),
+            _buildPageWithTransition(
+              child: const HomeScreen(), 
+              state: state,
+            ),
       ),
       GoRoute(
         path: Routes.profile,
@@ -136,6 +140,16 @@ class AppRouter {
               preselectedService: preselectedService,
               preselectedStudent: preselectedStudent,
             ),
+            state: state,
+          );
+        },
+      ),
+      GoRoute(
+        path: '${Routes.liveTracking}/:rideId',
+        pageBuilder: (context, state) {
+          final rideId = state.pathParameters['rideId']!;
+          return _buildPageWithTransition(
+            child: LiveTrackingScreen(rideId: rideId),
             state: state,
           );
         },

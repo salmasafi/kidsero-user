@@ -89,7 +89,7 @@ class PaymentListItem extends StatelessWidget {
                   const SizedBox(height: 6),
                   // Amount
                   Text(
-                    '${localizations.amount}: \$${amount.toStringAsFixed(2)}',
+                    '${localizations.amount}: ${amount.toStringAsFixed(2)} ${localizations.currency}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,

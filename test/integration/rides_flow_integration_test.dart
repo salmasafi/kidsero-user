@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:kidsero_parent/features/rides/cubit/rides_dashboard_cubit.dart';
 import 'package:kidsero_parent/features/rides/cubit/child_rides_cubit.dart';
 import 'package:kidsero_parent/features/rides/cubit/ride_tracking_cubit.dart';
@@ -13,82 +13,148 @@ class MockRidesService implements RidesService {
   bool shouldFail = false;
   int activeRidesCount = 2;
   List<ChildWithRides> mockChildren = [];
-  List<RideOccurrence> mockTodayRides = [];
-  TrackingData? mockTrackingData;
+  List<TodayRideOccurrence> mockTodayRides = [];
+  RideTrackingData? mockTrackingData;
 
   @override
-  Future<ChildrenWithRidesData> getChildrenWithRides() async {
+  Dio get dio => throw UnimplementedError();
+
+  @override
+  Future<ChildrenWithRidesResponse> getChildrenWithRides() async {
     if (shouldFail) throw Exception('Network error');
     
-    return ChildrenWithRidesData(
-      children: mockChildren.isEmpty ? _createMockChildren() : mockChildren,
+    return ChildrenWithRidesResponse(
+      success: true,
+      data: ChildrenWithRidesData(
+        children: mockChildren.isEmpty ? _createMockChildren() : mockChildren,
+        byOrganization: [],
+        totalChildren: mockChildren.isEmpty ? 2 : mockChildren.length,
+      ),
     );
   }
 
   @override
-  Future<ActiveRidesData> getActiveRides() async {
+  Future<ActiveRidesResponse> getActiveRides() async {
     if (shouldFail) throw Exception('Network error');
     
-    return ActiveRidesData(
-      count: activeRidesCount,
-      activeRides: [],
+    return ActiveRidesResponse(
+      success: true,
+      data: ActiveRidesData(
+        count: activeRidesCount,
+        activeRides: [],
+      ),
     );
   }
 
   @override
-  Future<ChildRidesData> getChildTodayRides(String childId) async {
+  Future<ChildTodayRidesResponse> getChildTodayRides(String childId) async {
     if (shouldFail) throw Exception('Network error');
     
-    return ChildRidesData(
-      childId: childId,
-      childName: 'Test Child',
-      todayRides: mockTodayRides.isEmpty ? _createMockTodayRides() : mockTodayRides,
+    return ChildTodayRidesResponse(
+      success: true,
+      data: ChildTodayRidesData(
+        child: ChildInfo(
+          id: childId,
+          name: 'Test Child',
+          avatar: null,
+          grade: 'Grade 1',
+          classroom: 'Class A',
+          organization: OrganizationInfo(
+            id: 'org1',
+            name: 'Test School',
+            logo: null,
+          ),
+        ),
+        type: 'today',
+        date: DateTime.now().toIso8601String(),
+        morning: mockTodayRides.isEmpty ? _createMockTodayRides() : mockTodayRides,
+        afternoon: [],
+        total: mockTodayRides.isEmpty ? 1 : mockTodayRides.length,
+      ),
     );
   }
 
   @override
-  Future<TrackingData> getRideTrackingByChild(String childId) async {
+  Future<RideTrackingResponse> getRideTrackingByChild(String childId) async {
     if (shouldFail) throw Exception('Network error');
     
-    return mockTrackingData ?? _createMockTrackingData(childId);
+    return RideTrackingResponse(
+      success: true,
+      error: null,
+      data: mockTrackingData ?? _createMockTrackingData(childId),
+    );
   }
 
   @override
-  Future<AbsenceReportData> reportAbsence({
+  Future<RideTrackingResponse> getRideTrackingByOccurrence(String occurrenceId) async {
+    if (shouldFail) throw Exception('Network error');
+    
+    return RideTrackingResponse(
+      success: true,
+      error: null,
+      data: mockTrackingData ?? _createMockTrackingData('child1'),
+    );
+  }
+
+  @override
+  Future<ReportAbsenceResponse> reportAbsence({
     required String occurrenceId,
     required String studentId,
     required String reason,
   }) async {
     if (shouldFail) throw Exception('Network error');
     
-    return AbsenceReportData(
+    return ReportAbsenceResponse(
       success: true,
       message: 'Absence reported successfully',
     );
   }
 
   @override
-  Future<UpcomingRidesData> getUpcomingRides() async {
+  Future<UpcomingRidesResponse> getUpcomingRides() async {
     if (shouldFail) throw Exception('Network error');
     
-    return UpcomingRidesData(groupedRides: {});
+    return UpcomingRidesResponse(
+      success: true,
+      data: UpcomingRidesData(
+        upcomingRides: [],
+        totalDays: 0,
+        totalRides: 0,
+      ),
+    );
   }
 
   @override
-  Future<RideSummaryData> getChildRideSummary(String childId) async {
+  Future<RideSummaryResponse> getChildRideSummary(String childId) async {
     if (shouldFail) throw Exception('Network error');
     
-    return RideSummaryData(
-      childId: childId,
-      childName: 'Test Child',
-      totalRides: 10,
-      completedRides: 8,
-      pendingRides: 1,
-      absentRides: 1,
-      excusedRides: 0,
-      cancelledRides: 0,
-      morningRides: 5,
-      afternoonRides: 5,
+    return RideSummaryResponse(
+      success: true,
+      data: RideSummaryData(
+        child: ChildSummaryInfo(
+          id: childId,
+          name: 'Test Child',
+          avatar: null,
+          organization: 'Test School',
+        ),
+        period: SummaryPeriod(
+          month: DateTime.now().month,
+          year: DateTime.now().year,
+          monthName: 'Current Month',
+        ),
+        summary: SummaryInfo(
+          total: 10,
+          morning: 5,
+          afternoon: 5,
+          byStatus: SummaryByStatus(
+            completed: 8,
+            absent: 1,
+            excused: 0,
+            pending: 1,
+          ),
+          attendanceRate: 80,
+        ),
+      ),
     );
   }
 
@@ -97,65 +163,136 @@ class MockRidesService implements RidesService {
       ChildWithRides(
         id: 'child1',
         name: 'Ahmed Ali',
-        profilePicture: null,
-        totalRides: 10,
-        completedRides: 8,
-        pendingRides: 1,
-        absentRides: 1,
+        avatar: null,
+        grade: 'Grade 1',
+        classroom: 'Class A',
+        code: 'STU001',
+        organization: OrganizationInfo(
+          id: 'org1',
+          name: 'Test School',
+          logo: null,
+        ),
+        rides: [],
       ),
       ChildWithRides(
         id: 'child2',
         name: 'Sara Mohammed',
-        profilePicture: null,
-        totalRides: 8,
-        completedRides: 6,
-        pendingRides: 1,
-        absentRides: 1,
-      ),
-    ];
-  }
-
-  List<RideOccurrence> _createMockTodayRides() {
-    return [
-      RideOccurrence(
-        id: 'occ1',
-        rideId: 'ride1',
-        date: DateTime.now().toIso8601String(),
-        period: 'morning',
-        pickupTime: '07:30:00',
-        pickupLocation: 'Home',
-        status: 'scheduled',
-        busNumber: 'BUS-101',
-        driverName: 'Driver 1',
-      ),
-    ];
-  }
-
-  TrackingData _createMockTrackingData(String childId) {
-    return TrackingData(
-      rideId: 'ride1',
-      childId: childId,
-      busNumber: 'BUS-101',
-      driverName: 'Driver 1',
-      currentLocation: Location(latitude: 24.7136, longitude: 46.6753),
-      pickupPoints: [
-        PickupPoint(
-          id: 'pp1',
-          name: 'Home',
-          location: Location(latitude: 24.7136, longitude: 46.6753),
-          estimatedTime: '07:30:00',
-          status: 'pending',
-          children: [
-            ChildInfo(id: childId, name: 'Test Child', status: 'pending'),
-          ],
+        avatar: null,
+        grade: 'Grade 2',
+        classroom: 'Class B',
+        code: 'STU002',
+        organization: OrganizationInfo(
+          id: 'org1',
+          name: 'Test School',
+          logo: null,
         ),
-      ],
-      events: [
-        RideEvent(
-          id: 'event1',
-          type: 'ride_started',
-          timestamp: DateTime.now().toIso8601String(),
-          description: 'Ride started',
+        rides: [],
+      ),
+    ];
+  }
+
+  List<TodayRideOccurrence> _createMockTodayRides() {
+    return [
+      TodayRideOccurrence(
+        occurrenceId: 'occ1',
+        date: DateTime.now().toIso8601String(),
+        status: 'scheduled',
+        startedAt: null,
+        completedAt: null,
+        busLocation: null,
+        ride: RideInfo(id: 'ride1', name: 'Morning Route', type: 'morning'),
+        studentStatus: StudentStatus(
+          id: 'status1',
+          status: 'pending',
+          pickupTime: '07:30:00',
+          pickedUpAt: null,
+          droppedOffAt: null,
+        ),
+        bus: BusInfo(
+          id: 'bus1',
+          busNumber: 'BUS-101',
+          plateNumber: 'ABC-123',
+        ),
+        driver: DriverInfo(
+          id: 'driver1',
+          name: 'Driver 1',
+          phone: '+966501234567',
+          avatar: null,
+        ),
+        pickupPoint: PickupPoint(
+          id: 'stop1',
+          name: 'Home',
+          address: '123 Main St',
+          lat: '24.7136',
+          lng: '46.6753',
+        ),
+      ),
+    ];
+  }
+
+  RideTrackingData _createMockTrackingData(String childId) {
+    return RideTrackingData(
+      occurrence: RideOccurrence(
+        id: 'occ1',
+        date: DateTime.now().toIso8601String(),
+        status: 'in_progress',
+        startedAt: '07:00:00',
+        completedAt: null,
+      ),
+      ride: RideInfo(id: 'ride1', name: 'Morning Route', type: 'morning'),
+      bus: TrackingBus(
+        id: 'bus1',
+        busNumber: 'BUS-101',
+        plateNumber: 'ABC-123',
+        currentLocation: {
+          'lat': '24.7136',
+          'lng': '46.6753',
+        },
+      ),
+      driver: DriverInfo(
+        id: 'driver1',
+        name: 'Driver 1',
+        phone: '+966501234567',
+        avatar: null,
+      ),
+      route: TrackingRoute(
+        id: 'route1',
+        name: 'Morning Route',
+        stops: [
+          RouteStop(
+            id: 'stop1',
+            name: 'Home',
+            address: '123 Main St',
+            lat: '24.7136',
+            lng: '46.6753',
+            stopOrder: 1,
+          ),
+        ],
+      ),
+      children: [
+        TrackingChild(
+          id: childId,
+          status: 'pending',
+          pickupTime: '07:30:00',
+          child: ChildInfo(
+            id: childId,
+            name: 'Test Child',
+            avatar: null,
+            grade: 'Grade 1',
+            classroom: 'Class A',
+            organization: OrganizationInfo(
+              id: 'org1',
+              name: 'Test School',
+              logo: null,
+            ),
+          ),
+          pickupPoint: PickupPoint(
+            id: 'stop1',
+            name: 'Home',
+            address: '123 Main St',
+            lat: '24.7136',
+            lng: '46.6753',
+          ),
         ),
       ],
     );
@@ -168,19 +305,21 @@ void main() {
     late RidesRepository repository;
 
     setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
       mockService = MockRidesService();
-      repository = RidesRepository(service: mockService);
+      repository = RidesRepository(ridesService: mockService);
     });
 
     tearDown(() {
-      repository.clearAllCache();
+      // Note: clearAllCache requires SharedPreferences initialization
+      // which is not needed for these unit tests since we're using a mock service
     });
 
     group('Dashboard → Child Schedule Flow', () {
       test('should load dashboard and navigate to child schedule', () async {
         // Arrange
         final dashboardCubit = RidesDashboardCubit(repository: repository);
-        final childRidesCubit = ChildRidesCubit(repository: repository);
+        final childRidesCubit = ChildRidesCubit(repository: repository, childId: 'child1');
 
         // Act - Load dashboard
         await dashboardCubit.loadDashboard();
@@ -192,8 +331,7 @@ void main() {
         expect(dashboardState.activeRidesCount, 2);
 
         // Act - Load child schedule
-        final childId = dashboardState.children.first.id;
-        await childRidesCubit.loadRides(childId);
+        await childRidesCubit.loadRides();
 
         // Assert - Child rides loaded successfully
         expect(childRidesCubit.state, isA<ChildRidesLoaded>());
@@ -240,7 +378,7 @@ void main() {
       test('should load dashboard and start tracking', () async {
         // Arrange
         final dashboardCubit = RidesDashboardCubit(repository: repository);
-        final trackingCubit = RideTrackingCubit(repository: repository);
+        final trackingCubit = RideTrackingCubit(repository: repository, childId: 'child1');
 
         // Act - Load dashboard
         await dashboardCubit.loadDashboard();
@@ -251,14 +389,13 @@ void main() {
         expect(dashboardState.hasActiveRides, true);
 
         // Act - Load tracking
-        final childId = dashboardState.children.first.id;
-        await trackingCubit.loadTracking(childId);
+        await trackingCubit.loadTracking();
 
         // Assert - Tracking loaded successfully
         expect(trackingCubit.state, isA<RideTrackingLoaded>());
         final trackingState = trackingCubit.state as RideTrackingLoaded;
-        expect(trackingState.trackingData.childId, childId);
-        expect(trackingState.trackingData.pickupPoints.isNotEmpty, true);
+        expect(trackingState.trackingData.children.isNotEmpty, true);
+        expect(trackingState.trackingData.route.stops.isNotEmpty, true);
 
         // Cleanup
         dashboardCubit.close();
@@ -268,10 +405,10 @@ void main() {
       test('should handle tracking error when no active ride', () async {
         // Arrange
         mockService.shouldFail = true;
-        final trackingCubit = RideTrackingCubit(repository: repository);
+        final trackingCubit = RideTrackingCubit(repository: repository, childId: 'child1');
 
         // Act
-        await trackingCubit.loadTracking('child1');
+        await trackingCubit.loadTracking();
 
         // Assert
         expect(trackingCubit.state, isA<RideTrackingError>());
@@ -285,7 +422,7 @@ void main() {
       test('should load dashboard and view timeline', () async {
         // Arrange
         final dashboardCubit = RidesDashboardCubit(repository: repository);
-        final trackingCubit = RideTrackingCubit(repository: repository);
+        final trackingCubit = RideTrackingCubit(repository: repository, childId: 'child1');
 
         // Act - Load dashboard
         await dashboardCubit.loadDashboard();
@@ -294,14 +431,13 @@ void main() {
         expect(dashboardCubit.state, isA<RidesDashboardLoaded>());
 
         // Act - Load timeline tracking
-        final childId = (dashboardCubit.state as RidesDashboardLoaded).children.first.id;
-        await trackingCubit.loadTracking(childId);
+        await trackingCubit.loadTracking();
 
-        // Assert - Timeline loaded with events
+        // Assert - Timeline loaded with route data
         expect(trackingCubit.state, isA<RideTrackingLoaded>());
         final trackingState = trackingCubit.state as RideTrackingLoaded;
-        expect(trackingState.trackingData.events.isNotEmpty, true);
-        expect(trackingState.trackingData.pickupPoints.isNotEmpty, true);
+        expect(trackingState.trackingData.route.stops.isNotEmpty, true);
+        expect(trackingState.trackingData.children.isNotEmpty, true);
 
         // Cleanup
         dashboardCubit.close();
@@ -312,11 +448,11 @@ void main() {
     group('Child Schedule → Absence Reporting Flow', () {
       test('should load child schedule and report absence', () async {
         // Arrange
-        final childRidesCubit = ChildRidesCubit(repository: repository);
+        final childRidesCubit = ChildRidesCubit(repository: repository, childId: 'child1');
         final absenceCubit = ReportAbsenceCubit(repository: repository);
 
         // Act - Load child schedule
-        await childRidesCubit.loadRides('child1');
+        await childRidesCubit.loadRides();
 
         // Assert - Child rides loaded
         expect(childRidesCubit.state, isA<ChildRidesLoaded>());
@@ -326,7 +462,7 @@ void main() {
         // Act - Report absence
         final occurrence = childState.todayRides.first;
         await absenceCubit.reportAbsence(
-          occurrenceId: occurrence.id,
+          occurrenceId: occurrence.occurrenceId,
           studentId: 'child1',
           reason: 'Sick',
         );
@@ -384,7 +520,6 @@ void main() {
 
         // Act - First load
         await cubit.loadDashboard();
-        final firstState = cubit.state as RidesDashboardLoaded;
 
         // Change mock data
         mockService.activeRidesCount = 5;
@@ -393,8 +528,8 @@ void main() {
         await cubit.loadDashboard();
         final secondState = cubit.state as RidesDashboardLoaded;
 
-        // Assert - Should still have old count due to cache
-        expect(secondState.activeRidesCount, firstState.activeRidesCount);
+        // Assert - Should still have old count due to cache (2, not 5)
+        expect(secondState.activeRidesCount, 2);
 
         // Cleanup
         cubit.close();
@@ -402,34 +537,56 @@ void main() {
 
       test('should force refresh when requested', () async {
         // Arrange
-        final cubit = ChildRidesCubit(repository: repository);
+        final cubit = ChildRidesCubit(repository: repository, childId: 'child1');
 
         // Act - First load
-        await cubit.loadRides('child1');
-        final firstState = cubit.state as ChildRidesLoaded;
+        await cubit.loadRides();
 
         // Change mock data
         mockService.mockTodayRides = [
-          RideOccurrence(
-            id: 'occ2',
-            rideId: 'ride2',
+          TodayRideOccurrence(
+            occurrenceId: 'occ2',
             date: DateTime.now().toIso8601String(),
-            period: 'afternoon',
-            pickupTime: '14:30:00',
-            pickupLocation: 'School',
             status: 'scheduled',
-            busNumber: 'BUS-102',
-            driverName: 'Driver 2',
+            startedAt: null,
+            completedAt: null,
+            busLocation: null,
+            ride: RideInfo(id: 'ride2', name: 'Afternoon Route', type: 'afternoon'),
+            studentStatus: StudentStatus(
+              id: 'status2',
+              status: 'pending',
+              pickupTime: '14:30:00',
+              pickedUpAt: null,
+              droppedOffAt: null,
+            ),
+            bus: BusInfo(
+              id: 'bus2',
+              busNumber: 'BUS-102',
+              plateNumber: 'XYZ-789',
+            ),
+            driver: DriverInfo(
+              id: 'driver2',
+              name: 'Driver 2',
+              phone: '+966501234568',
+              avatar: null,
+            ),
+            pickupPoint: PickupPoint(
+              id: 'stop2',
+              name: 'School',
+              address: '456 School St',
+              lat: '24.7200',
+              lng: '46.6800',
+            ),
           ),
         ];
 
         // Act - Refresh with force
-        await cubit.refresh('child1');
+        await cubit.refresh();
         final secondState = cubit.state as ChildRidesLoaded;
 
         // Assert - Should have new data
         expect(secondState.todayRides.length, 1);
-        expect(secondState.todayRides.first.id, 'occ2');
+        expect(secondState.todayRides.first.occurrenceId, 'occ2');
 
         // Cleanup
         cubit.close();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer' as dev;
 import 'package:kidsero_parent/l10n/app_localizations.dart';
 import 'package:kidsero_parent/core/network/api_service.dart';
 import 'package:kidsero_parent/core/widgets/gradient_header.dart';
@@ -9,6 +10,9 @@ import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_parent/features/rides/cubit/child_rides_cubit.dart';
 import 'package:kidsero_parent/features/rides/cubit/report_absence_cubit.dart';
 import 'package:kidsero_parent/features/rides/ui/widgets/report_absence_dialog.dart';
+import 'package:kidsero_parent/features/rides/ui/screens/ride_tracking_screen.dart';
+import 'package:kidsero_parent/features/live_tracking_ride/ui/live_tracking_screen.dart';
+import 'package:kidsero_parent/features/live_tracking_ride/cubit/live_tracking_cubit.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../data/rides_repository.dart';
@@ -294,6 +298,8 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
   ) {
     return BlocBuilder<ChildRidesCubit, ChildRidesState>(
       builder: (context, state) {
+        dev.log('_buildTodayTab - Current state: ${state.runtimeType}', name: 'ChildScheduleScreen');
+        
         if (state is ChildRidesLoading) {
           return const Center(
             child: CircularProgressIndicator(
@@ -324,14 +330,17 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           // Get today rides from the cubit
           final todayRides = state.todayRides;
           
-          // Check if there's an active ride for this child
-          final hasActiveRide = state.hasActiveRide;
+          dev.log('_buildTodayTab - ChildRidesLoaded with ${todayRides.length} rides', 
+                  name: 'ChildScheduleScreen');
           
-          // Find active ride if any
-          final activeRide = todayRides.firstWhere(
-            (ride) => ride.isActive,
-            orElse: () => todayRides.first,
-          );
+          // Get all active rides
+          final activeRides = todayRides.where((ride) => ride.isActive).toList();
+          
+          // Get non-active rides
+          final nonActiveRides = todayRides.where((ride) => !ride.isActive).toList();
+
+          dev.log('_buildTodayTab - Active: ${activeRides.length}, Non-active: ${nonActiveRides.length}', 
+                  name: 'ChildScheduleScreen');
 
           if (todayRides.isEmpty) {
             return CustomEmptyState(
@@ -350,16 +359,21 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Active ride card (green) - if there's an active ride
-                  if (hasActiveRide) ...[
-                    _buildActiveRideCard(context, activeRide, l10n),
-                    const SizedBox(height: 24),
+                  // Active ride cards (green) - show all active rides
+                  if (activeRides.isNotEmpty) ...[
+                    ...activeRides.map(
+                      (ride) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: _buildActiveRideCard(context, ride, l10n),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                   ],
                   
-                  // Today's Scheduled Rides
-                  if (todayRides.isNotEmpty) ...[
+                  // Today's Scheduled Rides (non-active rides only)
+                  if (nonActiveRides.isNotEmpty) ...[
                     Text(
-                      hasActiveRide ? 'Other Rides Today' : l10n.today, // TODO: Add to l10n
+                      activeRides.isNotEmpty ? 'Scheduled Rides' : l10n.today, // TODO: Add to l10n
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -367,7 +381,7 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...todayRides.map(
+                    ...nonActiveRides.map(
                       (ride) => Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: _buildTodayRideCard(context, ride, l10n),
@@ -392,77 +406,43 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.8)],
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF10B981),
+            Color(0xFF059669),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.success.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: const Color(0xFF10B981).withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           onTap: () {
             // Navigate to live tracking
             // TODO: Implement navigation to live tracking screen
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // LIVE NOW badge
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.directions_bus,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ride in Progress', // TODO: Add to l10n
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            ride.status == 'in_progress' || ride.status == 'started'
-                                ? 'On the way' // TODO: Add to l10n
-                                : ride.status,
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                        horizontal: 10,
+                        vertical: 5,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
@@ -471,18 +451,15 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.sensors,
-                            color: Colors.white,
-                            size: 16,
-                          ),
+                          const Icon(Icons.sensors, size: 14, color: Colors.white),
                           const SizedBox(width: 4),
                           Text(
-                            'LIVE', // TODO: Add to l10n
+                            l10n.liveNow,
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ],
@@ -490,75 +467,178 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
+                // Ride name
                 Row(
                   children: [
-                    Icon(
-                      Icons.access_time,
-                      color: Colors.white.withValues(alpha: 0.8),
-                      size: 16,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      ride.startedAt != null 
-                          ? 'Started: ${_formatTime(ride.startedAt!)}'
-                          : 'Just started', // TODO: Add to l10n
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 13,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(
-                      Icons.location_on,
-                      color: Colors.white.withValues(alpha: 0.8),
-                      size: 16,
-                    ),
+                    const Icon(Icons.location_on, size: 18, color: Colors.white70),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        ride.pickupPoint.name,
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          fontSize: 13,
+                        ride.ride.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 4),
+                // Route
+                Padding(
+                  padding: const EdgeInsets.only(left: 24),
+                  child: Text(
+                    ride.ride.type == 'morning'
+                        ? '${l10n.home} → ${l10n.school}'
+                        : '${l10n.school} → ${l10n.home}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Track Live Location', // TODO: Add to l10n
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(height: 16),
+                // Driver info and ETA
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.driver,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.7),
                           ),
                         ),
+                        Text(
+                          ride.driver.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          l10n.eta,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                        ),
+                        Text(
+                          '5 min', // TODO: Calculate actual ETA
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Track buttons - Live and Timeline
+                Row(
+                  children: [
+                    // Live Tracking button
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Navigate to live tracking map
+                          final dio = context.read<ApiService>().dio;
+                          final ridesService = RidesService(dio: dio);
+                          
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => LiveTrackingCubit(
+                                  rideId: ride.occurrenceId,
+                                  ridesService: ridesService,
+                                )..startTracking(),
+                                child: LiveTrackingScreen(
+                                  rideId: ride.occurrenceId,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF10B981),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.map_outlined, size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.liveTracking,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                        size: 16,
+                    ),
+                    const SizedBox(width: 8),
+                    // Timeline Tracking button
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Navigate to timeline tracking
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RideTrackingScreenByOccurrence(
+                                occurrenceId: ride.occurrenceId,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF10B981),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.timeline, size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.timelineTracking,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -641,6 +721,8 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
     AppLocalizations l10n,
   ) {
     // Determine the ride status based on the status field
+    // Note: Active rides should be filtered out and shown in the green card
+    // So we treat in_progress/started as scheduled here
     RideStatus status;
     switch (ride.status.toLowerCase()) {
       case 'completed':
@@ -652,7 +734,8 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
         break;
       case 'in_progress':
       case 'started':
-        status = RideStatus.live;
+        // These should be filtered out, but if they appear, show as scheduled
+        status = RideStatus.scheduled;
         break;
       case 'scheduled':
       default:
@@ -670,6 +753,16 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           : 'School → Home',
       driverName: ride.driver.name,
       status: status,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RideTrackingScreenByOccurrence(
+              occurrenceId: ride.occurrenceId,
+            ),
+          ),
+        );
+      },
       onReportAbsence: ride.canReportAbsence
           ? () => _showReportAbsenceDialogForToday(context, ride, l10n)
           : null,
@@ -828,6 +921,16 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           : 'School → Home',
       driverName: '', // Driver info not available in upcoming rides
       status: RideStatus.scheduled,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RideTrackingScreenByOccurrence(
+              occurrenceId: ride.occurrenceId,
+            ),
+          ),
+        );
+      },
       onReportAbsence: () => _showReportAbsenceDialogForUpcoming(context, ride, l10n),
     );
   }
@@ -865,6 +968,17 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
           : 'School → Home',
       driverName: ride.driver.name,
       status: status,
+      onTap: () {
+        // Show error message for history rides - tracking not available
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.trackingNotAvailableForPastRides),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      },
       onReportAbsence: null, // Cannot report absence for past rides
     );
   }
@@ -883,18 +997,6 @@ class _ChildScheduleViewState extends State<_ChildScheduleView> {
         context.read<ChildRidesCubit>().loadRides();
       },
     );
-  }
-
-  String _formatTime(String? isoTime) {
-    if (isoTime == null) return '--:--';
-    try {
-      final dateTime = DateTime.parse(isoTime);
-      final hour = dateTime.hour.toString().padLeft(2, '0');
-      final minute = dateTime.minute.toString().padLeft(2, '0');
-      return '$hour:$minute';
-    } catch (e) {
-      return '--:--';
-    }
   }
 
   Widget _buildSummaryRow(

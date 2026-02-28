@@ -23,20 +23,33 @@ class RidesService {
   }
 
   /// GET /api/users/rides/child/{childId}
-  /// Get today's rides for a specific child
-  Future<ChildTodayRidesResponse> getChildTodayRides(String childId) async {
+  /// Get rides for a specific child
+  /// [type] can be 'today', 'history', or 'upcoming'
+  Future<ChildTodayRidesResponse> getChildRides(
+    String childId, {
+    String type = 'today',
+  }) async {
     try {
-      dev.log('GET /api/users/rides/child/$childId', name: 'RidesService');
-      final response = await dio.get('/api/users/rides/child/$childId');
+      dev.log('GET /api/users/rides/child/$childId?type=$type', name: 'RidesService');
+      final response = await dio.get(
+        '/api/users/rides/child/$childId',
+        queryParameters: {'type': type},
+      );
       dev.log('Response status: ${response.statusCode}', name: 'RidesService');
       dev.log('Response data: ${response.data}', name: 'RidesService');
       final parsedResponse = ChildTodayRidesResponse.fromJson(response.data);
-      dev.log('Parsed child today rides: ${parsedResponse.data.total} rides', name: 'RidesService');
+      dev.log('Parsed child rides ($type): ${parsedResponse.data.total} rides', name: 'RidesService');
       return parsedResponse;
     } catch (e) {
-      dev.log('Error getting child today rides: $e', name: 'RidesService');
+      dev.log('Error getting child rides ($type): $e', name: 'RidesService');
       rethrow;
     }
+  }
+
+  /// GET /api/users/rides/child/{childId} (today only - backward compatibility)
+  /// Get today's rides for a specific child
+  Future<ChildTodayRidesResponse> getChildTodayRides(String childId) async {
+    return getChildRides(childId, type: 'today');
   }
 
   /// GET /api/users/rides/active
@@ -103,6 +116,20 @@ class RidesService {
       return RideTrackingResponse.fromJson(response.data);
     } catch (e) {
       dev.log('Error getting ride tracking: $e', name: 'RidesService');
+      rethrow;
+    }
+  }
+
+  /// GET /api/users/rides/tracking/{occurrenceId}
+  /// Get real-time tracking for a specific ride occurrence.
+  Future<RideTrackingResponse> getRideTrackingByOccurrence(String occurrenceId) async {
+    try {
+      dev.log('GET /api/users/rides/tracking/$occurrenceId', name: 'RidesService');
+      final response = await dio.get('/api/users/rides/tracking/$occurrenceId');
+      dev.log('Response: ${response.statusCode}', name: 'RidesService');
+      return RideTrackingResponse.fromJson(response.data);
+    } catch (e) {
+      dev.log('Error getting ride tracking by occurrence: $e', name: 'RidesService');
       rethrow;
     }
   }

@@ -47,18 +47,38 @@ class ChildTodayRidesData {
   });
 
   factory ChildTodayRidesData.fromJson(Map<String, dynamic> json) {
-    return ChildTodayRidesData(
-      child: ChildInfo.fromJson(json['child'] ?? {}),
-      type: json['type'] ?? '',
-      date: json['date'] ?? '',
-      morning: (json['morning'] as List?)
+    // Check if this is a history response (has 'rides' array instead of 'morning'/'afternoon')
+    final isHistoryResponse = json.containsKey('rides') && json['rides'] is List;
+    
+    if (isHistoryResponse) {
+      // History response format: {rides: [...], pagination: {...}}
+      final rides = (json['rides'] as List?)
           ?.map((i) => TodayRideOccurrence.fromJson(i))
-          .toList() ?? [],
-      afternoon: (json['afternoon'] as List?)
-          ?.map((i) => TodayRideOccurrence.fromJson(i))
-          .toList() ?? [],
-      total: json['total'] ?? 0,
-    );
+          .toList() ?? [];
+      
+      return ChildTodayRidesData(
+        child: ChildInfo.fromJson(json['child'] ?? {}),
+        type: json['type'] ?? 'history',
+        date: json['date'] ?? '',
+        morning: rides, // Put all history rides in morning array
+        afternoon: [],
+        total: rides.length,
+      );
+    } else {
+      // Today response format: {morning: [...], afternoon: [...], total: X}
+      return ChildTodayRidesData(
+        child: ChildInfo.fromJson(json['child'] ?? {}),
+        type: json['type'] ?? '',
+        date: json['date'] ?? '',
+        morning: (json['morning'] as List?)
+            ?.map((i) => TodayRideOccurrence.fromJson(i))
+            .toList() ?? [],
+        afternoon: (json['afternoon'] as List?)
+            ?.map((i) => TodayRideOccurrence.fromJson(i))
+            .toList() ?? [],
+        total: json['total'] ?? 0,
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -112,6 +132,39 @@ class ChildInfo {
       'grade': grade,
       'classroom': classroom,
       'organization': organization.toJson(),
+    };
+  }
+}
+
+/// Simplified child info for summary responses
+class ChildSummaryInfo {
+  final String id;
+  final String name;
+  final String? avatar;
+  final String organization;
+
+  ChildSummaryInfo({
+    required this.id,
+    required this.name,
+    this.avatar,
+    required this.organization,
+  });
+
+  factory ChildSummaryInfo.fromJson(Map<String, dynamic> json) {
+    return ChildSummaryInfo(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      avatar: json['avatar'],
+      organization: json['organization'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      'organization': organization,
     };
   }
 }
@@ -630,7 +683,7 @@ class RideSummaryResponse {
 }
 
 class RideSummaryData {
-  final ChildInfo child;
+  final ChildSummaryInfo child;
   final SummaryPeriod period;
   final SummaryInfo summary;
 
@@ -642,7 +695,7 @@ class RideSummaryData {
 
   factory RideSummaryData.fromJson(Map<String, dynamic> json) {
     return RideSummaryData(
-      child: ChildInfo.fromJson(json['child'] ?? {}),
+      child: ChildSummaryInfo.fromJson(json['child'] ?? {}),
       period: SummaryPeriod.fromJson(json['period'] ?? {}),
       summary: SummaryInfo.fromJson(json['summary'] ?? {}),
     );
@@ -822,6 +875,30 @@ class RideTrackingData {
       'children': children.map((i) => i.toJson()).toList(),
     };
   }
+
+  /// Check if tracking data has valid route with stops
+  bool get hasValidRoute => route.stops.isNotEmpty && route.validStops.isNotEmpty;
+
+  /// Check if bus has valid current location
+  bool get hasBusLocation => bus.hasValidCurrentLocation;
+
+  /// Get all pickup points from children with valid coordinates
+  List<PickupPoint> get validPickupPoints {
+    return children
+        .map((child) => child.pickupPoint)
+        .where((point) => point.hasValidCoordinates)
+        .toList();
+  }
+
+  /// Find a specific child's pickup point by child ID
+  PickupPoint? getChildPickupPoint(String childId) {
+    try {
+      final child = children.firstWhere((c) => c.child.id == childId);
+      return child.pickupPoint.hasValidCoordinates ? child.pickupPoint : null;
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 class RideOccurrence {
@@ -890,6 +967,43 @@ class TrackingBus {
       'currentLocation': currentLocation,
     };
   }
+
+  /// Parse current location latitude with validation
+  /// Returns null if parsing fails or value is out of range (-90 to 90)
+  double? get currentLatitude {
+    if (currentLocation == null) return null;
+    try {
+      final lat = currentLocation['lat'] ?? currentLocation['latitude'];
+      if (lat == null) return null;
+      final value = double.parse(lat.toString());
+      if (value < -90 || value > 90) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Parse current location longitude with validation
+  /// Returns null if parsing fails or value is out of range (-180 to 180)
+  double? get currentLongitude {
+    if (currentLocation == null) return null;
+    try {
+      final lng = currentLocation['lng'] ?? currentLocation['longitude'];
+      if (lng == null) return null;
+      final value = double.parse(lng.toString());
+      if (value < -180 || value > 180) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Check if current location has valid coordinates
+  bool get hasValidCurrentLocation => currentLatitude != null && currentLongitude != null;
 }
 
 class TrackingRoute {
@@ -915,6 +1029,23 @@ class TrackingRoute {
       'name': name,
       'stops': stops.map((i) => i.toJson()).toList(),
     };
+  }
+
+  /// Get stops sorted by stopOrder
+  List<RouteStop> get sortedStops {
+    final sorted = List<RouteStop>.from(stops);
+    sorted.sort((a, b) => a.stopOrder.compareTo(b.stopOrder));
+    return sorted;
+  }
+
+  /// Get only stops with valid coordinates
+  List<RouteStop> get validStops {
+    return stops.where((stop) => stop.hasValidCoordinates).toList();
+  }
+
+  /// Get sorted stops with valid coordinates
+  List<RouteStop> get sortedValidStops {
+    return sortedStops.where((stop) => stop.hasValidCoordinates).toList();
   }
 }
 
@@ -956,6 +1087,37 @@ class RouteStop {
       'stopOrder': stopOrder,
     };
   }
+
+  /// Parse latitude as double with validation
+  /// Returns null if parsing fails or value is out of range (-90 to 90)
+  double? get latitudeValue {
+    try {
+      final value = double.parse(lat);
+      if (value < -90 || value > 90) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Parse longitude as double with validation
+  /// Returns null if parsing fails or value is out of range (-180 to 180)
+  double? get longitudeValue {
+    try {
+      final value = double.parse(lng);
+      if (value < -180 || value > 180) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Check if coordinates are valid
+  bool get hasValidCoordinates => latitudeValue != null && longitudeValue != null;
 }
 
 class TrackingChild {
@@ -1119,6 +1281,37 @@ class PickupPoint {
       'lng': lng,
     };
   }
+
+  /// Parse latitude as double with validation
+  /// Returns null if parsing fails or value is out of range (-90 to 90)
+  double? get latitudeValue {
+    try {
+      final value = double.parse(lat);
+      if (value < -90 || value > 90) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Parse longitude as double with validation
+  /// Returns null if parsing fails or value is out of range (-180 to 180)
+  double? get longitudeValue {
+    try {
+      final value = double.parse(lng);
+      if (value < -180 || value > 180) {
+        return null;
+      }
+      return value;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Check if coordinates are valid
+  bool get hasValidCoordinates => latitudeValue != null && longitudeValue != null;
 }
 
 /// ============================================================

@@ -6,6 +6,7 @@ import 'package:kidsero_parent/core/widgets/ride_card.dart';
 import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
 import 'package:kidsero_parent/features/rides/cubit/upcoming_rides_cubit.dart';
 import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
+import 'package:kidsero_parent/features/rides/ui/screens/ride_tracking_screen.dart';
 import 'package:kidsero_parent/core/theme/app_colors.dart';
 import 'package:kidsero_parent/features/rides/models/api_models.dart';
 
@@ -274,6 +275,16 @@ class _UpcomingRidesView extends StatelessWidget {
       routeDescription: routeDescription,
       driverName: 'Driver',
       status: status,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RideTrackingScreenByOccurrence(
+              occurrenceId: ride.occurrenceId,
+            ),
+          ),
+        );
+      },
     );
   }
 

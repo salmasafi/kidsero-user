@@ -16,7 +16,7 @@ import 'core/services/auth_service.dart';
 import 'features/rides/data/rides_repository.dart';
 import 'features/rides/data/rides_service.dart';
 import 'features/payments/data/repositories/payment_repository.dart';
-import 'features/notes/data/notes_repository.dart';
+import 'features/notice/data/notes_repository.dart';
 import 'l10n/app_localizations.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -51,6 +51,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   late final ApiHelper _apiHelper;
   late final ApiService _apiService;
+  late final RidesService _ridesService;
   late final RidesRepository _ridesRepository;
   late final PaymentRepository _paymentRepository;
   late final NotesRepository _notesRepository;
@@ -67,8 +68,9 @@ class _MainAppState extends State<MainApp> {
   Future<void> _initializeServices() async {
     _apiHelper = ApiHelper();
     _apiService = ApiService();
+    _ridesService = RidesService(dio: _apiService.dio);
     _ridesRepository = RidesRepository(
-      ridesService: RidesService(dio: _apiService.dio),
+      ridesService: _ridesService,
     );
     _paymentRepository = PaymentRepository(_apiService);
     _notesRepository = NotesRepository(_apiService);
@@ -135,6 +137,7 @@ class _MainAppState extends State<MainApp> {
       providers: [
         RepositoryProvider.value(value: _apiHelper),
         RepositoryProvider.value(value: _apiService),
+        RepositoryProvider.value(value: _ridesService),
         RepositoryProvider.value(value: _ridesRepository),
         RepositoryProvider.value(value: _paymentRepository),
         RepositoryProvider.value(value: _notesRepository),

@@ -162,6 +162,66 @@ class AppLocalizationsAr extends AppLocalizations {
   String get controlYourData => 'تحكم في بياناتك';
 
   @override
+  String get liveTracking => 'تتبع مباشر';
+
+  @override
+  String get busOnTheMove => 'الحافلة في الطريق';
+
+  @override
+  String get receivingLiveUpdates => 'جاري استقبال التحديثات المباشرة...';
+
+  @override
+  String get rideStatus => 'حالة الرحلة';
+
+  @override
+  String get busNumber => 'رقم الحافلة';
+
+  @override
+  String get plateNumber => 'رقم اللوحة';
+
+  @override
+  String get driverName => 'السائق';
+
+  @override
+  String get driverPhone => 'هاتف السائق';
+
+  @override
+  String get connectionStatus => 'الاتصال';
+
+  @override
+  String get realTimeConnection => 'مباشر';
+
+  @override
+  String get pollingMode => 'استعلام دوري';
+
+  @override
+  String get disconnected => 'غير متصل';
+
+  @override
+  String get loadingTrackingData => 'جاري تحميل بيانات التتبع...';
+
+  @override
+  String get noTrackingData => 'لا توجد بيانات تتبع متاحة';
+
+  @override
+  String get trackingError => 'تعذر تحميل بيانات التتبع';
+
+  @override
+  String get retryTracking => 'إعادة المحاولة';
+
+  @override
+  String get noActiveRide => 'لا توجد رحلة نشطة';
+
+  @override
+  String get missingRouteData => 'بيانات المسار غير متوفرة';
+
+  @override
+  String get recenterOnBus => 'إعادة التمركز على الحافلة';
+
+  @override
+  String get fitAllMarkers => 'عرض جميع العلامات';
+
+  @override
   String get helpSupport => 'المساعدة والدعم';
 
   @override
@@ -264,6 +324,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home => 'الرئيسية';
 
   @override
+  String get school => 'المدرسة';
+
+  @override
   String get track => 'تتبع';
 
   @override
@@ -291,7 +354,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today => 'اليوم';
 
   @override
-  String get tomorrow => 'Tomorrow';
+  String get tomorrow => 'غداً';
 
   @override
   String get upcoming => 'القادمة';
@@ -346,6 +409,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noRideHistoryDesc => 'لم يتم العثور على رحلات سابقة.';
+
+  @override
+  String get trackingNotAvailableForPastRides =>
+      'التتبع غير متاح للرحلات السابقة';
 
   @override
   String get scheduledRides => 'الرحلات المجدولة';
@@ -465,13 +532,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get all => 'الكل';
 
   @override
-  String get subscriptionFees => 'Service Fees';
+  String get subscriptionFees => 'رسوم الخدمة';
 
   @override
-  String get minPayment => 'Min. Payment';
-
-  @override
-  String get liveTracking => 'تتبع مباشر';
+  String get minPayment => 'الحد الأدنى للدفع';
 
   @override
   String get timelineTracking => 'الجدول الزمني';
@@ -622,36 +686,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notes => 'ملاحظات';
 
   @override
-  String get upcomingNotices => 'Upcoming Notices';
+  String get upcomingNotices => 'الإشعارات القادمة';
 
   @override
-  String get upcomingNoticesSubtitle => 'Stay informed about school events.';
+  String get upcomingNoticesSubtitle => 'ابق على اطلاع بأحداث المدرسة.';
 
   @override
-  String get noUpcomingNotices => 'No Upcoming Notices';
+  String get noUpcomingNotices => 'لا توجد إشعارات قادمة';
 
   @override
   String get noUpcomingNoticesDesc =>
-      'There are no events or holidays in the next few days.';
+      'لا توجد أحداث أو عطلات في الأيام القليلة القادمة.';
 
   @override
-  String get noticeTypeHoliday => 'Holiday';
+  String get noticeTypeHoliday => 'عطلة';
 
   @override
-  String get noticeTypeEvent => 'Event';
+  String get noticeTypeEvent => 'حدث';
 
   @override
-  String get noticeTypeOther => 'Notice';
+  String get noticeTypeOther => 'إشعار';
 
   @override
-  String get ridesAffected => 'Rides affected';
+  String get ridesAffected => 'الرحلات المتأثرة';
 
   @override
-  String get ridesNotAffected => 'Rides not affected';
+  String get ridesNotAffected => 'الرحلات غير المتأثرة';
 
   @override
   String inDays(int days) {
-    return 'in $days days';
+    return 'خلال $days أيام';
   }
 
   @override
@@ -693,7 +757,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorServerUnavailable =>
-      'الخادم غير متاح مؤقتاً. يرجى المحاولة لاحقاً';
+      'الخادم غير متاح مؤقتاً. يرجى المحاولة مرة أخرى لاحقاً';
 
   @override
   String get errorDataProcessing =>
@@ -704,4 +768,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorGeneric => 'حدث خطأ. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get yourChildPickupPoint => 'نقطة استلام طفلك';
+
+  @override
+  String get childrenAtThisStop => 'الأطفال في هذه المحطة';
 }

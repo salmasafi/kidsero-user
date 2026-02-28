@@ -164,6 +164,66 @@ class AppLocalizationsDe extends AppLocalizations {
   String get controlYourData => 'Kontrollieren Sie Ihre Daten';
 
   @override
+  String get liveTracking => 'Live-Verfolgung';
+
+  @override
+  String get busOnTheMove => 'Bus is on the move';
+
+  @override
+  String get receivingLiveUpdates => 'Receiving live updates...';
+
+  @override
+  String get rideStatus => 'Ride Status';
+
+  @override
+  String get busNumber => 'Bus Number';
+
+  @override
+  String get plateNumber => 'Plate Number';
+
+  @override
+  String get driverName => 'Driver';
+
+  @override
+  String get driverPhone => 'Driver Phone';
+
+  @override
+  String get connectionStatus => 'Connection';
+
+  @override
+  String get realTimeConnection => 'Real-time';
+
+  @override
+  String get pollingMode => 'Polling';
+
+  @override
+  String get disconnected => 'Disconnected';
+
+  @override
+  String get loadingTrackingData => 'Loading tracking data...';
+
+  @override
+  String get noTrackingData => 'No tracking data available';
+
+  @override
+  String get trackingError => 'Unable to load tracking data';
+
+  @override
+  String get retryTracking => 'Retry';
+
+  @override
+  String get noActiveRide => 'No active ride found';
+
+  @override
+  String get missingRouteData => 'Route data is not available';
+
+  @override
+  String get recenterOnBus => 'Recenter on bus';
+
+  @override
+  String get fitAllMarkers => 'Fit all markers';
+
+  @override
   String get helpSupport => 'Hilfe & Support';
 
   @override
@@ -266,6 +326,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get home => 'Startseite';
 
   @override
+  String get school => 'Schule';
+
+  @override
   String get track => 'Verfolgen';
 
   @override
@@ -349,6 +412,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noRideHistoryDesc => 'Keine vergangenen Fahrten gefunden.';
+
+  @override
+  String get trackingNotAvailableForPastRides =>
+      'Tracking ist für vergangene Fahrten nicht verfügbar';
 
   @override
   String get scheduledRides => 'Geplante Fahrten';
@@ -478,9 +545,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get minPayment => 'Min. Payment';
-
-  @override
-  String get liveTracking => 'Live-Verfolgung';
 
   @override
   String get timelineTracking => 'Zeitachse';
@@ -698,24 +762,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get optional => 'Optional';
 
   @override
-  String get errorNoInternet => 'Bitte überprüfen Sie Ihre Internetverbindung';
+  String get errorNoInternet => 'Please check your internet connection';
 
   @override
   String get errorSessionExpired =>
-      'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an';
+      'Your session has expired. Please log in again';
 
   @override
   String get errorServerUnavailable =>
-      'Der Server ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut';
+      'The server is temporarily unavailable. Please try again later';
 
   @override
-  String get errorDataProcessing =>
-      'Daten konnten nicht verarbeitet werden. Bitte versuchen Sie es erneut';
+  String get errorDataProcessing => 'Unable to process data. Please try again';
 
   @override
-  String get errorNotFound => 'Die angeforderte Ressource wurde nicht gefunden';
+  String get errorNotFound => 'The requested resource was not found';
 
   @override
-  String get errorGeneric =>
-      'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut';
+  String get errorGeneric => 'An error occurred. Please try again';
+
+  @override
+  String get yourChildPickupPoint => 'Your Child\'s Pickup Point';
+
+  @override
+  String get childrenAtThisStop => 'Children at this stop';
 }

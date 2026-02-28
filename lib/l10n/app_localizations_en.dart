@@ -163,6 +163,66 @@ class AppLocalizationsEn extends AppLocalizations {
   String get controlYourData => 'Control your data';
 
   @override
+  String get liveTracking => 'Live Tracking';
+
+  @override
+  String get busOnTheMove => 'Bus is on the move';
+
+  @override
+  String get receivingLiveUpdates => 'Receiving live updates...';
+
+  @override
+  String get rideStatus => 'Ride Status';
+
+  @override
+  String get busNumber => 'Bus Number';
+
+  @override
+  String get plateNumber => 'Plate Number';
+
+  @override
+  String get driverName => 'Driver';
+
+  @override
+  String get driverPhone => 'Driver Phone';
+
+  @override
+  String get connectionStatus => 'Connection';
+
+  @override
+  String get realTimeConnection => 'Real-time';
+
+  @override
+  String get pollingMode => 'Polling';
+
+  @override
+  String get disconnected => 'Disconnected';
+
+  @override
+  String get loadingTrackingData => 'Loading tracking data...';
+
+  @override
+  String get noTrackingData => 'No tracking data available';
+
+  @override
+  String get trackingError => 'Unable to load tracking data';
+
+  @override
+  String get retryTracking => 'Retry';
+
+  @override
+  String get noActiveRide => 'No active ride found';
+
+  @override
+  String get missingRouteData => 'Route data is not available';
+
+  @override
+  String get recenterOnBus => 'Recenter on bus';
+
+  @override
+  String get fitAllMarkers => 'Fit all markers';
+
+  @override
   String get helpSupport => 'Help & Support';
 
   @override
@@ -265,6 +325,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
+  String get school => 'School';
+
+  @override
   String get track => 'Track';
 
   @override
@@ -347,6 +410,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRideHistoryDesc => 'No past rides found.';
+
+  @override
+  String get trackingNotAvailableForPastRides =>
+      'Tracking is not available for past rides';
 
   @override
   String get scheduledRides => 'Scheduled Rides';
@@ -474,9 +541,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minPayment => 'Min. Payment';
-
-  @override
-  String get liveTracking => 'Live Tracking';
 
   @override
   String get timelineTracking => 'Timeline';
@@ -710,4 +774,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorGeneric => 'An error occurred. Please try again';
+
+  @override
+  String get yourChildPickupPoint => 'Your Child\'s Pickup Point';
+
+  @override
+  String get childrenAtThisStop => 'Children at this stop';
 }

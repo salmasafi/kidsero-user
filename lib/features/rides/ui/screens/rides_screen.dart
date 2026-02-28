@@ -3,15 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kidsero_parent/core/widgets/stat_card.dart';
 import 'package:kidsero_parent/core/widgets/child_card.dart';
 import 'package:kidsero_parent/core/widgets/custom_empty_state.dart';
-import 'package:kidsero_parent/features/notes/logic/cubit/upcoming_notes_cubit.dart';
-import 'package:kidsero_parent/features/notes/ui/widgets/upcoming_notices_section.dart';
+import 'package:kidsero_parent/features/notice/logic/cubit/upcoming_notes_cubit.dart';
+import 'package:kidsero_parent/features/notice/ui/widgets/upcoming_notices_section.dart';
 import 'package:kidsero_parent/l10n/app_localizations.dart';
 import 'package:kidsero_parent/core/widgets/language_toggle.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../cubit/rides_dashboard_cubit.dart';
 import '../../data/rides_repository.dart';
 import '../../models/api_models.dart';
-import '../../../notes/data/notes_repository.dart';
+import '../../../notice/data/notes_repository.dart';
+import '../../../home/ui/home_screen.dart';
 import 'child_schedule_screen.dart';
 import 'ride_tracking_screen.dart';
 
@@ -244,14 +245,8 @@ class _RidesDashboardState extends State<_RidesDashboard> {
                                       icon: Icons.map_outlined,
                                       enabled: hasActiveRides,
                                       onTap: () {
-                                        // TODO: Navigate to live tracking once LiveTrackingScreen is updated to use childId (Task 12.1)
-                                        // For now, show a message
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Live tracking will be available soon'),
-                                            duration: Duration(seconds: 2),
-                                          ),
-                                        );
+                                        // Navigate to Track screen (index 1 in HomeScreen)
+                                        HomeScreenController.of(context)?.switchToTab(1);
                                       },
                                     ),
                                   ),
