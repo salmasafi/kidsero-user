@@ -12,6 +12,8 @@ import 'package:kidsero_parent/features/rides/cubit/all_children_rides_cubit.dar
 import 'package:kidsero_parent/features/rides/data/rides_repository.dart';
 import 'package:kidsero_parent/features/rides/models/api_models.dart';
 import 'package:kidsero_parent/features/rides/ui/screens/ride_tracking_screen.dart';
+import 'package:kidsero_parent/features/rides/ui/widgets/report_absence_dialog.dart';
+import 'package:kidsero_parent/features/rides/cubit/report_absence_cubit.dart';
 import 'package:kidsero_parent/features/payments/ui/widgets/child_filter_bar.dart';
 import 'package:kidsero_parent/core/routing/routes.dart';
 
@@ -23,10 +25,19 @@ class TrackScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          AllChildrenRidesCubit(repository: context.read<RidesRepository>())
-            ..loadAllChildrenRides(),
+    final ridesRepository = context.read<RidesRepository>();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              AllChildrenRidesCubit(repository: ridesRepository)
+                ..loadAllChildrenRides(),
+        ),
+        BlocProvider(
+          create: (context) => ReportAbsenceCubit(repository: ridesRepository),
+        ),
+      ],
       child: const _TrackScreenContent(),
     );
   }
@@ -46,7 +57,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: BlocBuilder<AllChildrenRidesCubit, AllChildrenRidesState>(
@@ -73,8 +84,9 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     icon: Icons.error_outline,
                     title: l10n.errorLoadingRides,
                     message: state.message,
-                    onRefresh: () =>
-                        context.read<AllChildrenRidesCubit>().loadAllChildrenRides(),
+                    onRefresh: () => context
+                        .read<AllChildrenRidesCubit>()
+                        .loadAllChildrenRides(),
                   ),
                 ),
               ],
@@ -90,8 +102,9 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     icon: Icons.location_off_outlined,
                     title: l10n.noRidesToday,
                     message: l10n.noRidesTodayDesc,
-                    onRefresh: () =>
-                        context.read<AllChildrenRidesCubit>().loadAllChildrenRides(),
+                    onRefresh: () => context
+                        .read<AllChildrenRidesCubit>()
+                        .loadAllChildrenRides(),
                   ),
                 ),
               ],
@@ -119,7 +132,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
       children: [
         // Header with child filter
         _buildHeader(context, l10n, state.children),
-        
+
         // Tab bar
         AnimatedTabBar(
           tabs: tabs,
@@ -132,9 +145,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
         ),
 
         // Tab content
-        Expanded(
-          child: _buildTabContent(context, state, l10n),
-        ),
+        Expanded(child: _buildTabContent(context, state, l10n)),
       ],
     );
   }
@@ -251,58 +262,42 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
     AllChildrenRidesLoaded state,
     AppLocalizations l10n,
   ) {
-    // Get all today rides for filtered children
-    final allTodayRides = <TodayRideOccurrence>[];
-    
+    // Get active and non-active rides with their associated children
+    final activeRidesWithChildren =
+        <({TodayRideOccurrence ride, ChildWithRides child})>[];
+    final nonActiveRidesWithChildren =
+        <({TodayRideOccurrence ride, ChildWithRides child})>[];
+
     if (_selectedChildId == null) {
-      // Show all children's rides
       for (final child in state.children) {
-        allTodayRides.addAll(state.getRidesForChild(child.id));
+        for (final ride in state.getRidesForChild(child.id)) {
+          if (ride.isActive) {
+            activeRidesWithChildren.add((ride: ride, child: child));
+          } else {
+            nonActiveRidesWithChildren.add((ride: ride, child: child));
+          }
+        }
       }
     } else {
-      // Show only selected child's rides
-      allTodayRides.addAll(state.getRidesForChild(_selectedChildId!));
+      final selectedChild = state.children.firstWhere(
+        (c) => c.id == _selectedChildId,
+      );
+      for (final ride in state.getRidesForChild(_selectedChildId!)) {
+        if (ride.isActive) {
+          activeRidesWithChildren.add((ride: ride, child: selectedChild));
+        } else {
+          nonActiveRidesWithChildren.add((ride: ride, child: selectedChild));
+        }
+      }
     }
 
-    dev.log('Today tab - Total rides: ${allTodayRides.length}', name: 'TrackScreen');
-    
-    // Print all rides in today tab
-    for (int i = 0; i < allTodayRides.length; i++) {
-      final ride = allTodayRides[i];
-      dev.log('Today Ride $i: ID=${ride.occurrenceId}, Name=${ride.ride.name}, Status=${ride.status}, Type=${ride.ride.type}, Time=${ride.pickupTime}, IsActive=${ride.isActive}', 
-              name: 'TrackScreen');
-    }
-
-    if (allTodayRides.isEmpty) {
+    if (activeRidesWithChildren.isEmpty && nonActiveRidesWithChildren.isEmpty) {
       return CustomEmptyState(
         icon: Icons.today,
         title: l10n.noRidesToday,
         message: l10n.noRidesTodayDesc,
         onRefresh: () => context.read<AllChildrenRidesCubit>().refresh(),
       );
-    }
-
-    // Get active and non-active rides
-    final activeRides = allTodayRides.where((ride) => ride.isActive).toList();
-    final nonActiveRides = allTodayRides.where((ride) => !ride.isActive).toList();
-
-    dev.log('Active: ${activeRides.length}, Non-active: ${nonActiveRides.length}', 
-            name: 'TrackScreen');
-    
-    // Print active rides
-    dev.log('=== ACTIVE RIDES ===', name: 'TrackScreen');
-    for (int i = 0; i < activeRides.length; i++) {
-      final ride = activeRides[i];
-      dev.log('Active $i: ID=${ride.occurrenceId}, Name=${ride.ride.name}, Status=${ride.status}', 
-              name: 'TrackScreen');
-    }
-    
-    // Print non-active rides
-    dev.log('=== NON-ACTIVE RIDES ===', name: 'TrackScreen');
-    for (int i = 0; i < nonActiveRides.length; i++) {
-      final ride = nonActiveRides[i];
-      dev.log('Non-Active $i: ID=${ride.occurrenceId}, Name=${ride.ride.name}, Status=${ride.status}', 
-              name: 'TrackScreen');
     }
 
     return RefreshIndicator(
@@ -314,34 +309,48 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Active ride cards (green) - show all active rides
-            if (activeRides.isNotEmpty) ...[
-              ...activeRides.map(
-                (ride) => Padding(
+            if (activeRidesWithChildren.isNotEmpty) ...[
+              ...activeRidesWithChildren.map(
+                (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: _buildActiveRideCard(context, ride, state, l10n),
+                  child: _buildActiveRideCard(
+                    context,
+                    item.ride,
+                    item.child,
+                    state,
+                    l10n,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
             ],
-            
-            // Today's Scheduled Rides (non-active rides only)
-            if (nonActiveRides.isNotEmpty) ...[
-              Text(
-                activeRides.isNotEmpty ? 'Scheduled Rides' : l10n.today,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
+
+            // Other rides label
+            if (nonActiveRidesWithChildren.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(
+                  l10n.scheduledRides,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-              ...nonActiveRides.map(
-                (ride) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildTodayRideCard(context, ride, state, l10n),
+
+            // Today's ride list
+            ...nonActiveRidesWithChildren.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildTodayRideCard(
+                  context,
+                  item.ride,
+                  item.child,
+                  state,
+                  l10n,
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),
@@ -355,45 +364,61 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   ) {
     // Get history rides
     final allHistoryRides = <TodayRideOccurrence>[];
-    
+
     dev.log('=== HISTORY TAB DEBUG ===', name: 'TrackScreen');
     dev.log('Selected child ID: $_selectedChildId', name: 'TrackScreen');
-    
+
     if (_selectedChildId == null) {
       dev.log('Checking all children for history rides', name: 'TrackScreen');
       for (final child in state.children) {
         final rides = state.getHistoryRidesForChild(child.id);
-        dev.log('Child ${child.name} (${child.id}) has ${rides.length} history rides', 
-                name: 'TrackScreen');
-        
+        dev.log(
+          'Child ${child.name} (${child.id}) has ${rides.length} history rides',
+          name: 'TrackScreen',
+        );
+
         for (int i = 0; i < rides.length; i++) {
           final ride = rides[i];
-          dev.log('  Ride $i: Status=${ride.status}, IsCompleted=${ride.isCompleted}', 
-                  name: 'TrackScreen');
+          dev.log(
+            '  Ride $i: Status=${ride.status}, IsCompleted=${ride.isCompleted}',
+            name: 'TrackScreen',
+          );
         }
-        
+
         allHistoryRides.addAll(rides);
       }
     } else {
-      dev.log('Checking selected child $_selectedChildId for history rides', 
-              name: 'TrackScreen');
+      dev.log(
+        'Checking selected child $_selectedChildId for history rides',
+        name: 'TrackScreen',
+      );
       final rides = state.getHistoryRidesForChild(_selectedChildId!);
-      dev.log('Selected child has ${rides.length} history rides', name: 'TrackScreen');
-      
+      dev.log(
+        'Selected child has ${rides.length} history rides',
+        name: 'TrackScreen',
+      );
+
       for (int i = 0; i < rides.length; i++) {
         final ride = rides[i];
-        dev.log('  Ride $i: Status=${ride.status}, IsCompleted=${ride.isCompleted}', 
-                name: 'TrackScreen');
+        dev.log(
+          '  Ride $i: Status=${ride.status}, IsCompleted=${ride.isCompleted}',
+          name: 'TrackScreen',
+        );
       }
-      
+
       allHistoryRides.addAll(rides);
     }
 
-    dev.log('Total history rides to display: ${allHistoryRides.length}', 
-            name: 'TrackScreen');
+    dev.log(
+      'Total history rides to display: ${allHistoryRides.length}',
+      name: 'TrackScreen',
+    );
 
     if (allHistoryRides.isEmpty) {
-      dev.log('No history rides found - showing empty state', name: 'TrackScreen');
+      dev.log(
+        'No history rides found - showing empty state',
+        name: 'TrackScreen',
+      );
       return CustomEmptyState(
         icon: Icons.history,
         title: 'No History',
@@ -409,9 +434,11 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
         itemCount: allHistoryRides.length,
         itemBuilder: (context, index) {
           final ride = allHistoryRides[index];
+          // Find the child for this ride to pass to the card builder
+          final child = _findChildForRide(ride, state);
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: _buildHistoryRideCard(context, ride, state, l10n),
+            child: _buildHistoryRideCard(context, ride, child, state, l10n),
           );
         },
       ),
@@ -424,7 +451,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
     AppLocalizations l10n,
   ) {
     dev.log('=== UPCOMING TAB DEBUG ===', name: 'TrackScreen');
-    
+
     if (state.upcomingRidesData == null) {
       dev.log('No upcoming rides data available', name: 'TrackScreen');
       return CustomEmptyState(
@@ -437,18 +464,26 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
 
     // Get upcoming rides for filtered children
     final allUpcomingRides = <UpcomingRide>[];
-    
+
     if (_selectedChildId == null) {
       // Show all children's upcoming rides
       dev.log('Showing all children upcoming rides', name: 'TrackScreen');
       allUpcomingRides.addAll(state.allUpcomingRides);
     } else {
       // Show only selected child's upcoming rides
-      dev.log('Showing upcoming rides for child: $_selectedChildId', name: 'TrackScreen');
-      allUpcomingRides.addAll(state.getUpcomingRidesForChild(_selectedChildId!));
+      dev.log(
+        'Showing upcoming rides for child: $_selectedChildId',
+        name: 'TrackScreen',
+      );
+      allUpcomingRides.addAll(
+        state.getUpcomingRidesForChild(_selectedChildId!),
+      );
     }
 
-    dev.log('Total upcoming rides to display: ${allUpcomingRides.length}', name: 'TrackScreen');
+    dev.log(
+      'Total upcoming rides to display: ${allUpcomingRides.length}',
+      name: 'TrackScreen',
+    );
 
     if (allUpcomingRides.isEmpty) {
       return CustomEmptyState(
@@ -466,7 +501,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
         if (_selectedChildId == null) return true;
         return ride.child.id == _selectedChildId;
       }).toList();
-      
+
       if (dayRidesForFilter.isNotEmpty) {
         ridesByDate[dayRides.date] = dayRidesForFilter;
       }
@@ -480,8 +515,9 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
         itemBuilder: (context, index) {
           final date = ridesByDate.keys.elementAt(index);
           final rides = ridesByDate[date]!;
-          final dayData = state.upcomingRidesData!.upcomingRides
-              .firstWhere((d) => d.date == date);
+          final dayData = state.upcomingRidesData!.upcomingRides.firstWhere(
+            (d) => d.date == date,
+          );
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,10 +535,18 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                 ),
               ),
               // Rides for this date
-              ...rides.map((ride) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _buildUpcomingRideCard(context, ride, state, l10n),
-              )),
+              ...rides.map(
+                (ride) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildUpcomingRideCard(
+                    context,
+                    ride,
+                    ride.child,
+                    state,
+                    l10n,
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -513,26 +557,26 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   Widget _buildActiveRideCard(
     BuildContext context,
     TodayRideOccurrence ride,
+    ChildWithRides?
+    child, // Make child nullable for safety, though it should be present here
     AllChildrenRidesLoaded state,
     AppLocalizations l10n,
   ) {
-    // Find the child for this ride
-    final child = _findChildForRide(ride, state);
-    
+    final status = ride.studentStatus.status.toLowerCase();
+    final isExcused =
+        status == 'excused' || status == 'absent' || status == 'cancelled';
+
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF10B981),
-            Color(0xFF059669),
-          ],
+          colors: [Color(0xFF10B981), Color(0xFF059669)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF10B981).withValues(alpha: 0.3),
+            color: const Color(0xFF10B981).withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -552,7 +596,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -575,7 +619,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
               ],
             ),
             const SizedBox(height: 14),
-            
+
             // Child name if showing all children
             if (_selectedChildId == null && child != null) ...[
               Text(
@@ -588,7 +632,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
               ),
               const SizedBox(height: 8),
             ],
-            
+
             // Ride name
             Row(
               children: [
@@ -607,7 +651,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
               ],
             ),
             const SizedBox(height: 4),
-            
+
             // Route
             Padding(
               padding: const EdgeInsets.only(left: 24),
@@ -617,12 +661,12 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     : '${l10n.school} → ${l10n.home}',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: Colors.white.withOpacity(0.85),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Driver info and ETA
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -634,7 +678,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                       l10n.driver,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Colors.white.withOpacity(0.7),
                       ),
                     ),
                     Text(
@@ -654,13 +698,13 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                       l10n.eta,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Colors.white.withOpacity(0.7),
                       ),
                     ),
                     Text(
-                      '5 min',
+                      '12:45',
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -670,7 +714,7 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Tracking buttons
             Row(
               children: [
@@ -680,7 +724,9 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     label: l10n.liveTracking,
                     icon: Icons.navigation,
                     onTap: () {
-                      context.push('${Routes.liveTracking}/${ride.occurrenceId}');
+                      context.push(
+                        '${Routes.liveTracking}/${ride.occurrenceId}',
+                      );
                     },
                   ),
                 ),
@@ -702,6 +748,27 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
                     },
                   ),
                 ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildTrackingButton(
+                    context: context,
+                    label: isExcused ? l10n.excused : l10n.reportAbsence,
+                    icon: Icons.event_busy,
+                    isEnabled: !isExcused,
+                    onTap: () {
+                      if (child != null) {
+                        showReportAbsenceDialog(
+                          context: context,
+                          occurrenceId: ride.occurrenceId,
+                          studentId: child.id,
+                          onSuccess: () {
+                            context.read<AllChildrenRidesCubit>().refresh();
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
           ],
@@ -713,12 +780,19 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   Widget _buildTodayRideCard(
     BuildContext context,
     TodayRideOccurrence ride,
+    ChildWithRides? child, // Make child nullable for safety
     AllChildrenRidesLoaded state,
     AppLocalizations l10n,
   ) {
+    final status = ride.studentStatus.status.toLowerCase();
+    final isExcused =
+        status == 'excused' || status == 'absent' || status == 'cancelled';
+
     return RideCard(
       time: ride.pickupTime,
-      dateLabel: ride.ride.type == 'morning' ? l10n.morningRide : l10n.afternoonRide,
+      dateLabel: ride.ride.type == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
       rideName: ride.ride.name,
       routeDescription: ride.ride.type == 'morning'
           ? '${l10n.home} → ${l10n.school}'
@@ -727,27 +801,37 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
       driverAvatar: ride.driver.avatar,
       status: _mapStatus(ride.status),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RideTrackingScreenByOccurrence(
-              occurrenceId: ride.occurrenceId,
-            ),
-          ),
-        );
+        context.push('${Routes.liveTracking}/${ride.occurrenceId}');
       },
+      onReportAbsence: isExcused
+          ? null
+          : () {
+              if (child != null) {
+                showReportAbsenceDialog(
+                  context: context,
+                  occurrenceId: ride.occurrenceId,
+                  studentId: child.id,
+                  onSuccess: () {
+                    context.read<AllChildrenRidesCubit>().refresh();
+                  },
+                );
+              }
+            },
     );
   }
 
   Widget _buildHistoryRideCard(
     BuildContext context,
     TodayRideOccurrence ride,
+    ChildWithRides? child, // Make child nullable for safety
     AllChildrenRidesLoaded state,
     AppLocalizations l10n,
   ) {
     return RideCard(
       time: ride.pickupTime,
-      dateLabel: ride.ride.type == 'morning' ? l10n.morningRide : l10n.afternoonRide,
+      dateLabel: ride.ride.type == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
       rideName: ride.ride.name,
       routeDescription: ride.ride.type == 'morning'
           ? '${l10n.home} → ${l10n.school}'
@@ -772,12 +856,15 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
   Widget _buildUpcomingRideCard(
     BuildContext context,
     UpcomingRide ride,
+    ChildInfo child,
     AllChildrenRidesLoaded state,
     AppLocalizations l10n,
   ) {
     return RideCard(
       time: ride.pickupTime,
-      dateLabel: ride.ride.type == 'morning' ? l10n.morningRide : l10n.afternoonRide,
+      dateLabel: ride.ride.type == 'morning'
+          ? l10n.morningRide
+          : l10n.afternoonRide,
       rideName: ride.ride.name,
       routeDescription: ride.ride.type == 'morning'
           ? '${l10n.home} → ${l10n.school}'
@@ -789,9 +876,8 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RideTrackingScreenByOccurrence(
-              occurrenceId: ride.occurrenceId,
-            ),
+            builder: (context) =>
+                RideTrackingScreenByOccurrence(occurrenceId: ride.occurrenceId),
           ),
         );
       },
@@ -832,11 +918,14 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
     required String label,
     required IconData icon,
     required VoidCallback onTap,
+    bool isEnabled = true,
   }) {
+    final color = isEnabled ? const Color(0xFF10B981) : Colors.grey;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: isEnabled ? onTap : null,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -847,16 +936,12 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: const Color(0xFF10B981),
-                size: 18,
-              ),
+              Icon(icon, color: color, size: 18),
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFF10B981),
+                style: TextStyle(
+                  color: color,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
@@ -867,5 +952,4 @@ class _TrackScreenContentState extends State<_TrackScreenContent> {
       ),
     );
   }
-
 }
