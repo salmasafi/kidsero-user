@@ -118,7 +118,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withValues(alpha: 51),
                                     shape: BoxShape.circle,
                                   ),
                                   child: IconButton(
@@ -176,7 +176,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 26),
                                     blurRadius: AppSizes.radiusSmall,
                                     spreadRadius: 2,
                                   ),
@@ -250,7 +250,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 13),
                             blurRadius: 20,
                             spreadRadius: 0,
                             offset: const Offset(0, 10),
@@ -344,7 +344,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.lightGrey.withOpacity(0.5),
+            color: AppColors.lightGrey.withValues(alpha: 128),
             borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
           ),
           child: TextField(
@@ -368,7 +368,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-        color: AppColors.lightGrey.withOpacity(0.3),
+        color: AppColors.lightGrey.withValues(alpha: 77),
         borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
       ),
       child: Row(

@@ -33,6 +33,7 @@ dependencies:
   latlong2: ^0.9.1
   url_launcher: ^6.3.2
 
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -282,7 +282,7 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen>
     });
 
     final duration = DateTime.now().difference(startTime);
-    dev.log('Map initialization complete: ${markers.length} markers (${createdCount} created, ${cachedCount} cached) in ${duration.inMilliseconds}ms', 
+    dev.log('Map initialization complete: ${markers.length} markers ($createdCount created, $cachedCount cached) in ${duration.inMilliseconds}ms', 
       name: 'LiveTrackingScreen');
 
     // Fit camera to show all elements

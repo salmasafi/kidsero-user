@@ -119,8 +119,8 @@ class RidesRepository {
     required String type,
     bool forceRefresh = false,
   }) async {
-    final cacheKey = '${_childTodayRidesCachePrefix}${childId}_$type';
-    final cacheTimeKey = '${_childTodayRidesCacheTimePrefix}${childId}_$type';
+    final cacheKey = '$_childTodayRidesCachePrefix${childId}_$type';
+    final cacheTimeKey = '$_childTodayRidesCacheTimePrefix${childId}_$type';
 
     // Check cache first if not forcing refresh
     if (!forceRefresh && _isCacheValid(cacheTimeKey, _childTodayRidesCacheTTL)) {

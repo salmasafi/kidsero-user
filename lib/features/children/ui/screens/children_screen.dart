@@ -223,7 +223,7 @@ import 'package:kidsero_parent/features/children/cubit/children_cubit.dart';
 import 'package:kidsero_parent/features/children/model/child_model.dart';
 
 class ChildrenScreen extends StatelessWidget {
-  const ChildrenScreen({Key? key}) : super(key: key);
+  const ChildrenScreen({super.key});
 
   // Define theme colors locally for consistency
   final Color primaryColor = AppColors.primary;
@@ -534,7 +534,7 @@ class ChildrenScreen extends StatelessWidget {
 class _ChildCard extends StatelessWidget {
   final Child child;
 
-  const _ChildCard({Key? key, required this.child}) : super(key: key);
+  const _ChildCard({required this.child});
 
   @override
   Widget build(BuildContext context) {

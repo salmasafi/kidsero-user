@@ -274,7 +274,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 13),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -286,7 +286,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 26),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
@@ -345,7 +345,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.08),
+        color: AppColors.primary.withValues(alpha: 20),
         borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
       ),
       child: Row(
@@ -406,7 +406,7 @@ class _CreatePlanPaymentScreenState extends State<CreatePlanPaymentScreen> {
             border: Border.all(color: AppColors.border),
           ),
           child: DropdownButtonFormField<PaymentMethod>(
-            value: _selectedPaymentMethod,
+            initialValue: _selectedPaymentMethod,
             decoration: const InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(

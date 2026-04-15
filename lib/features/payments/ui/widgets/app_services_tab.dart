@@ -24,7 +24,7 @@ class AppServicesTab extends StatelessWidget {
 }
 
 class _AppServicesTabContent extends StatelessWidget {
-  const _AppServicesTabContent({Key? key}) : super(key: key);
+  const _AppServicesTabContent();
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +80,10 @@ class _AppServicesTabContent extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.secondary.withOpacity(0.1),
+                      color: AppColors.secondary.withValues(alpha: 26),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppColors.secondary.withOpacity(0.3),
+                        color: AppColors.secondary.withValues(alpha: 77),
                       ),
                     ),
                     child: Column(
@@ -125,7 +125,7 @@ class _AppServicesTabContent extends StatelessWidget {
                         ? '${l10n.active} ${l10n.date} ${sub.endDate}'
                         : '${l10n.active} ${l10n.date} ${sub.endDate}',
                     priceLabel:
-                        '${(price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
+                        '${(price).toDouble().toStringAsFixed(2)} ${l10n.currency}',
                     isSubscribed: true,
                     subscriptionStatus: sub.isActive
                         ? l10n.active.toUpperCase()
@@ -150,7 +150,7 @@ class _AppServicesTabContent extends StatelessWidget {
                       title: plan.name,
                       description: 'Premium service plan',
                       priceLabel:
-                          '${(plan.price as num).toDouble().toStringAsFixed(2)} ${l10n.currency}',
+                          '${(plan.price).toDouble().toStringAsFixed(2)} ${l10n.currency}',
                       isSubscribed: false,
                       accentColor: AppColors.primary,
                       buttonText: l10n.subscribeNow,

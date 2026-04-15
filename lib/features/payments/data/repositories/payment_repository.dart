@@ -117,7 +117,7 @@ class PaymentRepository {
         'paymentMethodId': paymentMethodId,
         'amount': amount,
         'receiptImage': receiptImage,
-        if (notes != null) 'notes': notes,
+        'notes': ?notes,
       };
 
       final response = await _apiService.dio.post(
@@ -181,7 +181,7 @@ class PaymentRepository {
         'amount': amount,
         'receiptImage': receiptImage,
         'paymentType': paymentType.toJson(),
-        if (numberOfInstallments != null) 'numberOfInstallments': numberOfInstallments,
+        'numberOfInstallments': ?numberOfInstallments,
       };
 
       final response = await _apiService.dio.post(

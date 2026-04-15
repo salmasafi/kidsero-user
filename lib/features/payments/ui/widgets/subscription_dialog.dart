@@ -21,13 +21,13 @@ class SubscriptionDialog extends StatefulWidget {
   final String? studentId;
 
   const SubscriptionDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.amount,
     this.planId,
     this.serviceId,
     this.studentId,
-  }) : super(key: key);
+  });
 
   @override
   State<SubscriptionDialog> createState() => _SubscriptionDialogState();

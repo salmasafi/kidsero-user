@@ -381,7 +381,7 @@ class _CreateServicePaymentScreenState
             border: Border.all(color: AppColors.border),
           ),
           child: DropdownButtonFormField<PaymentMethod>(
-            value: _selectedPaymentMethod,
+            initialValue: _selectedPaymentMethod,
             decoration: const InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
@@ -604,7 +604,7 @@ class _CreateServicePaymentScreenState
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 13),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -616,7 +616,7 @@ class _CreateServicePaymentScreenState
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 26),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(Icons.school, color: AppColors.primary, size: 28),
@@ -683,7 +683,7 @@ class _CreateServicePaymentScreenState
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 13),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -695,7 +695,7 @@ class _CreateServicePaymentScreenState
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.1),
+              color: AppColors.accent.withValues(alpha: 26),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
@@ -764,7 +764,7 @@ class _CreateServicePaymentScreenState
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.08),
+        color: AppColors.primary.withValues(alpha: 20),
         borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
       ),
       child: Row(
@@ -830,7 +830,7 @@ class _CreateServicePaymentScreenState
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 13),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),

@@ -40,7 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
         // Update tokens in both ApiHelper and ApiService
         await _apiHelper.setToken(response.token!);
         if (_apiService != null) {
-          await _apiService!.setToken(response.token!);
+          await _apiService.setToken(response.token!);
         }
         
         emit(AuthSuccess(response));
@@ -62,7 +62,7 @@ class AuthCubit extends Cubit<AuthState> {
     await AppPreferences.clearUserData();
     await _apiHelper.clearToken();
     if (_apiService != null) {
-      await _apiService!.clearToken();
+      await _apiService.clearToken();
     }
     
     // Also use AuthService for consistent logout handling

@@ -148,7 +148,7 @@ class ProfileView extends StatelessWidget {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
+                                      color: Colors.black.withValues(alpha: 26),
                                       blurRadius: AppSizes.radiusSmall,
                                       spreadRadius: 2,
                                     ),
@@ -248,7 +248,7 @@ class ProfileView extends StatelessWidget {
                     //     child: Container(
                     //       padding: const EdgeInsets.all(12),
                     //       decoration: BoxDecoration(
-                    //         color: AppColors.lightGrey.withOpacity(0.5),
+                    //         color: AppColors.lightGrey.withValues(alpha: 128),
                     //         borderRadius: BorderRadius.circular(20),
                     //       ),
                     //       child: Row(
@@ -328,7 +328,7 @@ class ProfileView extends StatelessWidget {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 13),
                               blurRadius: 20,
                               spreadRadius: 0,
                               offset: const Offset(0, 10),
@@ -458,7 +458,7 @@ class ProfileView extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.lightGrey.withOpacity(0.5),
+        color: AppColors.lightGrey.withValues(alpha: 128),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

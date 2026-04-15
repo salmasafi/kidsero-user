@@ -14,7 +14,7 @@ class ServiceCard extends StatelessWidget {
   final String? buttonText;
 
   const ServiceCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.priceLabel,
@@ -23,7 +23,7 @@ class ServiceCard extends StatelessWidget {
     this.onTap,
     this.accentColor,
     this.buttonText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class ServiceCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: isSubscribed
-            ? Border.all(color: color.withOpacity(0.5), width: 2)
+            ? Border.all(color: color.withValues(alpha: 128), width: 2)
             : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 13),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -85,7 +85,7 @@ class ServiceCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 26),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
