@@ -50,7 +50,8 @@ class MockApiService {
     _logRequest('POST', path, data: data);
     await _simulateDelay();
 
-    final phone = data['phone']?.toString() ?? '';
+    // Support both 'identifier' and 'phone' field names
+    final phone = data['identifier']?.toString() ?? data['phone']?.toString() ?? '';
     final password = data['password']?.toString() ?? '';
 
     // Simulate validation
@@ -304,6 +305,11 @@ class MockApiService {
   static Future<Response> handlePost(String path, dynamic data) async {
     _logRequest('POST', path, data: data);
     await _simulateDelay();
+
+    // Login
+    if (path == ApiEndpoints.login || path == '/api/users/auth/parent/login') {
+      return handleLogin(path, data);
+    }
 
     // Add child
     if (path == ApiEndpoints.addChild || path == '/api/users/children/add') {

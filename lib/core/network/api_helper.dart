@@ -4,6 +4,8 @@ import '../utils/app_strings.dart';
 import '../utils/app_preferences.dart';
 import 'cache_helper.dart';
 import '../interceptors/auth_interceptor.dart';
+import '../mock/mock_config.dart';
+import '../mock/mock_interceptor.dart';
 
 class ApiHelper {
   final Dio _dio;
@@ -18,6 +20,12 @@ class ApiHelper {
         ),
       ) {
     _initializeToken();
+
+    // Add Mock Interceptor FIRST if mock mode is enabled
+    if (MockConfig.enableMockData) {
+      _dio.interceptors.add(MockInterceptor());
+    }
+
     _dio.interceptors.add(
       LogInterceptor(
         request: true,
