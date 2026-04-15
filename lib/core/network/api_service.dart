@@ -12,6 +12,8 @@ import '../utils/app_preferences.dart';
 import '../utils/app_strings.dart';
 import 'cache_helper.dart';
 import '../interceptors/auth_interceptor.dart';
+import '../mock/mock_config.dart';
+import '../mock/mock_interceptor.dart';
 
 class ApiService {
   static const String baseUrl = 'https://Bcknd.Kidsero.com';
@@ -28,6 +30,13 @@ class ApiService {
         ),
       ) {
     _initializeToken();
+
+    // Add Mock Interceptor FIRST if mock mode is enabled
+    // This will intercept all requests and return mock data
+    if (MockConfig.enableMockData) {
+      dio.interceptors.add(MockInterceptor());
+    }
+
     dio.interceptors.add(
       LogInterceptor(
         request: true,
