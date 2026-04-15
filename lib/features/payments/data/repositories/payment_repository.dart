@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../../../../core/network/api_service.dart';
 import '../../../../core/network/error_handler.dart';
 import '../models/payment_model.dart';
@@ -20,22 +21,22 @@ class PaymentRepository {
   /// Throws an exception if the API call fails.
   Future<PaymentResponseModel> getAllPayments() async {
     try {
-      print('[PaymentRepository] Fetching all payments from API');
+      debugPrint('[PaymentRepository] Fetching all payments from API');
       final response = await _apiService.dio.get('/api/users/parentpayments');
       
-      print('[PaymentRepository] Response status: ${response.statusCode}');
-      print('[PaymentRepository] Response data: ${response.data}');
+      debugPrint('[PaymentRepository] Response status: ${response.statusCode}');
+      debugPrint('[PaymentRepository] Response data: ${response.data}');
       
       if (response.data['success'] == true && response.data['data'] != null) {
         final result = PaymentResponseModel.fromJson(response.data['data']);
-        print('[PaymentRepository] Parsed ${result.payments.length} plan payments and ${result.orgServicePayments.length} service payments');
+        debugPrint('[PaymentRepository] Parsed ${result.payments.length} plan payments and ${result.orgServicePayments.length} service payments');
         return result;
       } else {
-        print('[PaymentRepository] API response indicates failure');
+        debugPrint('[PaymentRepository] API response indicates failure');
         throw Exception('Failed to load payments: ${response.data}');
       }
     } catch (e) {
-      print('[PaymentRepository] Error fetching payments: $e');
+      debugPrint('[PaymentRepository] Error fetching payments: $e');
       throw Exception(ErrorHandler.handle(e));
     }
   }
@@ -61,7 +62,7 @@ class PaymentRepository {
         throw Exception('Payment not found');
       }
     } catch (e) {
-      print('[PaymentRepository] Error in getPaymentById: $e');
+      debugPrint('[PaymentRepository] Error in getPaymentById: $e');
       throw Exception(ErrorHandler.handle(e));
     }
   }
@@ -87,7 +88,7 @@ class PaymentRepository {
         throw Exception('Service payment not found');
       }
     } catch (e) {
-      print('[PaymentRepository] Error in getServicePaymentById: $e');
+      debugPrint('[PaymentRepository] Error in getServicePaymentById: $e');
       throw Exception(ErrorHandler.handle(e));
     }
   }
